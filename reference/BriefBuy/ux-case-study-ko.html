@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UX 케이스 스터디 — AI 러닝화 Decision Workspace</title>
+  <style>
+    :root {
+      --blue: #3b82f6;
+      --blue-dark: #1d4ed8;
+      --blue-light: #eff6ff;
+      --teal: #0d9488;
+      --teal-light: #f0fdfa;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #ea580c;
+      --orange-light: #fff7ed;
+      --purple: #7c3aed;
+      --purple-light: #f5f3ff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-400: #9ca3af;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Apple SD Gothic Neo","Noto Sans KR",-apple-system,sans-serif; background:#fff; color:var(--gray-900); line-height:1.6; }
+    .page { max-width:1000px; margin:0 auto; padding:0 32px 120px; }
+    .section { margin-bottom:96px; }
+    .section-tag { display:inline-flex; align-items:center; gap:6px; background:var(--blue-light); color:var(--blue-dark); border:1px solid #bfdbfe; border-radius:999px; padding:4px 14px; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:14px; }
+    .section-title { font-size:32px; font-weight:900; letter-spacing:-.02em; color:var(--gray-900); margin-bottom:8px; line-height:1.2; }
+    .section-sub { font-size:16px; color:var(--gray-600); margin-bottom:36px; max-width:620px; }
+
+    /* Hero */
+    .hero { background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 50%,#2563eb 100%); border-radius:0 0 32px 32px; padding:80px 56px; color:#fff; margin-bottom:80px; position:relative; overflow:hidden; }
+    .hero::before { content:""; position:absolute; top:-80px; right:-80px; width:400px; height:400px; border-radius:50%; background:rgba(255,255,255,.05); }
+    .hero::after { content:""; position:absolute; bottom:-60px; left:200px; width:280px; height:280px; border-radius:50%; background:rgba(255,255,255,.04); }
+    .hero-tag { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:5px 16px; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:24px; }
+    .hero h1 { font-size:48px; font-weight:900; letter-spacing:-.03em; line-height:1.1; margin-bottom:16px; }
+    .hero h1 span { color:#93c5fd; }
+    .hero p { font-size:17px; opacity:.85; max-width:540px; line-height:1.7; margin-bottom:36px; }
+    .hero-meta { display:flex; flex-wrap:wrap; gap:12px; }
+    .hero-pill { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:999px; padding:6px 18px; font-size:12px; font-weight:600; }
+
+    /* Card */
+    .card { background:#fff; border:1px solid var(--gray-200); border-radius:16px; padding:24px 28px; }
+
+    /* Problem */
+    .problem-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .text-block { background:var(--gray-50); border:1px solid var(--gray-200); border-radius:16px; padding:24px; }
+    .text-block-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+    .chat-bubble-icon { width:36px; height:36px; border-radius:10px; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; }
+    .text-block-header h3 { font-size:15px; font-weight:700; }
+    .ai-text { font-size:13px; color:var(--gray-600); line-height:1.8; }
+    .ai-text ul { margin-top:12px; padding-left:16px; display:flex; flex-direction:column; gap:4px; }
+    .problems-block { display:flex; flex-direction:column; gap:12px; }
+    .problem-item { display:flex; gap:14px; align-items:flex-start; background:#fff; border:1px solid #fed7aa; border-radius:14px; padding:14px 18px; }
+    .problem-icon { width:36px; height:36px; border-radius:10px; background:var(--orange-light); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .problem-item h4 { font-size:13px; font-weight:700; margin-bottom:2px; }
+    .problem-item p { font-size:12px; color:var(--gray-600); }
+    .problem-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+    .warn-icon { width:36px; height:36px; border-radius:10px; background:#fff7ed; border:1px solid #fed7aa; color:var(--orange); display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .problem-header h3 { font-size:15px; font-weight:700; color:var(--orange); }
+    .solution-bar { margin-top:24px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:14px; padding:16px 20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+    .solution-bar .sol-label { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--blue-dark); flex-shrink:0; }
+    .solution-bar .sol-items { display:flex; gap:10px; flex-wrap:wrap; }
+    .sol-chip { background:#fff; border:1px solid #bfdbfe; border-radius:999px; padding:4px 14px; font-size:12px; font-weight:600; color:var(--blue-dark); display:flex; align-items:center; gap:6px; }
+
+    /* 6-step flow */
+    .flow-wrapper { background:var(--gray-50); border:1px solid var(--gray-200); border-radius:24px; padding:40px 32px 32px; }
+    .flow-title { text-align:center; margin-bottom:36px; }
+    .flow-title h2 { font-size:26px; font-weight:900; margin-bottom:6px; }
+    .flow-title p { font-size:14px; color:var(--gray-600); }
+    .flow-steps { display:grid; grid-template-columns:repeat(6,1fr); gap:0; position:relative; margin-bottom:36px; }
+    .flow-step { display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; }
+    .flow-step:not(:last-child)::after { content:"→"; position:absolute; right:-10px; top:24px; font-size:16px; color:var(--gray-400); z-index:1; }
+    .step-box { width:100%; border:2px solid var(--gray-200); border-radius:14px; padding:14px 8px; background:#fff; min-height:80px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 8px; position:relative; }
+    .step-box.blue { border-color:#93c5fd; background:var(--blue-light); }
+    .step-box.teal { border-color:#5eead4; background:var(--teal-light); }
+    .step-box.green { border-color:#86efac; background:var(--green-light); }
+    .step-box.purple { border-color:#c4b5fd; background:var(--purple-light); }
+    .step-num { font-size:10px; font-weight:800; color:var(--gray-400); margin-bottom:4px; }
+    .step-icon { font-size:26px; margin-bottom:6px; }
+    .step-name { font-size:12px; font-weight:800; color:var(--gray-800); line-height:1.3; }
+    .step-name.blue { color:var(--blue-dark); }
+    .step-name.teal { color:var(--teal); }
+    .step-name.green { color:var(--green); }
+    .step-name.purple { color:var(--purple); }
+    .step-star { position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:24px; height:24px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px; display:flex; align-items:center; justify-content:center; }
+    .flow-bullets { display:grid; grid-template-columns:repeat(6,1fr); gap:0; margin-bottom:36px; }
+    .flow-bullet-col { padding:0 8px; font-size:11px; color:var(--gray-600); line-height:1.6; }
+    .flow-bullet-col ul { list-style:none; padding:0; }
+    .flow-bullet-col ul li::before { content:"• "; color:var(--blue); }
+    .flow-values { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; border-top:1px solid var(--gray-200); padding-top:28px; }
+    .flow-value-card { display:flex; gap:14px; align-items:center; background:#fff; border:1px solid var(--gray-200); border-radius:14px; padding:16px 18px; }
+    .value-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+    .flow-value-card p { font-size:13px; font-weight:700; color:var(--gray-800); line-height:1.4; }
+    .flow-key-idea { margin-top:20px; background:#fefce8; border:1px solid #fde68a; border-radius:14px; padding:16px 20px; display:flex; align-items:flex-start; gap:12px; }
+    .bulb { font-size:22px; flex-shrink:0; margin-top:2px; }
+    .flow-key-idea p { font-size:13px; color:#78350f; line-height:1.6; }
+    .flow-key-idea strong { color:#92400e; }
+
+    /* Routing table */
+    .routing-table { width:100%; border-collapse:collapse; font-size:14px; border-radius:16px; overflow:hidden; border:1px solid var(--gray-200); }
+    .routing-table th { background:var(--gray-800); color:#fff; padding:14px 20px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+    .routing-table td { padding:14px 20px; border-bottom:1px solid var(--gray-100); color:var(--gray-700); }
+    .routing-table tr:last-child td { border-bottom:none; }
+    .routing-table tr:nth-child(even) td { background:var(--gray-50); }
+    .intent-badge { display:inline-flex; align-items:center; gap:5px; background:var(--blue-light); color:var(--blue-dark); border:1px solid #bfdbfe; border-radius:999px; padding:3px 12px; font-size:12px; font-weight:700; }
+
+    /* Persona */
+    .persona-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .persona-card { border-radius:20px; overflow:hidden; border:1px solid var(--gray-200); }
+    .persona-header { padding:22px 24px; display:flex; align-items:flex-start; gap:16px; }
+    .persona-avatar { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+    .persona-role { font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin-bottom:4px; }
+    .persona-header h3 { font-size:18px; font-weight:800; margin-bottom:4px; }
+    .persona-header .quote { font-size:13px; font-style:italic; color:var(--gray-600); }
+    .persona-body { padding:0 24px 24px; display:flex; flex-direction:column; gap:12px; }
+    .persona-row { border-radius:12px; padding:12px 16px; }
+    .persona-row h4 { font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px; }
+    .persona-row ul { list-style:none; display:flex; flex-direction:column; gap:5px; }
+    .persona-row ul li { font-size:13px; color:var(--gray-700); padding-left:14px; position:relative; }
+    .persona-row ul li::before { content:"→"; position:absolute; left:0; color:var(--blue); font-weight:700; }
+
+    /* Example wrapper */
+    .example-wrapper { border:1px solid var(--gray-200); border-radius:24px; overflow:hidden; }
+    .example-header { padding:20px 28px; border-bottom:1px solid var(--gray-200); background:var(--gray-50); display:flex; align-items:center; justify-content:space-between; }
+    .example-header h3 { font-size:16px; font-weight:800; }
+    .example-header p { font-size:13px; color:var(--gray-600); }
+    .example-badge { display:inline-flex; align-items:center; gap:6px; background:var(--blue); color:#fff; border-radius:999px; padding:4px 14px; font-size:11px; font-weight:700; }
+
+    /* Shoe layout */
+    .shoe-layout { display:grid; grid-template-columns:170px 1fr 160px; gap:0; }
+    .profile-panel { padding:24px 20px; border-right:1px solid var(--gray-200); background:#fff; }
+    .profile-avatar { width:52px; height:52px; border-radius:14px; background:#dbeafe; display:flex; align-items:center; justify-content:center; font-size:26px; margin-bottom:10px; }
+    .profile-name { font-size:15px; font-weight:800; margin-bottom:2px; }
+    .profile-sub { font-size:11px; color:var(--gray-600); margin-bottom:16px; }
+    .profile-tags { display:flex; flex-direction:column; gap:7px; }
+    .profile-tag { display:flex; align-items:center; gap:8px; background:var(--gray-50); border:1px solid var(--gray-200); border-radius:8px; padding:7px 10px; font-size:12px; font-weight:600; }
+    .profile-tag .tag-icon { font-size:14px; }
+    .products-panel { padding:20px; }
+    .products-top { display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:13px; font-weight:700; color:var(--blue-dark); }
+    .products-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+    .product-card { border:1px solid var(--gray-200); border-radius:14px; padding:14px; background:#fff; position:relative; }
+    .product-card.recommended { border-color:var(--blue); border-width:2px; }
+    .rec-badge { position:absolute; top:-10px; left:14px; background:var(--blue); color:#fff; border-radius:999px; padding:2px 10px; font-size:10px; font-weight:800; letter-spacing:.05em; }
+    .product-img { width:100%; height:70px; margin-bottom:8px; background:var(--gray-50); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:32px; }
+    .product-name { font-size:13px; font-weight:800; text-align:center; margin-bottom:4px; }
+    .product-price { font-size:15px; font-weight:900; color:var(--blue); text-align:center; margin-bottom:12px; }
+    .product-price.orange { color:var(--orange); }
+    .product-price.green { color:var(--green); }
+    .bar-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+    .bar-label { font-size:10px; color:var(--gray-600); width:28px; flex-shrink:0; }
+    .bar-track { flex:1; height:6px; background:var(--gray-100); border-radius:999px; overflow:hidden; }
+    .bar-fill { height:100%; border-radius:999px; }
+    .bar-fill.blue { background:var(--blue); }
+    .bar-fill.teal { background:var(--teal); }
+    .bar-fill.green { background:var(--green); }
+    .bar-fill.orange { background:var(--orange); }
+    .bar-score { font-size:10px; color:var(--gray-600); width:28px; flex-shrink:0; }
+    .comp-table-wrap { margin-top:16px; overflow-x:auto; }
+    .comp-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .comp-table th { background:var(--gray-800); color:#fff; padding:8px 12px; text-align:left; font-size:10px; font-weight:700; letter-spacing:.05em; }
+    .comp-table td { padding:8px 12px; border-bottom:1px solid var(--gray-100); color:var(--gray-700); }
+    .comp-table tr:last-child td { border-bottom:none; }
+    .highlight { background:#eff6ff; color:var(--blue-dark); font-weight:700; }
+    .highlight-green { background:#f0fdf4; color:var(--green); font-weight:700; }
+    .highlight-orange { background:#fff7ed; color:var(--orange); font-weight:700; }
+    .reasons-panel { padding:24px 20px; border-left:1px solid var(--gray-200); background:var(--gray-50); }
+    .reasons-title { font-size:12px; font-weight:800; color:var(--gray-700); margin-bottom:14px; text-transform:uppercase; letter-spacing:.08em; }
+    .reason-item { display:flex; gap:8px; align-items:flex-start; margin-bottom:10px; font-size:13px; }
+    .check { color:var(--green); font-size:14px; flex-shrink:0; margin-top:1px; }
+    .check-red { color:#dc2626; font-size:14px; flex-shrink:0; margin-top:1px; }
+    .why-bar { margin-top:0; background:#f0f9ff; border-top:1px solid #bae6fd; padding:16px 24px; display:flex; flex-direction:column; gap:12px; }
+    .why-label { font-size:12px; font-weight:800; color:var(--blue-dark); }
+    .why-items { display:flex; flex-direction:column; gap:8px; }
+    .why-item { display:flex; gap:12px; align-items:flex-start; font-size:12px; }
+    .why-num { width:20px; height:20px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; }
+    .why-item div strong { font-size:12px; color:var(--gray-800); display:block; margin-bottom:2px; }
+    .why-item div span { font-size:11px; color:var(--gray-600); }
+
+    /* Vacuum layout (reused for running shoe candidate panel) */
+    .vacuum-layout { display:grid; grid-template-columns:150px 1fr 160px; gap:0; }
+    .vacuum-profile-panel { padding:24px 20px; border-right:1px solid var(--gray-200); }
+    .vacuum-icon-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+    .vacuum-icon-header span { font-size:24px; }
+    .vacuum-icon-header p { font-size:13px; font-weight:800; color:var(--gray-800); }
+    .vacuum-tag { display:flex; align-items:center; gap:8px; background:var(--gray-50); border:1px solid var(--gray-200); border-radius:8px; padding:7px 10px; font-size:12px; font-weight:600; margin-bottom:7px; }
+    .vacuum-reasons-panel { padding:24px 20px; border-left:1px solid var(--gray-200); }
+    .vacuum-reasons-title { font-size:12px; font-weight:800; margin-bottom:14px; text-transform:uppercase; letter-spacing:.08em; }
+    .vacuum-reason-item { display:flex; gap:8px; align-items:flex-start; margin-bottom:10px; font-size:13px; }
+    .check-orange { color:var(--orange); font-size:14px; flex-shrink:0; margin-top:1px; }
+    .why-bar-green { margin-top:0; background:#f0fdf4; border-top:1px solid #bbf7d0; padding:16px 24px; display:flex; flex-direction:column; gap:12px; }
+    .why-label-green { font-size:12px; font-weight:800; color:var(--green); }
+
+    /* Principles */
+    .principles-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .principle-card { display:flex; gap:16px; align-items:flex-start; background:#fff; border:1px solid var(--gray-200); border-radius:16px; padding:20px 22px; }
+    .principle-icon { width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+    .principle-card h4 { font-size:14px; font-weight:800; margin-bottom:6px; }
+    .principle-card p { font-size:13px; color:var(--gray-600); line-height:1.6; }
+
+    /* Metrics */
+    .metrics-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .metric-card { border:1px solid var(--gray-200); border-radius:16px; padding:20px 22px; }
+    .metric-card .metric-icon { font-size:28px; margin-bottom:10px; }
+    .metric-card h3 { font-size:14px; font-weight:800; margin-bottom:8px; }
+    .metric-card p { font-size:13px; color:var(--gray-600); line-height:1.6; }
+
+    /* Roadmap */
+    .roadmap { display:flex; flex-direction:column; }
+    .road-item { display:flex; gap:20px; }
+    .road-dot-col { display:flex; flex-direction:column; align-items:center; padding-top:4px; }
+    .road-dot { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+    .road-line { width:2px; flex:1; background:var(--gray-200); margin:8px 0; min-height:32px; }
+    .road-content { padding:4px 0 32px; }
+    .road-tag { font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; margin-bottom:4px; }
+    .road-content h3 { font-size:17px; font-weight:800; margin-bottom:6px; }
+    .road-content p { font-size:13px; color:var(--gray-600); line-height:1.7; }
+
+    footer { background:var(--gray-900); color:var(--gray-400); padding:28px 0; font-size:13px; text-align:center; }
+    footer strong { color:#fff; }
+
+    @media (max-width:768px) {
+      .problem-grid, .persona-grid, .metrics-grid, .principles-grid { grid-template-columns:1fr; }
+      .shoe-layout, .vacuum-layout { grid-template-columns:1fr; }
+      .flow-steps, .flow-bullets { grid-template-columns:repeat(3,1fr); }
+      .hero h1 { font-size:32px; }
+      .section-title { font-size:24px; }
+      .hero { padding:48px 24px; }
+      .page { padding:0 16px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="page">
+    <div class="hero-tag">✦ UX 케이스 스터디 · AI 러닝화 선택 크롬 익스텐션</div>
+    <h1>지금 보고 있는 러닝화,<br /><span>나에게 맞을까?</span></h1>
+    <p>러닝화 쇼핑 중 나의 조건과 상품 정보를 실시간으로 구조화해, 후보를 좁히고 최종 구매 결정을 도와주는 AI Decision Workspace.</p>
+    <div class="hero-meta">
+      <div class="hero-pill">🔍 문제: 러닝화 정보 과부하</div>
+      <div class="hero-pill">💡 해결: AI Decision Workspace</div>
+      <div class="hero-pill">🎯 타겟: 신중하게 고르는 러너</div>
+      <div class="hero-pill">🧩 형태: Chrome 확장 프로그램</div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ══ 01. 문제 정의 ══ -->
+<div class="section">
+  <div class="section-tag">01 · 문제 정의</div>
+  <h2 class="section-title">러닝화 쇼핑이 왜 어려운가</h2>
+  <p class="section-sub">가격, 쿠션감, 발볼, 드롭, 안정성, 사용 목적… 고려할 요소가 너무 많다. 기존 AI와 쇼핑 경험에는 3가지 구조적 문제가 있다.</p>
+
+  <div class="problem-grid">
+    <div class="text-block">
+      <div class="text-block-header">
+        <div class="chat-bubble-icon">💬</div>
+        <h3>기존 AI 채팅 답변 예시</h3>
+      </div>
+      <div class="ai-text">
+        <p>마라톤 훈련과 주 40km 러닝 패턴을 고려하면 Hoka Clifton 10, New Balance 1080 v14, Brooks Ghost Max 세 가지가 적합합니다. Clifton 10은 MaxCush 폼으로 장거리에 이상적이며 5mm 드롭으로… 1080은 Fresh Foam X로 안정성이 높고 4E 발볼 옵션이 있어… Ghost Max는 균형형으로…</p>
+        <ul>
+          <li>Clifton 10: 쿠션 우수 / 장거리</li>
+          <li>1080 v14: 안정성 / 발볼 넓음</li>
+          <li>Ghost Max: 균형형 / 데일리</li>
+        </ul>
+        <p style="margin-top:12px; color:#9ca3af; font-size:12px; font-style:italic;">↑ 대화가 10개쯤 되면 이 내용은 스크롤 위로 사라진다...</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="problem-header">
+        <div class="warn-icon">⚠️</div>
+        <h3>기존 쇼핑 경험의 3가지 문제</h3>
+      </div>
+      <div class="problems-block">
+        <div class="problem-item">
+          <div class="problem-icon">🌊</div>
+          <div>
+            <h4>1. 정보가 위로 밀려 사라진다</h4>
+            <p>대화가 길어질수록 내 조건, 후보 목록, 비교 결과가 스크롤 위로 밀려난다. "다시 정리해줘"를 반복 요청해야 한다.</p>
+          </div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon">🤖</div>
+          <div>
+            <h4>2. 범용 AI는 쇼핑에 특화되지 않았다</h4>
+            <p>불필요한 설명과 반복 대화가 늘어난다. 발볼·드롭·쿠션 등 구매 결정에 필요한 정보만 빠르게 구조화하지 못한다.</p>
+          </div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon">🗂️</div>
+          <div>
+            <h4>3. AI와 쇼핑 페이지가 분리돼 있다</h4>
+            <p>실제 구매는 Running Room, Hoka, NB 사이트에서 하는데 AI는 다른 탭에 있다. 상품 정보를 직접 복사·붙여넣어야 한다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="solution-bar">
+    <div class="sol-label">💡 그래서 필요한 것</div>
+    <div class="sol-items">
+      <div class="sol-chip">📌 쇼핑 상태를 계속 구조화</div>
+      <div class="sol-chip">🛒 쇼핑 페이지 위에서 바로 작동</div>
+      <div class="sol-chip">🎯 러닝화 전용 — 발볼·드롭·쿠션 중심</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 02. AI Decision Workspace 작동 방식 ══ -->
+<div class="section">
+  <div class="section-tag">02 · 핵심 아키텍처</div>
+  <h2 class="section-title">AI Decision Workspace 작동 방식</h2>
+  <p class="section-sub">사용자 질문과 현재 페이지 정보를 읽어 고정된 결정 패널을 실시간으로 업데이트하는 6단계 파이프라인</p>
+
+  <div class="flow-wrapper">
+    <div class="flow-title">
+      <h2>AI Decision Workspace 파이프라인</h2>
+      <p>대화는 흘러도 결정 패널의 정보는 쇼핑이 끝날 때까지 고정된다</p>
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-box blue">
+          <div class="step-num">1단계</div>
+          <div class="step-icon">🙋</div>
+          <div class="step-name blue">사용자<br />질문 입력</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-box">
+          <div class="step-num">2단계</div>
+          <div class="step-icon">🛒</div>
+          <div class="step-name">현재 페이지<br />정보 읽기</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-box teal">
+          <div class="step-num">3단계</div>
+          <div class="step-icon">📊</div>
+          <div class="step-name teal">구조화 /<br />정리</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-box green">
+          <div class="step-num">4단계</div>
+          <div class="step-icon">🔎</div>
+          <div class="step-name green">의도<br />분석</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-box purple" style="position:relative;">
+          <div class="step-star">★</div>
+          <div class="step-num">5단계</div>
+          <div class="step-icon">📋</div>
+          <div class="step-name purple">결정 패널<br />업데이트</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-box blue">
+          <div class="step-num">6단계</div>
+          <div class="step-icon">✅</div>
+          <div class="step-name blue">구매 판단<br />지원</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-bullets">
+      <div class="flow-bullet-col">
+        <ul>
+          <li>"이 신발 나한테 맞아?"</li>
+          <li>"Clifton이랑 비교해줘"</li>
+        </ul>
+      </div>
+      <div class="flow-bullet-col">
+        <ul>
+          <li>제품명·가격</li>
+          <li>스펙·리뷰</li>
+          <li>사이즈 옵션</li>
+        </ul>
+      </div>
+      <div class="flow-bullet-col">
+        <ul>
+          <li>핵심 정보 추출</li>
+          <li>러너 프로필 매칭</li>
+          <li>스키마화</li>
+        </ul>
+      </div>
+      <div class="flow-bullet-col">
+        <ul>
+          <li>분석인가?</li>
+          <li>비교인가?</li>
+          <li>탈락 판단인가?</li>
+        </ul>
+      </div>
+      <div class="flow-bullet-col">
+        <ul>
+          <li>후보 추가/제거</li>
+          <li>적합도 업데이트</li>
+          <li>리스크 태그</li>
+        </ul>
+      </div>
+      <div class="flow-bullet-col">
+        <ul>
+          <li>후보 비교</li>
+          <li>최종 리포트</li>
+          <li>구매 체크리스트</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flow-values">
+      <div class="flow-value-card">
+        <div class="value-icon" style="background:#f5f3ff;">📌</div>
+        <p>1. 고정 패널 — 정보가 사라지지 않는다</p>
+      </div>
+      <div class="flow-value-card">
+        <div class="value-icon" style="background:#f0fdfa;">🎯</div>
+        <p>2. 러닝화 특화 — 발볼·드롭·쿠션 중심 분석</p>
+      </div>
+      <div class="flow-value-card">
+        <div class="value-icon" style="background:#fff7ed;">🛒</div>
+        <p>3. 쇼핑 페이지 위에서 — 탭 전환 없이 바로</p>
+      </div>
+    </div>
+
+    <div class="flow-key-idea">
+      <div class="bulb">💡</div>
+      <p><strong>핵심 아이디어:</strong> 대화 영역은 계속 새로운 질문을 받지만, 결정 패널의 내 조건 · 후보 · 탈락 이유 · 리스크는 쇼핑이 끝날 때까지 고정된다. 기존 AI 채팅처럼 정보가 흩어지지 않는다.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 03. 질문 유형별 응답 ══ -->
+<div class="section">
+  <div class="section-tag">03 · 응답 방식</div>
+  <h2 class="section-title">러닝화 쇼핑 — 질문 유형별 응답</h2>
+  <p class="section-sub">사용자의 질문 의도를 분석해 가장 적합한 응답 방식을 자동으로 선택합니다.</p>
+
+  <table class="routing-table">
+    <thead>
+      <tr>
+        <th>사용자 질문 유형</th>
+        <th>응답 방식</th>
+        <th>예시 질문</th>
+        <th>핵심 액션</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="intent-badge">🔍 현재 상품 분석</span></td>
+        <td>구조화 분석 카드</td>
+        <td>"이 신발 나한테 맞아?"</td>
+        <td>적합도 · 리스크 · 비교 기준</td>
+      </tr>
+      <tr>
+        <td><span class="intent-badge">🔀 후보 비교</span></td>
+        <td>비교 테이블</td>
+        <td>"이 3개 비교해줘"</td>
+        <td>정렬 · 필터 · 하이라이트</td>
+      </tr>
+      <tr>
+        <td><span class="intent-badge">🚫 탈락 판단</span></td>
+        <td>결정 패널 업데이트</td>
+        <td>"발볼 좁은 모델 빼줘"</td>
+        <td>이유 태그 + 제외 목록</td>
+      </tr>
+      <tr>
+        <td><span class="intent-badge">✅ 최종 결정</span></td>
+        <td>구매 리포트 생성</td>
+        <td>"최종 정리해줘"</td>
+        <td>추천 1–3위 + 체크리스트</td>
+      </tr>
+      <tr>
+        <td><span class="intent-badge">📊 추적</span></td>
+        <td>상태 대시보드</td>
+        <td>"가격 변동 알려줘"</td>
+        <td>알림 설정 · 히스토리</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ 04. 사용자 페르소나 ══ -->
+<div class="section">
+  <div class="section-tag">04 · 사용자 페르소나</div>
+  <h2 class="section-title">누구를 위한 도구인가</h2>
+  <p class="section-sub">"아무 신발이나 사는 사람"이 아니라, 다음 러닝화를 신중하게 고르고 싶은 러너를 위한 도구다.</p>
+
+  <div class="persona-grid">
+    <!-- Persona 1 -->
+    <div class="persona-card">
+      <div class="persona-header" style="background:#eff6ff;">
+        <div class="persona-avatar" style="background:#dbeafe;">🛒</div>
+        <div>
+          <div class="persona-role" style="color:var(--blue);">Primary User · 핵심 사용자</div>
+          <h3>"정보 과부하" 러너</h3>
+          <p class="quote">"Reddit, 유튜브 다 봤는데 오히려 더 헷갈려요."</p>
+        </div>
+      </div>
+      <div class="persona-body">
+        <div class="persona-row" style="background:#f0f9ff; border:1px solid #bae6fd;">
+          <h4 style="color:#0369a1;">목표</h4>
+          <ul>
+            <li>마라톤 훈련에 맞는 신발을 신중하게 고르고 싶다</li>
+            <li>여러 후보를 명확한 기준으로 비교하고 싶다</li>
+            <li>"나에게 맞는지" 즉시 판단받고 싶다</li>
+          </ul>
+        </div>
+        <div class="persona-row" style="background:#fef2f2; border:1px solid #fecaca;">
+          <h4 style="color:#dc2626;">페인 포인트</h4>
+          <ul>
+            <li>리뷰가 너무 많아 오히려 결정이 더 어렵다</li>
+            <li>AI 채팅 정보가 스크롤 위로 밀려 사라진다</li>
+            <li>쇼핑 페이지와 AI 탭을 번갈아 오가야 한다</li>
+          </ul>
+        </div>
+        <div class="persona-row" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+          <h4 style="color:var(--green);">필요한 것</h4>
+          <ul>
+            <li>조건·후보·탈락 이유가 고정된 패널에 남는 것</li>
+            <li>지금 보고 있는 신발의 적합도 즉시 판단</li>
+            <li>최종 구매 결정 리포트</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Persona 2 -->
+    <div class="persona-card">
+      <div class="persona-header" style="background:#f0fdf4;">
+        <div class="persona-avatar" style="background:#bbf7d0;">🏃</div>
+        <div>
+          <div class="persona-role" style="color:var(--green);">Secondary User · 첫 마라톤 준비자</div>
+          <h3>"첫 마라톤" 준비 러너</h3>
+          <p class="quote">"레이스화 vs 훈련화 차이도 모르겠고, 발볼도 애매해요."</p>
+        </div>
+      </div>
+      <div class="persona-body">
+        <div class="persona-row" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+          <h4 style="color:var(--green);">목표</h4>
+          <ul>
+            <li>첫 풀/하프 마라톤 훈련화를 제대로 고르고 싶다</li>
+            <li>발볼·쿠션·드롭 개념을 나에게 맞게 이해하고 싶다</li>
+            <li>기존에 신발 때문에 다쳤던 경험을 반복하지 않고 싶다</li>
+          </ul>
+        </div>
+        <div class="persona-row" style="background:#fef2f2; border:1px solid #fecaca;">
+          <h4 style="color:#dc2626;">페인 포인트</h4>
+          <ul>
+            <li>러닝화 용어(드롭, 스택 하이트)가 낯설어 비교가 어렵다</li>
+            <li>발볼 때문에 선택 실패한 경험이 있다</li>
+            <li>정보는 많지만 "내 케이스"에 맞는 답을 못 찾겠다</li>
+          </ul>
+        </div>
+        <div class="persona-row" style="background:#f5f3ff; border:1px solid #ddd6fe;">
+          <h4 style="color:var(--purple);">필요한 것</h4>
+          <ul>
+            <li>러너 프로필 기반 맞춤 분석 — 내 발볼·목적 반영</li>
+            <li>비교 기준을 명확하게 설명해주는 구조화된 UI</li>
+            <li>구매 전 확인 체크리스트 (사이즈·반품 정책 포함)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 05. 러닝화 Decision Workspace 화면 ══ -->
+<div class="section">
+  <div class="section-tag">05 · 시각화 예시 01</div>
+  <h2 class="section-title">AI Decision Workspace — 현재 페이지 분석</h2>
+  <p class="section-sub">사용자가 보고 있는 러닝화 페이지를 익스텐션이 직접 읽고, 러너 프로필과 비교한 구조화된 결과를 보여줍니다.</p>
+
+  <div class="example-wrapper">
+    <div class="example-header">
+      <div>
+        <h3>📋 AI Decision Workspace — 후보 패널 + 현재 페이지 분석</h3>
+        <p>마라톤 준비 · 발볼 2E · 쿠션 선호 · 주 40km · 예산 $200</p>
+      </div>
+      <div class="example-badge">🤖 AI 분석 완료</div>
+    </div>
+
+    <div class="shoe-layout">
+      <!-- Runner profile panel -->
+      <div class="profile-panel">
+        <div class="profile-avatar">🏃</div>
+        <div class="profile-name">내 러너 프로필</div>
+        <div class="profile-sub">마라톤 준비 · 중급</div>
+        <div class="profile-tags">
+          <div class="profile-tag"><span class="tag-icon">🏁</span> 목표: 마라톤</div>
+          <div class="profile-tag"><span class="tag-icon">🦶</span> 발볼: 2E</div>
+          <div class="profile-tag"><span class="tag-icon">☁️</span> 쿠션 선호</div>
+          <div class="profile-tag"><span class="tag-icon">💰</span> 예산: $200</div>
+          <div class="profile-tag"><span class="tag-icon">📍</span> 주 40km</div>
+        </div>
+      </div>
+
+      <!-- Products panel -->
+      <div class="products-panel">
+        <div class="products-top">📋 후보 러닝화 TOP 3</div>
+        <div class="products-grid">
+          <!-- NB 1080 v14 -->
+          <div class="product-card recommended">
+            <div class="rec-badge">1순위</div>
+            <div class="product-img">👟</div>
+            <div class="product-name">NB 1080 v14 4E</div>
+            <div class="product-price">$175</div>
+            <div class="bar-row"><span class="bar-label">쿠션</span><div class="bar-track"><div class="bar-fill blue" style="width:90%"></div></div><span class="bar-score">4.5/5</span></div>
+            <div class="bar-row"><span class="bar-label">안정성</span><div class="bar-track"><div class="bar-fill blue" style="width:92%"></div></div><span class="bar-score">4.6/5</span></div>
+            <div class="bar-row"><span class="bar-label">발볼</span><div class="bar-track"><div class="bar-fill blue" style="width:96%"></div></div><span class="bar-score">4.8/5</span></div>
+            <div class="bar-row"><span class="bar-label">무게</span><div class="bar-track"><div class="bar-fill blue" style="width:82%"></div></div><span class="bar-score">4.1/5</span></div>
+          </div>
+          <!-- Clifton 10 -->
+          <div class="product-card">
+            <div class="rec-badge" style="background:var(--teal);">2순위</div>
+            <div class="product-img">👟</div>
+            <div class="product-name">Clifton 10 2E</div>
+            <div class="product-price">$155</div>
+            <div class="bar-row"><span class="bar-label">쿠션</span><div class="bar-track"><div class="bar-fill teal" style="width:96%"></div></div><span class="bar-score">4.8/5</span></div>
+            <div class="bar-row"><span class="bar-label">안정성</span><div class="bar-track"><div class="bar-fill teal" style="width:80%"></div></div><span class="bar-score">4.0/5</span></div>
+            <div class="bar-row"><span class="bar-label">발볼</span><div class="bar-track"><div class="bar-fill teal" style="width:78%"></div></div><span class="bar-score">3.9/5</span></div>
+            <div class="bar-row"><span class="bar-label">무게</span><div class="bar-track"><div class="bar-fill teal" style="width:86%"></div></div><span class="bar-score">4.3/5</span></div>
+          </div>
+          <!-- Ghost Max -->
+          <div class="product-card">
+            <div class="product-img">👟</div>
+            <div class="product-name">Ghost Max 2</div>
+            <div class="product-price">$140</div>
+            <div class="bar-row"><span class="bar-label">쿠션</span><div class="bar-track"><div class="bar-fill teal" style="width:82%"></div></div><span class="bar-score">4.1/5</span></div>
+            <div class="bar-row"><span class="bar-label">안정성</span><div class="bar-track"><div class="bar-fill teal" style="width:84%"></div></div><span class="bar-score">4.2/5</span></div>
+            <div class="bar-row"><span class="bar-label">발볼</span><div class="bar-track"><div class="bar-fill teal" style="width:72%"></div></div><span class="bar-score">3.6/5</span></div>
+            <div class="bar-row"><span class="bar-label">무게</span><div class="bar-track"><div class="bar-fill teal" style="width:88%"></div></div><span class="bar-score">4.4/5</span></div>
+          </div>
+        </div>
+
+        <div class="comp-table-wrap">
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>항목</th>
+                <th class="highlight">NB 1080 v14 4E</th>
+                <th>Clifton 10 2E</th>
+                <th>Ghost Max 2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>무게</td><td class="highlight">279g</td><td>268g</td><td>270g</td></tr>
+              <tr><td>드롭</td><td class="highlight">6mm</td><td>5mm</td><td>8mm</td></tr>
+              <tr><td>발볼</td><td class="highlight">4E (최대)</td><td>2E</td><td>D/2E</td></tr>
+              <tr><td>용도</td><td class="highlight">장거리 / 데일리</td><td>장거리</td><td>데일리 / 회복</td></tr>
+              <tr><td>가격</td><td class="highlight">$175</td><td>$155</td><td>$140</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Reasons panel -->
+      <div class="reasons-panel">
+        <div class="reasons-title">✅ 추천 이유</div>
+        <div class="reason-item"><div class="check">✅</div><p>4E 발볼 완벽 매칭</p></div>
+        <div class="reason-item"><div class="check">✅</div><p>장거리 안정성 최고</p></div>
+        <div class="reason-item"><div class="check">✅</div><p>예산 $200 범위 내</p></div>
+        <div style="margin-top:16px;">
+          <div class="reasons-title">⛔ 제외됨</div>
+          <div class="reason-item"><div class="check-red">✕</div><p style="font-size:12px;">Vaporfly — 레이스화</p></div>
+          <div class="reason-item"><div class="check-red">✕</div><p style="font-size:12px;">Kinvara — 발볼 좁음</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="why-bar">
+      <div class="why-label">💡 왜 이 UI가 맞나?</div>
+      <div class="why-items">
+        <div class="why-item"><div class="why-num">1</div><div><strong>고정 패널</strong><span>조건·후보·탈락이유가 대화가 길어져도 사라지지 않음</span></div></div>
+        <div class="why-item"><div class="why-num">2</div><div><strong>러닝 특화 정보</strong><span>발볼·드롭·쿠션·용도 등 러너에게 중요한 기준으로 구조화</span></div></div>
+        <div class="why-item"><div class="why-num">3</div><div><strong>쇼핑 페이지에서 바로</strong><span>현재 보고 있는 상품 정보를 익스텐션이 직접 읽어 분석</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 06. 후보 비교 패널 ══ -->
+<div class="section">
+  <div class="section-tag">06 · 시각화 예시 02</div>
+  <h2 class="section-title">후보 비교 패널 — 여러 페이지를 돌며 쌓인 후보</h2>
+  <p class="section-sub">여러 쇼핑 사이트를 둘러보는 동안 익스텐션이 후보 리스트를 자동으로 쌓고, 탈락 이유도 함께 기록합니다.</p>
+
+  <div class="example-wrapper">
+    <div class="example-header" style="background:#f0fdf4;">
+      <div>
+        <h3>📋 후보 비교 패널 — 쇼핑 세션 전체 기록</h3>
+        <p>Running Room, Hoka, NB 페이지 방문 · 후보 3개 확정 · 제외 2개</p>
+      </div>
+      <div class="example-badge" style="background:var(--green);">🤖 세션 업데이트 중</div>
+    </div>
+
+    <div class="vacuum-layout">
+      <!-- Eliminated panel -->
+      <div class="vacuum-profile-panel" style="background:#fef2f2;">
+        <div class="vacuum-icon-header">
+          <span>⛔</span>
+          <p>제외된 제품</p>
+        </div>
+        <div class="vacuum-tag" style="border-color:#fecaca; background:#fef2f2;"><span>👟</span> Nike Vaporfly 3</div>
+        <div style="font-size:11px; color:#dc2626; margin-bottom:8px; padding-left:4px;">레이스화 — 훈련 부적합</div>
+        <div class="vacuum-tag" style="border-color:#fecaca; background:#fef2f2;"><span>👟</span> Saucony Kinvara 14</div>
+        <div style="font-size:11px; color:#dc2626; margin-bottom:8px; padding-left:4px;">2E 옵션 없음</div>
+        <div class="vacuum-tag" style="border-color:#fecaca; background:#fef2f2;"><span>👟</span> Asics Nimbus 26</div>
+        <div style="font-size:11px; color:#dc2626; margin-bottom:8px; padding-left:4px;">예산 초과 ($220)</div>
+      </div>
+
+      <!-- Products panel -->
+      <div class="products-panel">
+        <div class="products-top" style="color:var(--green);">✅ 현재 후보 TOP 3</div>
+        <div class="products-grid">
+          <div class="product-card" style="border-color:var(--green); border-width:2px;">
+            <div class="rec-badge" style="background:var(--green);">1순위</div>
+            <div class="product-img">👟</div>
+            <div class="product-name">NB 1080 v14 4E</div>
+            <div class="product-price green">$175</div>
+            <div class="bar-row"><span class="bar-label">쿠션</span><div class="bar-track"><div class="bar-fill green" style="width:90%"></div></div><span class="bar-score">⬛⬛⬛⬛</span></div>
+            <div class="bar-row"><span class="bar-label">발볼</span><div class="bar-track"><div class="bar-fill green" style="width:96%"></div></div><span class="bar-score">⬛⬛⬛⬛</span></div>
+            <div class="bar-row"><span class="bar-label">안정성</span><div class="bar-track"><div class="bar-fill green" style="width:92%"></div></div><span class="bar-score">⬛⬛⬛⬛</span></div>
+            <div class="bar-row"><span class="bar-label">무게</span><div class="bar-track"><div class="bar-fill green" style="width:80%"></div></div><span class="bar-score">⬛⬛⬛⬛</span></div>
+          </div>
+          <div class="product-card">
+            <div class="product-img">👟</div>
+            <div class="product-name">Clifton 10 2E</div>
+            <div class="product-price" style="color:var(--teal);">$155</div>
+            <div class="bar-row"><span class="bar-label">쿠션</span><div class="bar-track"><div class="bar-fill teal" style="width:96%"></div></div><span class="bar-score">⬛⬛⬛⬛</span></div>
+            <div class="bar-row"><span class="bar-label">발볼</span><div class="bar-track"><div class="bar-fill teal" style="width:76%"></div></div><span class="bar-score">⬛⬛⬛</span></div>
+            <div class="bar-row"><span class="bar-label">안정성</span><div class="bar-track"><div class="bar-fill teal" style="width:80%"></div></div><span class="bar-score">⬛⬛⬛⬛</span></div>
+            <div class="bar-row"><span class="bar-label">무게</span><div class="bar-track"><div class="bar-fill teal" style="width:86%"></div></div><span class="bar-score">⬛⬛⬛⬛</span></div>
+          </div>
+          <div class="product-card">
+            <div class="product-img">👟</div>
+            <div class="product-name">Ghost Max 2</div>
+            <div class="product-price" style="color:var(--blue);">$140</div>
+            <div class="bar-row"><span class="bar-label">쿠션</span><div class="bar-track"><div class="bar-fill blue" style="width:82%"></div></div><span class="bar-score">⬛⬛⬛⬛</span></div>
+            <div class="bar-row"><span class="bar-label">발볼</span><div class="bar-track"><div class="bar-fill blue" style="width:70%"></div></div><span class="bar-score">⬛⬛⬛</span></div>
+            <div class="bar-row"><span class="bar-label">안정성</span><div class="bar-track"><div class="bar-fill blue" style="width:84%"></div></div><span class="bar-score">⬛⬛⬛⬛</span></div>
+            <div class="bar-row"><span class="bar-label">무게</span><div class="bar-track"><div class="bar-fill blue" style="width:88%"></div></div><span class="bar-score">⬛⬛⬛⬛</span></div>
+          </div>
+        </div>
+
+        <div class="comp-table-wrap">
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>항목</th>
+                <th class="highlight-green">NB 1080 4E</th>
+                <th>Clifton 10 2E</th>
+                <th>Ghost Max 2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>발볼</td><td class="highlight-green">4E (최대)</td><td>2E</td><td>D/2E</td></tr>
+              <tr><td>드롭</td><td class="highlight-green">6mm</td><td>5mm</td><td>8mm</td></tr>
+              <tr><td>스택</td><td class="highlight-green">36mm</td><td>34mm</td><td>33mm</td></tr>
+              <tr><td>용도</td><td class="highlight-green">장거리/데일리</td><td>장거리</td><td>데일리/회복</td></tr>
+              <tr><td>가격</td><td class="highlight-green">$175</td><td>$155</td><td>$140</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Reasons panel -->
+      <div class="vacuum-reasons-panel" style="background:#f0fdf4;">
+        <div class="vacuum-reasons-title" style="color:var(--green);">👍 1순위 이유</div>
+        <div class="vacuum-reason-item"><div class="check">✅</div><p style="font-size:12px; color:var(--gray-700);">4E 발볼 완벽 매칭</p></div>
+        <div class="vacuum-reason-item"><div class="check">✅</div><p style="font-size:12px; color:var(--gray-700);">장거리 안정성 최상</p></div>
+        <div class="vacuum-reason-item"><div class="check">✅</div><p style="font-size:12px; color:var(--gray-700);">예산 범위 내</p></div>
+      </div>
+    </div>
+
+    <div class="why-bar-green">
+      <div class="why-label-green">💡 왜 이 UI가 맞나?</div>
+      <div class="why-items">
+        <div class="why-item"><div class="why-num" style="background:var(--green);">1</div><div><strong>쇼핑 세션 전체 기록</strong><span style="color:var(--gray-600);">여러 사이트를 돌아다니며 쌓인 후보와 탈락 이유가 모두 보임</span></div></div>
+        <div class="why-item"><div class="why-num" style="background:var(--green);">2</div><div><strong>탈락 이유 명확히 기록</strong><span style="color:var(--gray-600);">왜 제외됐는지 이유 태그로 기억 — 같은 실수 반복 없음</span></div></div>
+        <div class="why-item"><div class="why-num" style="background:var(--green);">3</div><div><strong>최종 구매 결정 지원</strong><span style="color:var(--gray-600);">"최종 정리해줘" 한 마디로 구매 결정 리포트 생성</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 07. 디자인 원칙 ══ -->
+<div class="section">
+  <div class="section-tag">07 · 디자인 원칙</div>
+  <h2 class="section-title">4가지 설계 원칙</h2>
+  <p class="section-sub">AI 러닝화 Decision Workspace의 UX 품질을 결정하는 핵심 원칙입니다.</p>
+
+  <div class="principles-grid">
+    <div class="principle-card">
+      <div class="principle-icon" style="background:#eff6ff;">👁️</div>
+      <div>
+        <h4>스캔 가능성 우선 (Scannability First)</h4>
+        <p>고대비 타이포그래피와 명확한 계층 구조로 3초 안에 핵심 정보(적합도·리스크·순위) 파악 가능하도록 설계</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-icon" style="background:#f0fdf4;">📌</div>
+      <div>
+        <h4>고정 패널 실시간 업데이트</h4>
+        <p>대화 영역은 스크롤되어도 결정 패널(조건·후보·탈락 이유)은 항상 최신 상태를 유지. 사용자는 처음부터 다시 설명할 필요 없음</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-icon" style="background:#fef3c7;">⚖️</div>
+      <div>
+        <h4>가능성 중심 표현 (Trust Indicators)</h4>
+        <p>"맞다/안 맞다" 단정 대신 항상 "가능성"과 "확인해야 할 리스크" 중심으로 표현. 핏은 개인차가 크기 때문에 실착 권장과 함께 제공</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-icon" style="background:#f5f3ff;">📱</div>
+      <div>
+        <h4>반응형 레이아웃 (Responsive Layouts)</h4>
+        <p>Chrome 사이드바·전체 페이지 모두에서 작동. 사이드바 모드에서도 핵심 정보(적합도·후보 순위)를 한눈에 파악 가능</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 08. 성공 지표 ══ -->
+<div class="section">
+  <div class="section-tag">08 · 성공 지표</div>
+  <h2 class="section-title">무엇으로 성공을 측정하나</h2>
+  <p class="section-sub">초기 성공 기준은 "추천을 받았다"가 아니라 더 빠르게 구매 결정을 내렸는가다.</p>
+
+  <div class="metrics-grid">
+    <div class="metric-card" style="background:#eff6ff; border-color:#bfdbfe;">
+      <div class="metric-icon">⏱️</div>
+      <h3>Time-to-Decision (TTD)</h3>
+      <p>상품 비교에 걸리는 시간. 기존 AI 채팅 대비 단축 여부. <strong>목표: 40% 단축</strong></p>
+    </div>
+    <div class="metric-card" style="background:#f0fdf4; border-color:#bbf7d0;">
+      <div class="metric-icon">🎯</div>
+      <h3>후보 감소율</h3>
+      <p>사용자가 후보를 몇 개까지 줄였는가. 5개+ 에서 2–3개로 압축 여부. <strong>목표: 세션당 60%+</strong></p>
+    </div>
+    <div class="metric-card" style="background:#fef3c7; border-color:#fde68a;">
+      <div class="metric-icon">📋</div>
+      <h3>최종 리포트 생성률</h3>
+      <p>"최종 정리해줘" 입력 후 구매 결정 리포트를 생성한 비율. <strong>목표: 세션당 60%+</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 09. 전략적 로드맵 ══ -->
+<div class="section">
+  <div class="section-tag">09 · 전략적 로드맵</div>
+  <h2 class="section-title">3단계 확장 계획</h2>
+  <p class="section-sub">러닝화 전용 MVP에서 시작해 범용 쇼핑 Decision Workspace로 확장합니다.</p>
+
+  <div class="roadmap">
+    <div class="road-item">
+      <div class="road-dot-col">
+        <div class="road-dot" style="background:#dbeafe;">👟</div>
+        <div class="road-line"></div>
+      </div>
+      <div class="road-content">
+        <div class="road-tag" style="color:var(--blue);">MVP · 현재</div>
+        <h3>러너 프로필 + 현재 페이지 분석</h3>
+        <p>러닝화 전용 Decision Workspace. Running Room, Hoka, NB 3개 사이트 지원. 러너 프로필 생성 · 상품 분석 · 후보 비교 · 최종 리포트 4가지 MVP 기능 완성.</p>
+      </div>
+    </div>
+    <div class="road-item">
+      <div class="road-dot-col">
+        <div class="road-dot" style="background:#d1fae5;">🏆</div>
+        <div class="road-line"></div>
+      </div>
+      <div class="road-content">
+        <div class="road-tag" style="color:var(--teal);">Beta · 다음 단계</div>
+        <h3>후보 비교 패널 + 최종 구매 리포트 고도화</h3>
+        <p>지원 사이트 확장 (Amazon, Nike, Asics, Brooks, On). 사이즈 추천 · 반품 정책 자동 확인. PDF 내보내기 · 공유 기능 추가.</p>
+      </div>
+    </div>
+    <div class="road-item">
+      <div class="road-dot-col">
+        <div class="road-dot" style="background:#ede9fe;">🌐</div>
+      </div>
+      <div class="road-content">
+        <div class="road-tag" style="color:var(--purple);">Scale · 장기 목표</div>
+        <h3>범용 쇼핑 Decision Workspace</h3>
+        <p>러닝화에서 검증된 "고정 결정 패널 + 구조화 분석" 모델을 다른 고관여 쇼핑 카테고리(자전거 · 아웃도어 장비 · 노트북)로 확장.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 10. MVP 화면 & Flow 설계 ══ -->
+<div class="section">
+  <div class="section-tag">10 · MVP 화면 &amp; Flow 설계</div>
+  <h2 class="section-title">핵심 플로우 — 실제 서비스 시각화</h2>
+  <p class="section-sub">사용자가 러닝화 쇼핑 페이지에서 익스텐션을 열고 AI 결정 패널을 받아 구매하기까지의 5단계 흐름입니다.</p>
+
+  <!-- Flow Map -->
+  <div style="background:var(--gray-50); border:1px solid var(--gray-200); border-radius:20px; padding:28px 24px 20px; margin-bottom:40px;">
+    <p style="font-size:13px; font-weight:800; color:var(--gray-700); margin-bottom:16px; text-align:center;">사용자 여정 플로우</p>
+    <div style="display:flex; align-items:center; gap:0; overflow-x:auto; padding-bottom:8px;">
+      <div style="display:flex; flex-direction:column; align-items:center; min-width:140px;">
+        <div style="width:48px; height:48px; background:var(--blue); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:8px;">🛒</div>
+        <div style="font-size:11px; font-weight:800; color:var(--gray-800); text-align:center;">쇼핑 페이지 진입</div>
+        <div style="font-size:10px; color:var(--gray-500); text-align:center; margin-top:3px;">Running Room</div>
+      </div>
+      <div style="flex:1; height:2px; background:var(--gray-200); min-width:20px;"></div>
+      <div style="display:flex; flex-direction:column; align-items:center; min-width:140px;">
+        <div style="width:48px; height:48px; background:var(--teal); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:8px;">🏃</div>
+        <div style="font-size:11px; font-weight:800; color:var(--gray-800); text-align:center;">러너 프로필 설정</div>
+        <div style="font-size:10px; color:var(--gray-500); text-align:center; margin-top:3px;">발볼·목적·예산</div>
+      </div>
+      <div style="flex:1; height:2px; background:var(--gray-200); min-width:20px;"></div>
+      <div style="display:flex; flex-direction:column; align-items:center; min-width:140px;">
+        <div style="width:48px; height:48px; background:var(--orange); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:8px;">🔍</div>
+        <div style="font-size:11px; font-weight:800; color:var(--gray-800); text-align:center;">AI 상품 분석</div>
+        <div style="font-size:10px; color:var(--gray-500); text-align:center; margin-top:3px;">페이지 자동 읽기</div>
+      </div>
+      <div style="flex:1; height:2px; background:var(--gray-200); min-width:20px;"></div>
+      <div style="display:flex; flex-direction:column; align-items:center; min-width:140px; position:relative;">
+        <div style="position:absolute; top:-14px; font-size:10px; background:var(--blue); color:#fff; border-radius:999px; padding:2px 8px; font-weight:700;">★ 핵심</div>
+        <div style="width:48px; height:48px; background:var(--purple); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:8px;">📋</div>
+        <div style="font-size:11px; font-weight:800; color:var(--gray-800); text-align:center;">결정 패널 업데이트</div>
+        <div style="font-size:10px; color:var(--gray-500); text-align:center; margin-top:3px;">후보·탈락 자동 정리</div>
+      </div>
+      <div style="flex:1; height:2px; background:var(--gray-200); min-width:20px;"></div>
+      <div style="display:flex; flex-direction:column; align-items:center; min-width:140px;">
+        <div style="width:48px; height:48px; background:var(--green); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:8px;">✅</div>
+        <div style="font-size:11px; font-weight:800; color:var(--gray-800); text-align:center;">최종 구매 리포트</div>
+        <div style="font-size:10px; color:var(--gray-500); text-align:center; margin-top:3px;">추천 1-3위 + 체크리스트</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screens grid -->
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;">
+
+    <!-- SCREEN 1 -->
+    <div style="border:1px solid var(--gray-200); border-radius:20px; overflow:hidden;">
+      <div style="background:#1d4ed8; padding:12px 18px; display:flex; align-items:center; gap:8px;">
+        <div style="display:flex; gap:5px;"><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div></div>
+        <div style="flex:1; background:rgba(255,255,255,.15); border-radius:6px; padding:4px 12px; font-size:11px; color:rgba(255,255,255,.8);">runningroom.com/new-balance-1080-v14</div>
+      </div>
+      <div style="background:#fff; padding:20px; min-height:220px; position:relative;">
+        <div style="font-size:11px; font-weight:900; color:#111; margin-bottom:10px;">Running Room</div>
+        <div style="background:#f3f4f6; border-radius:8px; height:70px; margin-bottom:10px; display:flex; align-items:center; justify-content:center; font-size:28px;">👟</div>
+        <div style="height:10px; background:#f3f4f6; border-radius:4px; margin-bottom:6px; width:70%;"></div>
+        <div style="height:10px; background:#f3f4f6; border-radius:4px; width:50%; margin-bottom:12px;"></div>
+        <div style="font-size:16px; font-weight:900; color:#111; margin-bottom:6px;">NB 1080 v14 4E</div>
+        <div style="font-size:14px; font-weight:700; color:#1d4ed8; margin-bottom:10px;">$175.00</div>
+        <div style="display:flex; gap:6px; margin-bottom:10px;">
+          <div style="border:2px solid #000; padding:5px; text-align:center; border-radius:4px; font-size:10px; font-weight:700;">9</div>
+          <div style="border:1px solid #ddd; padding:5px; text-align:center; border-radius:4px; font-size:10px;">9.5</div>
+          <div style="border:1px solid #ddd; padding:5px; text-align:center; border-radius:4px; font-size:10px;">10</div>
+        </div>
+        <div style="background:#000; color:#fff; text-align:center; padding:7px; border-radius:20px; font-size:11px; font-weight:700;">Add to Cart</div>
+        <!-- FAB -->
+        <div style="position:absolute; bottom:16px; right:16px; width:46px; height:46px; background:var(--blue); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 18px rgba(59,130,246,.5);">✨</div>
+        <div style="position:absolute; bottom:68px; right:10px; background:#1f2937; color:#fff; font-size:10px; font-weight:700; padding:4px 10px; border-radius:8px; white-space:nowrap;">AI 어시스턴트 열기</div>
+      </div>
+      <div style="background:#f8faff; border-top:1px solid var(--gray-200); padding:10px 16px; display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-size:11px; font-weight:800; color:var(--blue-dark);">SCREEN 1 — 쇼핑 페이지 진입</div>
+        <div style="background:var(--blue); color:#fff; border-radius:999px; padding:3px 10px; font-size:10px; font-weight:700;">FAB 탭 →</div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2 -->
+    <div style="border:1px solid var(--gray-200); border-radius:20px; overflow:hidden;">
+      <div style="background:#1d4ed8; padding:12px 18px; display:flex; align-items:center; gap:8px;">
+        <div style="display:flex; gap:5px;"><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div></div>
+        <div style="flex:1; background:rgba(255,255,255,.15); border-radius:6px; padding:4px 12px; font-size:11px; color:rgba(255,255,255,.8);">runningroom.com/new-balance-1080-v14</div>
+      </div>
+      <div style="background:#fff; padding:0; min-height:220px; display:flex; gap:0;">
+        <div style="flex:1; padding:16px; opacity:.35;">
+          <div style="font-size:11px; font-weight:900; color:#111; margin-bottom:8px;">Running Room</div>
+          <div style="background:#f3f4f6; border-radius:8px; height:60px; margin-bottom:8px;"></div>
+          <div style="height:10px; background:#f3f4f6; border-radius:4px; margin-bottom:6px; width:80%;"></div>
+        </div>
+        <div style="width:200px; border-left:1px solid var(--gray-200); display:flex; flex-direction:column;">
+          <div style="background:linear-gradient(135deg,var(--blue),var(--blue-dark)); padding:12px 14px; color:#fff; display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:12px; font-weight:800;">✨ AI 어시스턴트</div>
+            <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:10px;">✕</div>
+          </div>
+          <div style="padding:12px; flex:1; display:flex; flex-direction:column; gap:10px;">
+            <div style="background:var(--blue-light); border:1px solid #bfdbfe; border-radius:10px; padding:10px;">
+              <div style="font-size:10px; font-weight:700; color:var(--blue-dark); margin-bottom:6px;">🏃 내 러너 프로필</div>
+              <div style="font-size:9px; color:var(--gray-600); line-height:1.6;">마라톤 훈련 · 주 40km<br />발볼 2E · 쿠션 선호 · $200</div>
+              <div style="margin-top:6px; font-size:9px; color:var(--blue); font-weight:700;">+ 프로필 수정</div>
+            </div>
+            <div style="font-size:10px; font-weight:700; color:var(--gray-600); margin-bottom:2px;">💡 추천 질문</div>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+              <div style="border:1px solid var(--blue); color:var(--blue); border-radius:8px; padding:5px 8px; font-size:9px; font-weight:600; background:var(--blue-light);">이 신발 나한테 맞나요?</div>
+              <div style="border:1px solid #ddd; color:var(--gray-600); border-radius:8px; padding:5px 8px; font-size:9px; font-weight:600;">Clifton 10이랑 비교해줘</div>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--gray-200); padding:10px; display:flex; gap:6px; align-items:center;">
+            <div style="flex:1; background:var(--gray-50); border:1px solid var(--gray-200); border-radius:8px; padding:6px 9px; font-size:10px; color:var(--gray-400);">질문을 입력하세요...</div>
+            <div style="width:28px; height:28px; background:var(--blue); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; flex-shrink:0;">↑</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#f8faff; border-top:1px solid var(--gray-200); padding:10px 16px; display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-size:11px; font-weight:800; color:var(--blue-dark);">SCREEN 2 — 질문 입력</div>
+        <div style="background:var(--blue); color:#fff; border-radius:999px; padding:3px 10px; font-size:10px; font-weight:700;">전송 →</div>
+      </div>
+    </div>
+
+    <!-- SCREEN 3 -->
+    <div style="border:1px solid var(--gray-200); border-radius:20px; overflow:hidden;">
+      <div style="background:#1d4ed8; padding:12px 18px; display:flex; align-items:center; gap:8px;">
+        <div style="display:flex; gap:5px;"><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div></div>
+        <div style="flex:1; background:rgba(255,255,255,.15); border-radius:6px; padding:4px 12px; font-size:11px; color:rgba(255,255,255,.8);">runningroom.com/new-balance-1080-v14</div>
+      </div>
+      <div style="background:#fff; min-height:220px; display:flex;">
+        <div style="flex:1; padding:16px; opacity:.2;">
+          <div style="background:#f3f4f6; border-radius:8px; height:60px;"></div>
+        </div>
+        <div style="width:200px; border-left:1px solid var(--gray-200); display:flex; flex-direction:column;">
+          <div style="background:linear-gradient(135deg,var(--blue),var(--blue-dark)); padding:12px 14px; color:#fff; display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:12px; font-weight:800;">✨ AI 어시스턴트</div>
+            <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:10px;">✕</div>
+          </div>
+          <div style="padding:20px 14px; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;">
+            <div style="width:48px; height:48px; border-radius:50%; border:4px solid #e5e7eb; border-top:4px solid var(--blue);"></div>
+            <div style="text-align:center;">
+              <div style="font-size:12px; font-weight:700; color:var(--blue); margin-bottom:4px;">AI가 분석 중...</div>
+              <div style="font-size:10px; color:var(--gray-400);">상품 스펙 + 리뷰 읽는 중</div>
+            </div>
+            <div style="width:100%; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><div style="width:16px;height:16px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;">✓</div><span style="color:var(--green); font-weight:600;">페이지 스펙 읽기 완료</span></div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><div style="width:16px;height:16px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;">✓</div><span style="color:var(--green); font-weight:600;">리뷰 438개 추출 완료</span></div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><div style="width:16px;height:16px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><div style="width:8px;height:8px;border-radius:50%;border:2px solid #fff;border-top-color:transparent;"></div></div><span style="color:var(--blue); font-weight:700;">러너 프로필 매칭 중...</span></div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px; opacity:.4;"><div style="width:16px;height:16px;border-radius:50%;background:var(--gray-200);flex-shrink:0;"></div><span>결정 패널 업데이트</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#f8faff; border-top:1px solid var(--gray-200); padding:10px 16px; display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-size:11px; font-weight:800; color:#b45309;">SCREEN 3 — AI 분석 중</div>
+        <div style="background:#f59e0b; color:#fff; border-radius:999px; padding:3px 10px; font-size:10px; font-weight:700;">자동 전환 →</div>
+      </div>
+    </div>
+
+    <!-- SCREEN 4 -->
+    <div style="border:2px solid var(--blue); border-radius:20px; overflow:hidden;">
+      <div style="background:#1d4ed8; padding:12px 18px; display:flex; align-items:center; gap:8px;">
+        <div style="display:flex; gap:5px;"><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div></div>
+        <div style="flex:1; background:rgba(255,255,255,.15); border-radius:6px; padding:4px 12px; font-size:11px; color:rgba(255,255,255,.8);">runningroom.com/new-balance-1080-v14</div>
+      </div>
+      <div style="background:#fff; min-height:220px; display:flex;">
+        <div style="flex:1; padding:16px; opacity:.25;">
+          <div style="background:#f3f4f6; border-radius:8px; height:80px;"></div>
+        </div>
+        <div style="width:220px; border-left:1px solid var(--gray-200); display:flex; flex-direction:column;">
+          <div style="background:linear-gradient(135deg,var(--blue),var(--blue-dark)); padding:10px 14px; color:#fff; display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:12px; font-weight:800;">✨ AI 어시스턴트</div>
+            <div style="display:flex; gap:6px;"><div style="font-size:9px; background:rgba(255,255,255,.2); border-radius:4px; padding:2px 7px; font-weight:700;">📋 저장</div><div style="width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:9px;">✕</div></div>
+          </div>
+          <div style="padding:10px 12px; border-bottom:1px solid var(--gray-100);">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="width:52px;height:52px;border-radius:50%;border:4px solid var(--green);background:#f0fdf4;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
+                <span style="font-size:14px;font-weight:900;color:var(--green);">94%</span>
+                <span style="font-size:7px;color:var(--green);font-weight:700;">MATCH</span>
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:700;margin-bottom:2px;">"최적 선택"입니다!</div>
+                <div style="font-size:9px;color:var(--gray-500);">내 프로필 기준 매칭</div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:10px 12px; flex:1; overflow-y:auto;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+              <div style="font-size:9px;font-weight:800;color:var(--green);margin-bottom:5px;">✅ 매칭 이유</div>
+              <div style="font-size:9px;color:var(--gray-700);line-height:1.7;">✅ 4E 발볼 완벽 매칭<br />✅ 장거리 안정성 최고<br />✅ 예산 $175 범위 내<br />✅ 마라톤 훈련 적합</div>
+            </div>
+            <div style="background:#f8f9fa;border:1px solid var(--gray-200);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+              <div style="font-size:9px;font-weight:800;color:var(--gray-600);margin-bottom:5px;">⚠️ 구매 전 확인</div>
+              <div style="display:flex;flex-wrap:wrap;gap:3px;">
+                <span style="background:#fff3cd;border:1px solid #ffc107;border-radius:12px;padding:2px 6px;font-size:8px;font-weight:600;">⚠️ 실착 확인 권장</span>
+                <span style="background:#d4edda;border:1px solid #28a745;border-radius:12px;padding:2px 6px;font-size:8px;font-weight:600;">✓ 반품 30일 무료</span>
+              </div>
+            </div>
+            <div style="background:#eff6ff;border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:8px 10px;">
+              <div style="font-size:9px;font-weight:800;color:var(--blue-dark);margin-bottom:2px;">👟 사이즈 추천</div>
+              <div style="font-size:9px;color:var(--gray-700);">Size 9.5 (평소+0.5 권장)<br />장거리 발 부종 고려</div>
+            </div>
+          </div>
+          <div style="padding:8px 12px; border-top:1px solid var(--gray-200); display:flex; gap:5px;">
+            <div style="flex:1;background:var(--blue);color:#fff;text-align:center;padding:7px;border-radius:8px;font-size:9px;font-weight:700;">구매하기</div>
+            <div style="flex:1;background:var(--gray-100);color:var(--gray-700);text-align:center;padding:7px;border-radius:8px;font-size:9px;font-weight:700;">⚙️ 설정</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#eff6ff; border-top:2px solid var(--blue); padding:10px 16px; display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-size:11px; font-weight:800; color:var(--blue-dark);">SCREEN 4 — 결정 패널 ★ 핵심</div>
+        <div style="display:flex; gap:6px;">
+          <div style="background:var(--blue);color:#fff;border-radius:999px;padding:3px 10px;font-size:10px;font-weight:700;">📋 저장 →</div>
+          <div style="background:var(--green);color:#fff;border-radius:999px;padding:3px 10px;font-size:10px;font-weight:700;">구매 →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 5 (full width) -->
+  <div style="border:1px solid var(--gray-200); border-radius:20px; overflow:hidden; margin-top:4px;">
+    <div style="background:#1d4ed8; padding:12px 18px; display:flex; align-items:center; gap:8px;">
+      <div style="display:flex; gap:5px;"><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);"></div></div>
+      <div style="flex:1; background:rgba(255,255,255,.15); border-radius:6px; padding:4px 12px; font-size:11px; color:rgba(255,255,255,.8);">extension://decision-workspace</div>
+    </div>
+    <div style="background:#f8faff; padding:20px 24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
+        <div>
+          <div style="font-size:16px; font-weight:900; color:var(--gray-900); margin-bottom:2px;">📋 러닝화 쇼핑 세션 — 결정 패널</div>
+          <div style="font-size:12px; color:var(--gray-500);">방문한 페이지 5개 · 후보 3개 · 제외 2개</div>
+        </div>
+        <div style="background:var(--blue); color:#fff; border-radius:10px; padding:8px 16px; font-size:12px; font-weight:700;">📄 최종 리포트 생성</div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px;">
+        <!-- Card 1: 1순위 -->
+        <div style="background:#fff; border:2px solid var(--blue); border-radius:14px; padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+            <div style="font-size:20px;">👟</div>
+            <div style="background:#d1fae5; color:var(--green); border-radius:999px; padding:2px 8px; font-size:9px; font-weight:800;">94% 매칭</div>
+          </div>
+          <div style="font-size:12px; font-weight:800; margin-bottom:2px;">NB 1080 v14 4E</div>
+          <div style="font-size:10px; color:var(--gray-500); margin-bottom:4px;">1순위 후보 · $175</div>
+          <div style="font-size:10px; color:var(--green); font-weight:600; margin-bottom:10px;">✅ 4E 발볼 완벽 매칭</div>
+          <div style="display:flex; gap:5px;">
+            <div style="flex:1;background:var(--blue);color:#fff;text-align:center;padding:5px;border-radius:6px;font-size:9px;font-weight:700;">구매하기</div>
+            <div style="flex:1;background:var(--gray-100);text-align:center;padding:5px;border-radius:6px;font-size:9px;font-weight:700;color:var(--gray-700);">공유</div>
+          </div>
+        </div>
+        <!-- Card 2: 2순위 -->
+        <div style="background:#fff; border:1px solid var(--gray-200); border-radius:14px; padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+            <div style="font-size:20px;">👟</div>
+            <div style="background:#dbeafe; color:var(--blue-dark); border-radius:999px; padding:2px 8px; font-size:9px; font-weight:800;">88% 매칭</div>
+          </div>
+          <div style="font-size:12px; font-weight:800; margin-bottom:2px;">Hoka Clifton 10 2E</div>
+          <div style="font-size:10px; color:var(--gray-500); margin-bottom:4px;">2순위 후보 · $155</div>
+          <div style="font-size:10px; color:#f59e0b; font-weight:600; margin-bottom:10px;">⚠️ 2E 실착 확인 필요</div>
+          <div style="display:flex; gap:5px;">
+            <div style="flex:1;background:var(--gray-100);color:var(--gray-700);text-align:center;padding:5px;border-radius:6px;font-size:9px;font-weight:700;">보기</div>
+            <div style="flex:1;background:var(--gray-100);text-align:center;padding:5px;border-radius:6px;font-size:9px;font-weight:700;color:var(--gray-700);">공유</div>
+          </div>
+        </div>
+        <!-- Card 3: empty/add -->
+        <div style="background:#fff; border:2px dashed var(--gray-300); border-radius:14px; padding:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+          <div style="font-size:28px; opacity:.4;">+</div>
+          <div style="font-size:11px; color:var(--gray-400); text-align:center;">새 러닝화 페이지에서<br />AI 분석을 시작하세요</div>
+        </div>
+      </div>
+    </div>
+    <div style="background:#f0f4ff; border-top:1px solid #bfdbfe; padding:10px 24px; display:flex; align-items:center; justify-content:space-between;">
+      <div style="font-size:11px; font-weight:800; color:var(--blue-dark);">SCREEN 5 — 결정 패널 & 최종 리포트</div>
+      <div style="display:flex; gap:10px; align-items:center; font-size:10px; color:var(--gray-500);">
+        <span>← 뒤로가기</span>
+        <span>·</span>
+        <span>필터 ▾</span>
+        <span>·</span>
+        <span>PDF 내보내기</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interaction annotations -->
+  <div style="margin-top:28px; background:#1f2937; border-radius:16px; padding:24px 28px; color:#fff;">
+    <div style="font-size:13px; font-weight:800; margin-bottom:16px; color:#93c5fd;">🖱️ 버튼 & 사용자 흐름 정의</div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+      <div>
+        <div style="font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:#6b7280; margin-bottom:8px;">트리거 액션</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px;"><span style="background:#3b82f6;border-radius:6px;padding:2px 8px;font-weight:700;font-size:9px;">FAB 탭</span><span style="color:#d1d5db;">→ 사이드바 슬라이드인</span></div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px;"><span style="background:#7c3aed;border-radius:6px;padding:2px 8px;font-weight:700;font-size:9px;white-space:nowrap;">칩 선택</span><span style="color:#d1d5db;">→ 질문 자동 입력</span></div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px;"><span style="background:#1d4ed8;border-radius:6px;padding:2px 8px;font-weight:700;font-size:9px;">↑ 전송</span><span style="color:#d1d5db;">→ 분석 화면 전환</span></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:#6b7280; margin-bottom:8px;">결정 패널 액션</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px;"><span style="background:#16a34a;border-radius:6px;padding:2px 8px;font-weight:700;font-size:9px;">구매하기</span><span style="color:#d1d5db;">→ 구매 페이지 이동</span></div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px;"><span style="background:#374151;border-radius:6px;padding:2px 8px;font-weight:700;font-size:9px;">📋 저장</span><span style="color:#d1d5db;">→ 결정 패널 저장</span></div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px;"><span style="background:#374151;border-radius:6px;padding:2px 8px;font-weight:700;font-size:9px;">⚙️ 설정</span><span style="color:#d1d5db;">→ 프로필 수정 패널</span></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:#6b7280; margin-bottom:8px;">리포트 액션</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px;"><span style="background:#374151;border-radius:6px;padding:2px 8px;font-weight:700;font-size:9px;">최종 리포트</span><span style="color:#d1d5db;">→ 추천 1–3위 생성</span></div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px;"><span style="background:#374151;border-radius:6px;padding:2px 8px;font-weight:700;font-size:9px;">공유</span><span style="color:#d1d5db;">→ 링크 복사 / SNS</span></div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px;"><span style="background:#374151;border-radius:6px;padding:2px 8px;font-weight:700;font-size:9px;">PDF</span><span style="color:#d1d5db;">→ 비교표 내보내기</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /section 10 -->
+
+</div><!-- /page -->
+
+<footer>
+  <div class="page" style="padding-bottom:0;">
+    <p><strong>AI 러닝화 선택 크롬 익스텐션</strong> — UX 케이스 스터디 · 한국어판</p>
+    <p style="margin-top:6px;">프로젝트: shopping-assistant-extension · 업데이트: 2026년 5월</p>
+  </div>
+</footer>
+
+</body>
+</html>
