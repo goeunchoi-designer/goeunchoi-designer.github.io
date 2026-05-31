@@ -32,11 +32,14 @@
     }
 
     /* ── Nav ── */
-    nav {
+    .main-nav {
       position: sticky;
       top: 0;
-      background: var(--white);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
+      border-radius: 0 0 20px 20px;
       z-index: 100;
     }
     .nav-inner {
@@ -198,20 +201,41 @@
     }
     .project-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 36px; }
     .project-tag {
-      font-size: 11px; border: none;
-      border-radius: 999px; padding: 4px 12px; color: var(--black);
-      background: var(--white); font-weight: 500;
+      font-size: 11px;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 999px; padding: 5px 14px; color: rgba(255,255,255,0.75);
+      background: transparent; font-weight: 500;
     }
     .project-tag.highlight {
-      background: var(--white); color: var(--black); font-weight: 700;
+      background: var(--white); color: var(--black); border-color: transparent; font-weight: 600;
     }
     .project-cta {
       display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;
       color: #111; background: white; text-decoration: none; letter-spacing: 0.01em; width: fit-content;
       padding: 11px 22px 11px 20px; border-radius: 999px; border: none;
-      transition: background 0.2s ease, padding-right 0.25s ease;
+      position: relative; overflow: hidden;
+      transition: background 0.25s ease, transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s ease;
     }
-    .project-cta:hover { background: #e0e0e0; padding-right: 28px; opacity: 1; }
+    .project-cta::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -80%;
+      width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+      transform: skewX(-15deg);
+      transition: left 0.55s ease;
+    }
+    .project-cta:hover::before { left: 160%; }
+    .project-cta:hover {
+      background: #ebebeb;
+      transform: scale(1.05) translateY(-1px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    }
+    .cta-arrow {
+      display: inline-block;
+      transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+    }
+    .project-cta:hover .cta-arrow { transform: translateX(5px); }
     .project-cta.muted {
       background: transparent; color: rgba(255,255,255,.3);
       border: 1px solid rgba(255,255,255,.15); pointer-events: none; font-weight: 400;
@@ -361,7 +385,8 @@
       min-width: 200px;
       align-items: flex-end;
     }
-    .footer-nav { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+    .footer-nav { display: flex; flex-direction: 
+    column; gap: 12px; align-items: flex-end;background:transparent }
     .footer-nav a {
       font-size: 13px; color: var(--white);
       background: none; border: none; border-radius: 0;
@@ -455,10 +480,40 @@
     .project-visual {
       transition: transform 0.4s cubic-bezier(.25,.46,.45,.94), box-shadow 0.4s ease;
     }
-    .project-card:hover .project-visual {
-      transform: scale(1.015) translateY(-3px);
-      box-shadow: 0 12px 48px rgba(0,0,0,.1), 0 2px 8px rgba(0,0,0,.06);
+    .project-visual-link {
+      display: block;
+      text-decoration: none;
+      border-radius: var(--radius);
+      overflow: hidden;
     }
+    .project-visual-link:hover .project-visual {
+      transform: scale(1.025) translateY(-4px);
+      box-shadow: 0 20px 64px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.08);
+    }
+    .view-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.42);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .project-visual-link:hover .view-overlay { opacity: 1; }
+    .view-overlay .overlay-arrow {
+      display: inline-block;
+      transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+    }
+    .project-visual-link:hover .view-overlay .overlay-arrow { transform: translateX(5px); }
 
     /* ── Scroll reveal ── */
     .reveal {
@@ -531,8 +586,7 @@
       50%       { transform: translateY(-14px); }
     }
 
-    /* ── Badge ring on dark bg ── */
-    .hero-panel-right .badge-ring text { fill: rgba(255,255,255,1) !important; }
+    /* ── Badge ring ── */
     .hero-panel-right .badge-center { color: var(--white); }
 
     .hero-visual {
@@ -801,13 +855,13 @@
       .container { padding: 0 28px; }
       .hero-outer { height: auto; min-height: 100vh; background: none; }
       .hero { grid-template-columns: 1fr; min-height: calc(100vh - 48px); }
-      .skills-section { height: auto; min-height: 100vh; }
+      .skills-section { height: auto; min-height: unset; display: block; padding: 60px 0; }
       .hero-panel-left { padding: 60px 28px; background: var(--white); }
       .hero-panel-right { padding: 60px 28px; background: var(--black); }
       .hero-title { font-size: 38px; }
       .hero-img-wrap img { max-width: 220px; }
       .skills-layout { grid-template-columns: 1fr; gap: 40px; }
-      .skills-sticky { order: -1; }
+      .skills-sticky { order: -1; position: relative; top: auto; animation: none; }
       .project-card,
       .project-card.flip {
         grid-template-columns: 1fr;
@@ -831,7 +885,7 @@
 <body>
 
   <!-- Nav -->
-  <nav>
+  <nav class="main-nav">
     <div class="nav-inner">
       <a class="nav-logo" href="index.html">Goeun Choi</a>
       <ul class="nav-links">
@@ -848,7 +902,7 @@
     <div class="hero-panel-left reveal">
       <div class="hero-visual">
         <div class="hero-img-wrap">
-          <img src="images/Goni_Designer.png" alt="Goeun Choi — Designer illustration" />
+          <img src="assets/home/Goni_Designer.png" alt="Goeun Choi — Designer illustration" />
           <div class="hi-badge">
             <span class="hi-text">Hi</span>
             <span class="hi-emoji"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 7a1.5 1.5 0 0 0-2.93-.45L17 5.5a1.5 1.5 0 0 0-3 0V5a1.5 1.5 0 0 0-3 0v.5A1.5 1.5 0 0 0 8 7v5.5l-1.47-2.55a1.54 1.54 0 0 0-2.67 1.54l3.4 5.9A6 6 0 0 0 13 21h2a6 6 0 0 0 6-6z"/></svg></span>
@@ -860,15 +914,14 @@
       <div class="badge-wrap reveal">
         <svg class="badge-ring" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path id="badge-path" d="M 44,44 m -34,0 a 34,34 0 1,1 68,0 a 34,34 0 1,1 -68,0" fill="none"/>
-          <text font-size="8.5" font-weight="600" letter-spacing="2.2" fill="#888888" font-family="Inter,sans-serif" text-anchor="middle">
+          <text font-size="8.5" font-weight="600" letter-spacing="2.2" fill="white" font-family="Inter,sans-serif" text-anchor="middle">
             <textPath href="#badge-path" startOffset="0%">UI/UX DESIGNER ✦ LET'S COLLABORATE ✦ </textPath>
           </text>
         </svg>
         <span class="badge-center">→</span>
       </div>
-      <p class="hero-tag reveal reveal-delay-1">UI/UX &amp; Graphic Designer</p>
+      <p class="hero-tag reveal reveal-delay-1">UI/UX &amp; Multimedia Designer</p>
       <h1 class="hero-title reveal reveal-delay-1">I design clarity into complicated things.</h1>
-      <p class="hero-bio reveal reveal-delay-2">I'm a designer based in Ottawa. At CCC's Business Data Lab I build data tools and interfaces for economists and policy advisors who need answers before the meeting starts. When I'm not doing that, I design AI products from scratch. BriefBuy is the most recent one.</p>
       <div class="hero-status reveal reveal-delay-3">
         <span class="status-dot"></span>
         <span>Open to new opportunities</span>
@@ -895,6 +948,8 @@
       <span class="marquee-item"><svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Data Visualization</span>
       <!-- Branding: price tag -->
       <span class="marquee-item"><svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5" fill="currentColor" stroke="none"/></svg>Branding</span>
+      <!-- Vibe Coding: sparkles -->
+      <span class="marquee-item"><svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75L19 15z"/><path d="M5 18l.5 1.5L7 20l-1.5.5L5 22l-.5-1.5L3 20l1.5-.5L5 18z"/></svg>Vibe Coding</span>
       <!-- duplicate for seamless loop -->
       <span class="marquee-item"><svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l7.07 17 2.51-7.39L21 11.07z"/></svg>UI/UX Design</span>
       <span class="marquee-item"><svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9.06 11.9 8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/><path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1 1 2.48 1.02 3.5 1.02 2.2 0 3.5-1.8 3.5-4 0-1.17-.84-2.06-2-2.06z"/></svg>Graphic Design</span>
@@ -904,6 +959,7 @@
       <span class="marquee-item"><svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>Motion Design</span>
       <span class="marquee-item"><svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Data Visualization</span>
       <span class="marquee-item"><svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5" fill="currentColor" stroke="none"/></svg>Branding</span>
+      <span class="marquee-item"><svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75L19 15z"/><path d="M5 18l.5 1.5L7 20l-1.5.5L5 22l-.5-1.5L3 20l1.5-.5L5 18z"/></svg>Vibe Coding</span>
     </div>
   </div>
   </div>
@@ -915,8 +971,8 @@
       <div class="skills-layout">
         <div class="skills-content">
           <div class="skills-header">
-            <h2>Disciplines</h2>
-            <p>I cover both the UX side and the graphic design side. Here is how that looks in practice.</p>
+            <h2>Skills</h2>
+            <p>UI/UX and multimedia. Here is what that looks like in practice.</p>
           </div>
 
           <div class="skill-item open">
@@ -933,6 +989,7 @@
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Usability Testing</span>
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Information Architecture</span>
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>Figma</span>
+                <span class="skill-tag"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Design Systems</span>
               </div>
             </div>
           </div>
@@ -948,9 +1005,12 @@
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Brand Identity</span>
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>Typography</span>
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print Design</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>Illustration</span>
+             
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Adobe Illustrator</span>
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>InDesign</span>
+                <span class="skill-tag"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photoshop</span>
+                <span class="skill-tag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 0 1 8 0"/><line x1="12" y1="8" x2="12" y2="12"/></svg>Lightroom</span>
+                <span class="skill-tag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Canva</span>
               </div>
             </div>
           </div>
@@ -964,7 +1024,6 @@
             <div class="skill-body">
               <div class="skill-body-inner">
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Responsive Design</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Design Systems</span>
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML / CSS</span>
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Framer</span>
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>WordPress</span>
@@ -989,20 +1048,35 @@
               </div>
             </div>
           </div>
+
+          <div class="skill-item">
+            <button class="skill-trigger" aria-expanded="false">
+              <span class="skill-num">05</span>
+              <span class="skill-name">Vibe Coding</span>
+              <span class="skill-arrow">+</span>
+            </button>
+            <div class="skill-body">
+              <div class="skill-body-inner">
+                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75L19 15z"/></svg>AI-Assisted Prototyping</span>
+                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</span>
+                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/></svg>AI Assisted Frontend Dev</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="skills-sticky">
           <div class="flip-card" id="skillsFlipCard">
             <div class="flip-card-inner">
               <div class="flip-card-front">
-                <img src="images/Goni_Designer.png" alt="Designer illustration" />
+                <img src="assets/home/Goni_Designer.png" alt="Designer illustration" />
                 <div class="hi-badge">
                   <span class="hi-text">Hi</span>
                   <span class="hi-emoji"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 7a1.5 1.5 0 0 0-2.93-.45L17 5.5a1.5 1.5 0 0 0-3 0V5a1.5 1.5 0 0 0-3 0v.5A1.5 1.5 0 0 0 8 7v5.5l-1.47-2.55a1.54 1.54 0 0 0-2.67 1.54l3.4 5.9A6 6 0 0 0 13 21h2a6 6 0 0 0 6-6z"/></svg></span>
                 </div>
               </div>
               <div class="flip-card-back">
-                <img src="images/Goni_Designer_flip.png" alt="Designer illustration" />
+                <img src="assets/home/Goni_Designer_flip.png" alt="Designer illustration" />
               </div>
             </div>
           </div>
@@ -1016,45 +1090,49 @@
   <section class="works" id="works">
     <div class="container">
       <div class="section-header">
-        <h2>Selected Work</h2>
-        <span>2021–2025</span>
+        <h2>Featured Work</h2>
+      
       </div>
 
       <!-- 01: BriefBuy -->
       <div class="project-card reveal">
         <div class="project-info">
-          <p class="project-number">01 · Side Project · AI UX Design</p>
+          <p class="project-number">01 · AI Product Design</p>
           <h3 class="project-title">BriefBuy</h3>
-          <p class="project-hook">A side project built around one question: what if comparing running shoes felt like talking to a friend who already did the research? I designed the AI companion, the product flow, and a character that levels up the more you chat.</p>
+          <p class="project-hook">I built an AI shopping companion for runners. You describe what you need, it compares options, and a character guides the whole thing. Designed the full product and flow from scratch.</p>
           <div class="project-tags">
-            <span class="project-tag highlight">Side Project</span>
+       
             <span class="project-tag">AI Product Design</span>
-            <span class="project-tag">2025</span>
             <span class="project-tag">Figma · Next.js · Claude API</span>
           </div>
-          <a href="briefbuy-case-study.html" class="project-cta">Read case study →</a>
+          <a href="briefbuy-case-study.html" class="project-cta">Read case study <span class="cta-arrow">→</span></a>
         </div>
-        <div class="project-visual dark" style="padding:0;overflow:hidden;">
-          <img src="assets/briefbuy/briefbuy_intro_comparison.png" alt="BriefBuy comparison interface" style="width:100%;height:100%;object-fit:cover;display:block;" />
-        </div>
+        <a href="briefbuy-case-study.html" class="project-visual-link">
+          <div class="project-visual dark" style="padding:0;overflow:hidden;">
+            <img src="assets/home/briefbuy-tumbnail.png" alt="BriefBuy comparison interface" style="width:100%;height:100%;object-fit:cover;display:block;" />
+            <div class="view-overlay">View project <span class="overlay-arrow">→</span></div>
+          </div>
+        </a>
       </div>
 
       <!-- 02: BDLNow -->
       <div class="project-card flip reveal">
         <div class="project-info">
-          <p class="project-number">02 · Editorial Design System</p>
+          <p class="project-number">02 · Data Visualization</p>
           <h3 class="project-title">BDLNow</h3>
-          <p class="project-hook">A data journalism platform for CCC's Business Data Lab. Designed to make economic research readable for a broad public audience without losing the analytical depth that makes it useful.</p>
+          <p class="project-hook">A data platform for the Canadian Chamber of Commerce. Economic research made readable for a broad audience without losing the depth that makes it useful.</p>
           <div class="project-tags">
             <span class="project-tag">UI/UX · Web Design</span>
-            <span class="project-tag">2024</span>
             <span class="project-tag">Figma · WordPress</span>
           </div>
-          <a href="bdlnow-case-study.html" class="project-cta">Read case study →</a>
+          <a href="bdlnow-case-study.html" class="project-cta">Read case study <span class="cta-arrow">→</span></a>
         </div>
-        <div class="project-visual" style="padding:0;overflow:hidden;">
-          <video src="assets/bdlnow/BDL_Now_Intro.mp4" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:block;"></video>
-        </div>
+        <a href="bdlnow-case-study.html" class="project-visual-link">
+          <div class="project-visual" style="padding:0;overflow:hidden;">
+            <video src="assets/bdlnow/BDL_Now_Intro.mp4" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:contain;display:block;"></video>
+            <div class="view-overlay">View project <span class="overlay-arrow">→</span></div>
+          </div>
+        </a>
       </div>
 
       <!-- 03: CAN-US -->
@@ -1062,18 +1140,20 @@
         <div class="project-info">
           <p class="project-number">03 · Policy Data Visualization</p>
           <h3 class="project-title">CAN–U.S. District Dashboard</h3>
-          <p class="project-hook">The first tool to map Canada-U.S. trade exposure at all 435 U.S. Congressional Districts. Built for diplomats, policy advisors, and economists who need an answer before the conversation starts.</p>
+          <p class="project-hook">Canada-U.S. trade data mapped to all 435 congressional districts. Built for diplomats and advisors who need an answer before the room fills up.</p>
           <div class="project-tags">
-            <span class="project-tag highlight">In Development</span>
+         
             <span class="project-tag">Product Designer</span>
-            <span class="project-tag">2024–2025</span>
             <span class="project-tag">Figma · Shiny/R · After Effects</span>
           </div>
-          <a href="can-us-case-study.html" class="project-cta">Read case study →</a>
+          <a href="can-us-case-study.html" class="project-cta">Read case study <span class="cta-arrow">→</span></a>
         </div>
-        <div class="project-visual dark" style="padding:0;overflow:hidden;">
-          <video src="assets/can-us-case-stuy/Dashboard_intro.mp4" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:block;"></video>
-        </div>
+        <a href="can-us-case-study.html" class="project-visual-link">
+          <div class="project-visual" style="padding:0;overflow:hidden;">
+            <img src="assets/can-us-case-stuy/Main DashboardMap_Sidebar.png" alt="CAN-U.S. District Dashboard" style="width:100%;height:100%;object-fit:contain;display:block;" />
+            <div class="view-overlay">View project <span class="overlay-arrow">→</span></div>
+          </div>
+        </a>
       </div>
 
     </section><!-- /works inner -->
@@ -1085,7 +1165,7 @@
     <section class="about reveal" id="about">
       <div class="about-pg">
 
-        <h2 class="ab-headline">UI/UX and graphic.<br><em>Ottawa-based,</em><br>globally minded.</h2>
+        <h2 class="ab-headline">UI/UX and multimedia.<br><em>Canada-based,</em><br>always curious.</h2>
 
         <!-- Status -->
         <div class="ab-card ab-status">
@@ -1110,9 +1190,9 @@
           <span class="ab-role-co">Canadian Chamber of Commerce</span>
           <span class="ab-role-title">Web &amp; Graphic Designer · 2024–Present</span>
           <span class="ab-role-co">Richcraft Homes</span>
-          <span class="ab-role-title">Graphic Designer · 2021–2024</span>
+          <span class="ab-role-title">Web & Graphic Designer · 2021–2024</span>
           <span class="ab-role-co">Freelance</span>
-          <span class="ab-role-title">Brand &amp; Digital Designer · 2020–2024</span>
+          <span class="ab-role-title">UI/UX Designer · 2020–2024</span>
         </div>
 
         <!-- Interests -->
@@ -1251,7 +1331,7 @@
 
     // ── Nav height CSS variable (hero-outer uses calc(100vh - var(--nav-h))) ──
     (function setNavH() {
-      const nav = document.querySelector('nav');
+      const nav = document.querySelector('.main-nav');
       if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
     })();
 
@@ -1372,7 +1452,7 @@
         const back = document.createElement('div');
         back.style.cssText = 'backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;transform:rotateY(180deg);';
         const backImg = document.createElement('img');
-        backImg.src = 'images/Goni_Designer_flip.png';
+        backImg.src = 'assets/home/Goni_Designer_flip.png';
         backImg.style.cssText = 'width:100%;display:block;border-radius:28px;filter:drop-shadow(0 20px 56px rgba(0,0,0,.15));';
         back.appendChild(backImg);
 
@@ -1647,6 +1727,7 @@
     }, { threshold: 0.4 });
     observer.observe(document.querySelector('.ab-stats'));
   })();
+
 
   </script>
 
