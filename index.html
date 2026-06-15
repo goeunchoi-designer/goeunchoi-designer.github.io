@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Goeun Choi — Product Designer</title>
+  <title>Goeun Choi, Product Designer</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -872,13 +872,27 @@
       .about-pg { grid-template-columns: 1fr 1fr; min-height: unset; gap: 12px; }
       .ab-headline { grid-column: 1 / -1; grid-row: auto; font-size: 28px; }
       .ab-time, .ab-status, .ab-role, .ab-interests, .ab-stats, .ab-building, .ab-exp, .ab-ottawa { grid-column: span 1; grid-row: auto; }
-      .footer-split { grid-template-columns: 1fr; background: none; }
-      footer { background: none; }
-      .footer-left { background: var(--white); padding: 56px 28px 48px; }
-      .footer-right { background: var(--black); padding: 48px 28px 56px; }
-      .footer-bottom { grid-template-columns: 1fr; }
-      .footer-bottom-left { border-right: none; border-bottom: 1px solid #333; padding: 16px 28px; }
-      .footer-bottom-right { padding: 16px 28px; }
+      footer { background: var(--black); }
+      .footer-inner {
+        padding: 56px 28px 40px;
+        flex-direction: column;
+        gap: 36px;
+      }
+      .footer-big {
+        font-size: clamp(42px, 15vw, 64px);
+        width: 100%;
+      }
+      .footer-right-col {
+        align-items: flex-start;
+        width: 100%;
+        gap: 24px;
+      }
+      .footer-nav {
+        align-items: flex-start;
+      }
+      .footer-bottom {
+        padding: 18px 28px 28px;
+      }
     }
   </style>
 </head>
@@ -902,7 +916,7 @@
     <div class="hero-panel-left reveal">
       <div class="hero-visual">
         <div class="hero-img-wrap">
-          <img src="assets/home/Goni_Designer.png" alt="Goeun Choi — Designer illustration" />
+          <img src="assets/home/Goni_Designer.png" alt="Goeun Choi designer illustration" />
           <div class="hi-badge">
             <span class="hi-text">Hi</span>
             <span class="hi-emoji"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 7a1.5 1.5 0 0 0-2.93-.45L17 5.5a1.5 1.5 0 0 0-3 0V5a1.5 1.5 0 0 0-3 0v.5A1.5 1.5 0 0 0 8 7v5.5l-1.47-2.55a1.54 1.54 0 0 0-2.67 1.54l3.4 5.9A6 6 0 0 0 13 21h2a6 6 0 0 0 6-6z"/></svg></span>
@@ -915,16 +929,16 @@
         <svg class="badge-ring" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path id="badge-path" d="M 44,44 m -34,0 a 34,34 0 1,1 68,0 a 34,34 0 1,1 -68,0" fill="none"/>
           <text font-size="8.5" font-weight="600" letter-spacing="2.2" fill="white" font-family="Inter,sans-serif" text-anchor="middle">
-            <textPath href="#badge-path" startOffset="0%">UI/UX DESIGNER ✦ LET'S COLLABORATE ✦ </textPath>
+            <textPath href="#badge-path" startOffset="50%">UI/UX DESIGNER ✦ LET'S MAKE SOMETHING USEFUL ✦</textPath>
           </text>
         </svg>
         <span class="badge-center">→</span>
       </div>
-      <p class="hero-tag reveal reveal-delay-1">UI/UX &amp; Multimedia Designer</p>
-      <h1 class="hero-title reveal reveal-delay-1">I design clarity into complicated things.</h1>
+      <p class="hero-tag reveal reveal-delay-1">Product &amp; Multimedia Designer</p>
+      <h1 class="hero-title reveal reveal-delay-1">I turn complicated ideas into clear, usable experiences.</h1>
       <div class="hero-status reveal reveal-delay-3">
         <span class="status-dot"></span>
-        <span>Open to new opportunities</span>
+        <span>Open to new design opportunities</span>
       </div>
     </div>
   </section>
@@ -972,7 +986,7 @@
         <div class="skills-content">
           <div class="skills-header">
             <h2>Skills</h2>
-            <p>UI/UX and multimedia. Here is what that looks like in practice.</p>
+            <p>I work across product, web, visual, and motion design. These are the tools I use most.</p>
           </div>
 
           <div class="skill-item open">
@@ -1057,7 +1071,7 @@
             </button>
             <div class="skill-body">
               <div class="skill-body-inner">
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75L19 15z"/></svg>AI-Assisted Prototyping</span>
+                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75L19 15z"/></svg>AI Assisted Prototyping</span>
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</span>
                 <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/></svg>AI Assisted Frontend Dev</span>
               </div>
@@ -1099,7 +1113,7 @@
         <div class="project-info">
           <p class="project-number">01 · AI Product Design</p>
           <h3 class="project-title">BriefBuy</h3>
-          <p class="project-hook">I built an AI shopping companion for runners. You describe what you need, it compares options, and a character guides the whole thing. Designed the full product and flow from scratch.</p>
+          <p class="project-hook">I designed an AI shopping companion that helps runners explain what they need, compare options, and feel less overwhelmed.</p>
           <div class="project-tags">
        
             <span class="project-tag">AI Product Design</span>
@@ -1120,7 +1134,7 @@
         <div class="project-info">
           <p class="project-number">02 · Data Visualization</p>
           <h3 class="project-title">BDLNow</h3>
-          <p class="project-hook">A data platform for the Canadian Chamber of Commerce. Economic research made readable for a broad audience without losing the depth that makes it useful.</p>
+          <p class="project-hook">I helped shape a data platform that makes Canadian economic research easier to read without losing the important details.</p>
           <div class="project-tags">
             <span class="project-tag">UI/UX · Web Design</span>
             <span class="project-tag">Figma · WordPress</span>
@@ -1135,12 +1149,12 @@
         </a>
       </div>
 
-      <!-- 03: CAN-US -->
+      <!-- 03: Canada and U.S. -->
       <div class="project-card reveal">
         <div class="project-info">
           <p class="project-number">03 · Policy Data Visualization</p>
-          <h3 class="project-title">CAN–U.S. District Dashboard</h3>
-          <p class="project-hook">Canada-U.S. trade data mapped to all 435 congressional districts. Built for diplomats and advisors who need an answer before the room fills up.</p>
+          <h3 class="project-title">Canada and U.S. District Dashboard</h3>
+          <p class="project-hook">I designed a dashboard that helps policy teams explore Canada and U.S. trade data across all 435 congressional districts.</p>
           <div class="project-tags">
          
             <span class="project-tag">Product Designer</span>
@@ -1150,13 +1164,31 @@
         </div>
         <a href="can-us-case-study.html" class="project-visual-link">
           <div class="project-visual" style="padding:0;overflow:hidden;">
-            <img src="assets/can-us-case-stuy/Main DashboardMap_Sidebar.png" alt="CAN-U.S. District Dashboard" style="width:100%;height:100%;object-fit:contain;display:block;" />
+            <img src="assets/can-us-case-stuy/Main DashboardMap_Sidebar.png" alt="Canada and U.S. District Dashboard" style="width:100%;height:100%;object-fit:contain;display:block;" />
             <div class="view-overlay">View project <span class="overlay-arrow">→</span></div>
           </div>
         </a>
       </div>
 
-    </section><!-- /works inner -->
+      <div class="project-card flip reveal">
+        <div class="project-info">
+          <p class="project-number">04 · Brand Identity Design</p>
+          <h3 class="project-title">Gateway</h3>
+          <p class="project-hook">I collaborated on the launch rollout for a new Richcraft Homes community built for first-time buyers.</p>
+          <div class="project-tags">
+            <span class="project-tag">Brand Designer</span>
+            <span class="project-tag">Figma · Illustrator · InDesign · After Effects</span>
+          </div>
+          <a href="gateway-case-study.html" class="project-cta">Read case study <span class="cta-arrow">→</span></a>
+        </div>
+        <a href="gateway-case-study.html" class="project-visual-link">
+          <div class="project-visual" style="padding:0;overflow:hidden;background:#ffffff;">
+            <video src="assets/gateway/gateway-intro.mp4" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:contain;display:block;"></video>
+            <div class="view-overlay">View project <span class="overlay-arrow">→</span></div>
+          </div>
+        </a>
+      </div>
+
     </div><!-- /works container -->
   </section><!-- /works -->
 
@@ -1165,12 +1197,12 @@
     <section class="about reveal" id="about">
       <div class="about-pg">
 
-        <h2 class="ab-headline">UI/UX and multimedia.<br><em>Canada-based,</em><br>always curious.</h2>
+        <h2 class="ab-headline">UI/UX and multimedia.<br><em>Based in Canada,</em><br>always curious.</h2>
 
         <!-- Status -->
         <div class="ab-card ab-status">
           <span class="ab-dot"></span>
-          <span class="ab-status-text">Open to opportunities</span>
+          <span class="ab-status-text">Open to design opportunities</span>
         </div>
 
         <!-- Availability -->
@@ -1188,11 +1220,11 @@
         <div class="ab-card ab-exp-role">
           <span class="ab-label">Experience</span>
           <span class="ab-role-co">Canadian Chamber of Commerce</span>
-          <span class="ab-role-title">Web &amp; Graphic Designer · 2024–Present</span>
+          <span class="ab-role-title">Web &amp; Graphic Designer · 2024 to Present</span>
           <span class="ab-role-co">Richcraft Homes</span>
-          <span class="ab-role-title">Web & Graphic Designer · 2021–2024</span>
+          <span class="ab-role-title">Web & Graphic Designer · 2021 to 2024</span>
           <span class="ab-role-co">Freelance</span>
-          <span class="ab-role-title">UI/UX Designer · 2020–2024</span>
+          <span class="ab-role-title">UI/UX Designer · 2020 to 2024</span>
         </div>
 
         <!-- Interests -->
@@ -1201,7 +1233,7 @@
           <div class="ab-tags">
             <span>Coffee</span>
             <span>Horror</span>
-            <span>Interior Design</span>
+            <span>Interior design</span>
             <span>Motion</span>
             <span>Typography</span>
             <span>Korean food</span>
@@ -1210,11 +1242,11 @@
 
         <!-- Interior design mood card -->
         <div class="ab-card ab-interior">
-          <span class="ab-label">Also obsessed with</span>
+          <span class="ab-label">Also making</span>
           <img class="ab-interior-img" src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80" alt="Interior design inspiration" />
           <div class="ab-interior-body">
-            <span class="ab-interior-title">Interior Design</span>
-            <span class="ab-interior-desc">I follow interior design the way some people follow sports. Moody lighting, layered textures, rooms that feel like they belong to one specific person.</span>
+            <span class="ab-interior-title">Rooms, paintings, and small details</span>
+            <span class="ab-interior-desc">I love interior design. I make my own paintings to hang on the wall, then play with small decorations until a room feels personal and lived in.</span>
           </div>
         </div>
 

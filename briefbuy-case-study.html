@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BriefBuy — Case Study · Goeun Choi</title>
+  <title>BriefBuy Case Study · Goeun Choi</title>
   <link href="https://fonts.googleapis.com/css2?family=Overused+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -157,11 +157,11 @@
     .anno-row { display:grid; gap:12px; align-items:stretch; }
     .anno-row.img-right { grid-template-columns:1fr 2fr; }
     .anno-row.img-left  { grid-template-columns:2fr 1fr; }
-    .anno-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:28px; display:flex; flex-direction:column; flex:1; transition:transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s; }
+    .anno-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:28px; display:grid; grid-template-columns:26px 1fr; grid-template-rows:auto auto; gap:6px 12px; align-items:start; flex:1; transition:transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s; }
     .anno-card:hover { transform:translateY(-4px); box-shadow:0 10px 36px rgba(0,0,0,.1); }
-    .anno-card-icon { width:36px; height:36px; color:var(--black); flex-shrink:0; margin-bottom:16px; }
-    .anno-card-title { font-size:16px; font-weight:600; color:var(--black); line-height:1.3; margin-bottom:10px; }
-    .anno-card-desc { font-size:13px; color:var(--gray-text); line-height:1.65; }
+    .anno-card-icon { width:26px; height:26px; color:var(--black); flex-shrink:0; grid-column:1; grid-row:1; margin-top:2px; }
+    .anno-card-title { font-size:14px; font-weight:600; color:var(--black); line-height:1.3; margin-bottom:0; grid-column:2; grid-row:1; align-self:center; }
+    .anno-card-desc { font-size:13px; color:var(--gray-text); line-height:1.65; grid-column:1 / -1; grid-row:2; }
     .anno-img { background:var(--off-white); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; min-height:320px; display:flex; align-items:center; justify-content:center; }
     .anno-img img { width:100%; height:100%; object-fit:contain; display:block; padding:10px; }
     .anno-bottom { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
@@ -177,6 +177,57 @@
     .step-num { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:10px; display:block; }
     .step-title { font-size:14px; font-weight:600; margin-bottom:8px; }
     .step-desc { font-size:12px; color:var(--gray-text); line-height:1.5; }
+    .step-flow { display:flex; align-items:center; margin-top:32px; margin-bottom:48px; }
+    .step-pill { border:1.5px solid var(--border); border-radius:999px; padding:18px 26px; text-align:center; flex-shrink:0; opacity:0; transform:translateY(10px); transition:opacity .45s ease, transform .45s cubic-bezier(.25,.46,.45,.94); }
+    .step-pill.visible { opacity:1; transform:none; }
+    .step-pill.featured { background:var(--black); border-color:var(--black); }
+    .step-pill-title { font-size:14px; font-weight:600; color:var(--black); letter-spacing:-.01em; }
+    .step-pill.featured .step-pill-title { color:var(--white); }
+    .step-pill-label { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); display:block; margin-top:4px; }
+    .step-pill.featured .step-pill-label { color:rgba(255,255,255,.5); }
+    .step-connector { flex:1; display:flex; align-items:center; opacity:0; transition:opacity .4s ease; }
+    .step-connector.visible { opacity:1; }
+    .step-dash { flex:1; border-top:1.5px dashed var(--border); }
+    .step-dot { width:8px; height:8px; border-radius:50%; background:var(--brand); flex-shrink:0; }
+    @media(max-width:700px){ .step-flow { flex-direction:column; align-items:stretch; gap:8px; } .step-connector { display:none; } .step-pill { border-radius:var(--radius-sm); text-align:left; padding:16px 20px; } }
+    .process-flow-card {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: linear-gradient(180deg, #fafafa 0%, #f4f4f4 100%);
+      padding: 32px;
+    }
+    .process-flow-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .process-flow-head span {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--gray-text);
+    }
+    .process-flow-head p {
+      max-width: 360px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--gray-text);
+      text-align: right;
+    }
+    .process-flow { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+    .process-node { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:20px; display:flex; flex-direction:column; gap:10px; transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s; cursor:default; }
+    .process-node:hover { transform:translateY(-4px); box-shadow:0 10px 28px rgba(0,0,0,.08); }
+    .process-node.important { background:var(--black); border-color:transparent; }
+    .process-node-num { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); background:var(--off-white); border:1px solid var(--border); border-radius:999px; padding:4px 10px; width:fit-content; }
+    .process-node.important .process-node-num { background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.15); color:rgba(255,255,255,.6); }
+    .process-node strong { display:block; font-size:14px; font-weight:600; color:var(--black); letter-spacing:-.01em; line-height:1.3; }
+    .process-node.important strong { color:var(--white); }
+    .process-node p { font-size:12px; line-height:1.6; color:var(--gray-text); }
+    .process-node.important p { color:rgba(255,255,255,.6); }
 
     /* Bento grid */
     .bento-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:48px; }
@@ -322,10 +373,53 @@
     .char.run  { transform: rotate(-5deg); }
 
     @media(max-width:900px){
-      .page{padding:0 28px;} .nav-inner{padding:20px 28px;} .hero{padding:48px 0;}
+      html,
+      body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+      .page{width:100%;max-width:100%;overflow:hidden;padding:0 28px;} .nav-inner{padding:20px 28px;} .hero{padding:48px 0;}
+      img,
+      video,
+      svg {
+        max-width: 100%;
+      }
+      .content,
+      .cs-section,
+      .section-body,
+      .callout,
+      .anno-img,
+      .browser-mockup,
+      .hero-cover {
+        min-width: 0;
+        max-width: 100%;
+      }
+      .hero-meta,
+      .nav-inner {
+        flex-wrap: wrap;
+      }
       .hero-stats,.two-col,.three-col,.outcome-grid,.related-grid,.comparison-grid{grid-template-columns:1fr;}
       .role-row{grid-template-columns:1fr;} .role-cell{border-right:none;border-bottom:1px solid var(--border);} .role-cell:last-child{border-bottom:none;}
       .process-steps{grid-template-columns:1fr;} .process-step{border-right:none;border-bottom:1px solid var(--border);}
+      .process-timeline,
+      .process-flow {
+        grid-template-columns: 1fr;
+      }
+      .process-card {
+        min-height: 0;
+      }
+      .process-flow-card {
+        padding: 24px;
+      }
+      .process-flow-head {
+        display: block;
+      }
+      .process-flow-head p {
+        max-width: none;
+        margin-top: 10px;
+        text-align: left;
+      }
       .bento-grid{grid-template-columns:1fr;} .bento-span-2{grid-column:span 1;}
       .body-layout{grid-template-columns:1fr;}
       .section-nav{display:none;}
@@ -334,6 +428,29 @@
       .anno-bottom{grid-template-columns:1fr !important;}
       .cs-overview{grid-template-columns:1fr 1fr;} .cs-overview-item:nth-child(2){border-right:none;} .cs-overview-item:nth-child(3){border-top:1px solid var(--border);} .cs-overview-item:nth-child(4){border-top:1px solid var(--border); border-right:none;}
       .problem-cards{grid-template-columns:1fr;}
+      .mobile-stack {
+        grid-template-columns: 1fr !important;
+      }
+      .mobile-stack > * {
+        border-right: none !important;
+      }
+      .mobile-stack > * + * {
+        border-top: 1px solid var(--border);
+      }
+      .pipeline-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      .pipeline-grid > .pipeline-arrow {
+        display: none !important;
+      }
+      .pipeline-grid > * {
+        min-height: auto !important;
+      }
+      .browser-viewport {
+        height: auto;
+        max-height: 70vh;
+      }
     }
 
     /* Problem section */
@@ -361,16 +478,19 @@
       box-shadow: 0 16px 40px rgba(0,0,0,.1), 0 4px 12px rgba(0,0,0,.06);
     }
     .problem-card-top {
-      padding: 28px 24px 20px;
+      padding: 24px;
       background: var(--black);
       transition: background .22s ease;
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
     .problem-card:hover .problem-card-top { background: #1a1a2e; }
     .problem-card-icon {
       width: 40px; height: 40px; border-radius: 10px;
       background: rgba(255,255,255,.1);
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 16px;
+      flex-shrink: 0;
       transition: background .22s ease, transform .22s cubic-bezier(.34,1.56,.64,1);
     }
     .problem-card:hover .problem-card-icon {
@@ -394,6 +514,29 @@
     .chat-bubble:nth-child(1) { animation-delay: .1s; }
     .chat-bubble:nth-child(2) { animation-delay: .45s; }
     .chat-bubble:nth-child(3) { animation-delay: .9s; }
+
+    @media(max-width:900px){
+      .problem-cards {
+        grid-template-columns: 1fr;
+      }
+      .week-timeline { border-radius: var(--radius-sm); }
+      .process-flow { grid-template-columns:1fr 1fr; }
+    }
+
+    /* Feature tabs */
+    .feat-tabs { margin-top:52px; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; }
+    .feat-tab-bar { display:flex; background:var(--off-white); border-bottom:1px solid var(--border); }
+    .feat-tab-btn { flex:1; padding:14px 20px; font-size:13px; font-weight:500; font-family:inherit; color:var(--gray-text); background:none; border:none; border-right:1px solid var(--border); cursor:pointer; display:flex; align-items:center; gap:10px; transition:color .2s, background .2s; }
+    .feat-tab-btn:last-child { border-right:none; }
+    .feat-tab-btn .tab-num { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; background:var(--gray-light); color:var(--gray-text); padding:3px 8px; border-radius:999px; flex-shrink:0; transition:background .2s, color .2s; }
+    .feat-tab-btn.active { color:var(--white); background:var(--black); font-weight:600; }
+    .feat-tab-btn.active .tab-num { background:rgba(255,255,255,.15); color:var(--white); }
+    .feat-tab-btn:hover:not(.active) { color:var(--black); }
+    .feat-tab-panel { display:none; padding:32px; }
+    .feat-tab-panel.active { display:block; }
+    .feat-side-layout { display:grid; grid-template-columns:2fr 1fr; gap:16px; align-items:start; }
+    .feat-side-cards { display:flex; flex-direction:column; gap:12px; }
+    @media(max-width:900px){ .feat-side-layout { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -424,8 +567,8 @@
       <span class="hero-tag-pill">Vibe Coding</span>
       <span class="hero-tag-pill">Figma · Next.js · Claude API</span>
     </div>
-    <h1 class="hero-title">Running shoe shopping has too many variables.<br>AI chats lose track of all of them.</h1>
-    <p class="hero-desc">BriefBuy is an AI-powered running shoe comparison web app. Paste URLs, get a structured decision workspace with fit scores, ranked candidates, and eliminated options. Built over 4 weeks in a Korean IT community vibe coding challenge by a designer, a data engineer, and a frontend developer.</p>
+    <h1 class="hero-title">Running shoe shopping gets messy fast.<br>BriefBuy keeps the decision clear.</h1>
+    <p class="hero-desc">BriefBuy is an AI running shoe comparison app. You paste product links, and it turns the research into fit scores, ranked options, and shoes you can rule out. I built it with a data engineer and a frontend developer in four weeks.</p>
 
     <div class="cs-overview">
       <div class="cs-overview-item">
@@ -447,7 +590,7 @@
     </div>
 
     <div class="hero-cover">
-      <img src="assets/briefbuy/briefbuy_intro_comparison.png" alt="BriefBuy — Two-panel comparison workspace" style="width:100%;height:100%;object-fit:cover;object-position:top left;">
+      <img src="assets/briefbuy/briefbuy_intro_comparison.png" alt="BriefBuy two panel comparison workspace" style="width:100%;height:100%;object-fit:cover;object-position:top left;">
     </div>
   </div>
 
@@ -512,29 +655,29 @@
 
       <!-- 01 Background -->
       <section class="cs-section reveal" id="background">
-        <span class="section-label">01 — Background</span>
-        <h2 class="section-title">Everyone was talking about vibe coding.<br>We decided to actually do it.</h2>
+        <span class="section-label">01 Background</span>
+        <h2 class="section-title">I had four weeks to build an AI product.<br>I shipped the design and the frontend.</h2>
         <div class="section-body">
-          <p>In April 2026, our three-person team (a designer, a data engineer, and a frontend developer) took on a 4-week Korean IT community vibe coding challenge.</p>
-          <p>We chose a complex problem: online running shoe shopping. Finding the right shoe involves balancing dozens of personal variables like foot width, arch type, and injury history. While standard AI chatbots can process this data, they return long, unstructured text blocks that force users to build comparison tables in their heads.</p>
-          <p>BriefBuy was our answer to that. An AI running shoe comparison tool where the output is a structured decision workspace, not a paragraph.</p>
+          <p>In April 2026, a friend invited me to a Korean IT community challenge. Three people, four weeks, one working product. I was the only designer on the team.</p>
+          <p>We chose running shoes because the buying decision is genuinely hard. Foot shape, distance, budget, injury history. Every detail changes the right answer. Most people spend hours researching and still feel uncertain at checkout.</p>
+          <p>I designed the product and vibe-coded the entire frontend. It was the first time I shipped code I actually wrote. That changed how I think about what a designer can own.</p>
         </div>
 
         <div class="role-row">
           <div class="role-cell">
-            <span class="role-cell-tag">Designer</span>
+            <span class="role-cell-tag">Designer + Frontend</span>
             <p class="role-cell-name">Goeun Choi</p>
-            <p class="role-cell-desc">Visual system, design tokens, component specs, UX architecture, runner profile flow, brand identity</p>
-          </div>
-          <div class="role-cell">
-            <span class="role-cell-tag">Data Engineer</span>
-            <p class="role-cell-name">Data Pipeline</p>
-            <p class="role-cell-desc">Product page extraction, Claude API integration, prompt caching, Zod schema validation, file-system cache layer</p>
+            <p class="role-cell-desc">UX structure, visual system, design tokens, runner profile, brand direction, full vibe-coded frontend development</p>
           </div>
           <div class="role-cell">
             <span class="role-cell-tag">Frontend Developer</span>
             <p class="role-cell-name">Web App</p>
-            <p class="role-cell-desc">Next.js 14 App Router, shadcn/ui components, skeleton loading, chat interface, comparison board rendering</p>
+            <p class="role-cell-desc">Next.js app, chat UI, loading states, comparison board, Claude API integration, publishing</p>
+          </div>
+          <div class="role-cell">
+            <span class="role-cell-tag">Data Engineer</span>
+            <p class="role-cell-name">Data Pipeline</p>
+            <p class="role-cell-desc">Product extraction, Claude API, prompt caching, schema checks, file cache</p>
           </div>
         </div>
 
@@ -544,25 +687,21 @@
               <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gray-text);flex-shrink:0;"><rect x="4" y="1.5" width="8" height="3" rx="1"/><rect x="2" y="3" width="12" height="11.5" rx="1.5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="10.5" x2="9" y2="10.5"/></svg>
               <span class="callout-label" style="margin-bottom:0;">The brief</span>
             </div>
-            <p class="callout-text">Build an AI-powered running shoe comparison web app. Paste URLs, get a structured decision workspace. No more re-asking the AI to "summarize my conditions again."</p>
+            <p class="callout-text">Build an AI running shoe comparison app. Paste links, compare options, and keep the important conditions visible.</p>
           </div>
         </div>
       </section>
 
       <!-- 02 The Problem -->
       <section class="cs-section reveal" id="problem">
-        <span class="section-label">02 — The Problem</span>
-        <h2 class="section-title">AI chats lose your context.<br>Running shoe decisions cannot afford that.</h2>
+        <span class="section-label">02 The Problem</span>
+        <h2 class="section-title">Chat is great at explaining.<br>It is bad at helping you decide.</h2>
         <div class="section-body">
-          <p>Running shoes are one of the hardest things to buy online. Price, cushion, drop height, foot width, stability type, weekly distance, intended use. The more you research, the more variables you collect. Most people open five tabs, spend an hour reading, and still feel unsure. Then they ask an AI and get a 400-word answer that puts all that information back into a format they cannot act on.</p>
-          <p>The deeper problem with AI shopping chats is that the context degrades. As the conversation gets longer, the conditions you set at the start get pushed up and out of view. The interface does not keep it visible.</p>
+          <p>By message ten, you can easily lose track. The longer a shoe conversation gets, the more your original conditions drift. AI has forgotten your wide feet and your budget.</p>
         </div>
 
-        <!-- Problem persona + pain point cards -->
-        <div style="margin-top:52px;">
-
-          <!-- Persona row + chat (grouped with grey bg) -->
-          <div class="problem-chat-wrap">
+        <!-- Chat bubbles -->
+        <div class="problem-chat-wrap" style="margin-top:40px;">
 
           <!-- Persona row -->
           <div style="display:flex; align-items:center; gap:16px; margin-bottom:36px;">
@@ -572,250 +711,230 @@
               </svg>
             </div>
             <div>
-              <p style="font-size:13px; font-weight:600; color:var(--black); margin-bottom:2px;">The runner preparing for their first half-marathon</p>
-              <p style="font-size:13px; color:var(--gray-text);">Wide foot. Budget under $200. Already burned by a shoe that gave them blisters at km 16.</p>
+              <p style="font-size:13px; font-weight:600; color:var(--black); margin-bottom:2px;">A runner training for a first half marathon</p>
+              <p style="font-size:13px; color:var(--gray-text);">Wide feet. Under $200. Nervous about blisters on long runs.</p>
             </div>
           </div>
 
-          <!-- Chat bubble: what they do -->
+          <!-- Chat bubbles -->
           <div style="display:flex; flex-direction:column; gap:10px;">
-            <div class="chat-bubble" style="display:flex; align-items:flex-start; gap:12px;">
+            <div style="display:flex; align-items:flex-start; gap:12px;">
               <div style="width:32px; height:32px; border-radius:50%; background:var(--black); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                </svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
               </div>
               <div style="background:var(--black); color:var(--white); border-radius:0 14px 14px 14px; padding:14px 18px; max-width:520px; font-size:14px; line-height:1.6;">
-                "I have wide feet, I'm training for a half marathon, budget is around $180. I'm looking at Hoka Clifton 10 and New Balance 1080. Which one is better for me?"
+                "I have wide feet and I am training for a half marathon. My budget is about $180. Is Hoka Clifton 10 or New Balance 1080 better for me?"
               </div>
             </div>
-            <div class="chat-bubble" style="display:flex; align-items:flex-start; gap:12px; justify-content:flex-end;">
+            <div style="display:flex; align-items:flex-start; gap:12px; justify-content:flex-end;">
               <div style="background:white; border:1px solid var(--border); border-radius:14px 0 14px 14px; padding:14px 18px; max-width:520px; font-size:14px; line-height:1.6; color:var(--black);">
-                Both shoes are excellent choices for half-marathon training. The Hoka Clifton 10 features MaxTrac outsole and a 5mm drop for a smooth ride, while the New Balance 1080 v14 offers Fresh Foam X cushioning at 6mm drop. For wide feet specifically, the NB 1080 does come in wide widths. In terms of price, the Clifton 10 retails around $145 while the 1080 is approximately $165. Both offer great cushioning for long distance...
+                Both are strong options. The Clifton is lighter and soft. The 1080 has wide sizes and plush cushioning. For your feet and budget, I would start with the 1080.
               </div>
               <div style="width:32px; height:32px; border-radius:50%; background:var(--brand); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="white"/>
-                </svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="white"/></svg>
               </div>
             </div>
-            <div class="chat-bubble" style="display:flex; align-items:flex-start; gap:12px;">
+            <div style="display:flex; align-items:flex-start; gap:12px;">
               <div style="width:32px; height:32px; border-radius:50%; background:var(--black); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                </svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
               </div>
               <div style="background:var(--black); color:var(--white); border-radius:0 14px 14px 14px; padding:14px 18px; max-width:520px; font-size:14px; line-height:1.6;">
-                "Wait, I already told you my budget is $180. Can you factor in wide widths again? And I also had blisters before, which one is safer?"
+                "Can you keep the wide fit and blister issue in mind?"
               </div>
             </div>
           </div>
 
-          </div><!-- end problem-chat-wrap -->
-
-          <!-- 3 pain point cards -->
-          <div class="problem-cards">
-
-            <div class="problem-card">
-              <div class="problem-card-top">
-                <div class="problem-card-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                    <line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="12" y2="14"/>
-                  </svg>
-                </div>
-                <p style="font-size:13px; font-weight:600; color:var(--white); letter-spacing:-.01em; line-height:1.4;">Context drifts as the chat gets longer</p>
-              </div>
-            </div>
-
-            <div class="problem-card">
-              <div class="problem-card-top">
-                <div class="problem-card-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
-                  </svg>
-                </div>
-                <p style="font-size:13px; font-weight:600; color:var(--white); letter-spacing:-.01em; line-height:1.4;">Text is not a comparison surface</p>
-              </div>
-            </div>
-
-            <div class="problem-card">
-              <div class="problem-card-top">
-                <div class="problem-card-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
-                  </svg>
-                </div>
-                <p style="font-size:13px; font-weight:600; color:var(--white); letter-spacing:-.01em; line-height:1.4;">The research disappears the next day</p>
-              </div>
-            </div>
-
-          </div>
         </div>
 
-        <div class="callout dark" style="margin-top:24px;">
-          <span class="callout-label">The Design Challenge</span>
-          <p class="callout-text">The goal was not a better chatbot. It was a persistent decision workspace: one place where your runner profile, your candidates, their scores, and the reasons you excluded certain models all stay visible and up to date as the conversation evolves.</p>
+        <!-- 3 pain point cards -->
+        <div class="problem-cards" style="margin-top:24px;">
+
+          <div class="problem-card">
+            <div class="problem-card-top">
+              <div class="problem-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  <line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="12" y2="14"/>
+                </svg>
+              </div>
+              <p style="font-size:13px; font-weight:600; color:var(--white); letter-spacing:-.01em; line-height:1.4;">Context drifts as the chat gets longer</p>
+            </div>
+          </div>
+
+          <div class="problem-card">
+            <div class="problem-card-top">
+              <div class="problem-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+                </svg>
+              </div>
+              <p style="font-size:13px; font-weight:600; color:var(--white); letter-spacing:-.01em; line-height:1.4;">Text is not a comparison surface</p>
+            </div>
+          </div>
+
+          <div class="problem-card">
+            <div class="problem-card-top">
+              <div class="problem-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+                </svg>
+              </div>
+              <p style="font-size:13px; font-weight:600; color:var(--white); letter-spacing:-.01em; line-height:1.4;">The research disappears the next day</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="callout dark" style="margin-top:16px;">
+          <span class="callout-label">The design challenge</span>
+          <p class="callout-text">Build a place where your profile, scores, and options stay visible while you chat.</p>
         </div>
       </section>
 
       <!-- 03 Process -->
       <section class="cs-section reveal" id="process">
-        <span class="section-label">03 — Process</span>
-        <h2 class="section-title">Four weeks. Weekly missions.<br>One shared API contract.</h2>
+        <span class="section-label">03 Process</span>
+
+        <div class="step-flow" id="processStepFlow">
+          <div class="step-pill">
+            <span class="step-pill-label">Week 1</span>
+            <span class="step-pill-label" style="margin-top:1px; opacity:.6;">Decide tech</span>
+            <p class="step-pill-title">Shape the idea</p>
+          </div>
+          <div class="step-connector">
+            <div class="step-dash"></div>
+            <div class="step-dot"></div>
+            <div class="step-dash"></div>
+          </div>
+          <div class="step-pill featured">
+            <span class="step-pill-label">Week 2</span>
+            <span class="step-pill-label" style="margin-top:1px; opacity:.6;">Google Stitch · Figma</span>
+            <p class="step-pill-title">Research + Design</p>
+          </div>
+          <div class="step-connector">
+            <div class="step-dash"></div>
+            <div class="step-dot"></div>
+            <div class="step-dash"></div>
+          </div>
+          <div class="step-pill">
+            <span class="step-pill-label">Week 3</span>
+            <span class="step-pill-label" style="margin-top:1px; opacity:.6;">Claude Code</span>
+            <p class="step-pill-title">Prototype</p>
+          </div>
+          <div class="step-connector">
+            <div class="step-dash"></div>
+            <div class="step-dot"></div>
+            <div class="step-dash"></div>
+          </div>
+          <div class="step-pill">
+            <span class="step-pill-label">Week 4</span>
+            <span class="step-pill-label" style="margin-top:1px; opacity:.6;">Connect server</span>
+            <p class="step-pill-title">Test and deploy</p>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:32px;">Four weeks.<br>One small goal each week.</h2>
+
         <div class="section-body">
-          <p>The challenge gave us four weeks with a mission each week. That structure turned out to be exactly right for vibe coding. Instead of a vague roadmap, we had a concrete deliverable every seven days. It pushed us further than we would have gone on our own.</p>
-          <p>To prevent friction in a fast moving team, we established a strict API contract on day one. Agreeing on the data schema before writing integration code allowed design, frontend, and backend tracks to advance independently without collision.</p>
+          <p>We picked the tech stack in week one so everyone could move without waiting. Week two was reference research in Google Stitch and design in Figma. Claude Code in week three. By week four we were testing and connecting the server.</p>
         </div>
 
-        <!-- Mission timeline -->
+        <!-- How the system works + User Flow combined -->
         <div style="margin-top:48px; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;">
-          <div style="background:var(--black); padding:20px 32px;">
-            <span style="font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.8);">4-Week Mission Timeline</span>
+
+          <!-- Header -->
+          <div style="background:var(--black); padding:16px 32px; display:flex; align-items:baseline; justify-content:space-between; gap:20px;">
+            <span style="font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.8);">How the system works</span>
+            <p style="font-size:13px; color:rgba(255,255,255,.5); line-height:1.5; text-align:right;">The chat keeps changing. The panel keeps things steady.</p>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(4,1fr);">
-            <div style="padding:28px 24px; border-right:1px solid var(--border);">
-              <span style="font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); display:block; margin-bottom:10px;">Week 1</span>
-              <p style="font-size:14px; font-weight:600; color:var(--black); margin-bottom:10px; line-height:1.3;">Concept and MVP</p>
-              <p style="font-size:12px; color:var(--gray-text); line-height:1.6;">Product definition, runner profile design, extraction pipeline, first working comparison view. API contract written and agreed.</p>
-            </div>
-            <div style="padding:28px 24px; border-right:1px solid var(--border);">
-              <span style="font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); display:block; margin-bottom:10px;">Week 2</span>
-              <p style="font-size:14px; font-weight:600; color:var(--black); margin-bottom:10px; line-height:1.3;">Core UX</p>
-              <p style="font-size:12px; color:var(--gray-text); line-height:1.6;">Two-panel layout: chat on the left, fixed decision panel on the right. ScoreCircle and Crown ranking badges. Runner profile auto-injection.</p>
-            </div>
-            <div style="padding:28px 24px; border-right:1px solid var(--border);">
-              <span style="font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); display:block; margin-bottom:10px;">Week 3</span>
-              <p style="font-size:14px; font-weight:600; color:var(--black); margin-bottom:10px; line-height:1.3;">Performance and Data</p>
-              <p style="font-size:12px; color:var(--gray-text); line-height:1.6;">Parallel URL extraction. File-system cache (7-day TTL). Prompt caching at 5 key points. Skeleton loading. Accuracy and speed testing across 5 cases.</p>
-            </div>
-            <div style="padding:28px 24px;">
-              <span style="font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); display:block; margin-bottom:10px;">Week 4</span>
-              <p style="font-size:14px; font-weight:600; color:var(--black); margin-bottom:10px; line-height:1.3;">Accessibility and Merge</p>
-              <p style="font-size:12px; color:var(--gray-text); line-height:1.6;">WCAG accessibility pass. Design system finalized. All branches merged. Final demo prepared for the challenge presentation.</p>
-            </div>
-          </div>
-        </div>
 
-        <!-- 6-step pipeline -->
-        <div style="margin-top:32px; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;">
-          <div style="background:var(--black); padding:20px 32px;">
-            <span style="font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.8);">The Pipeline — How a message becomes a decision</span>
-          </div>
-          <div style="padding:32px; background:var(--off-white);">
-            <div style="display:grid; grid-template-columns:1fr 20px 1fr 20px 1fr 20px 1fr 20px 1fr 20px 1fr; gap:0; align-items:start;">
-
-              <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;">
-                <div style="width:100%; border:1.5px solid var(--border); border-radius:12px; padding:16px 8px; background:var(--white); min-height:84px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;">
-                  <span style="font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text);">01</span>
-                  <span style="font-size:12px; font-weight:600; color:var(--black); line-height:1.3;">User Input</span>
-                </div>
-                <span style="font-size:10px; color:var(--gray-text); line-height:1.5;">"Does this fit me?" "Compare to Clifton."</span>
+          <!-- Process nodes -->
+          <div style="padding:32px; background:linear-gradient(180deg,#fafafa 0%,#f4f4f4 100%); border-bottom:1px solid var(--border);">
+            <div class="process-flow">
+              <div class="process-node">
+                <span class="process-node-num">01</span>
+                <strong>Ask or paste</strong>
+                <p>The user asks a question or shares product links.</p>
               </div>
-              <div style="display:flex; align-items:flex-start; justify-content:center; padding-top:30px; color:var(--gray-text); font-size:14px;">›</div>
-
-              <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;">
-                <div style="width:100%; border:1.5px solid var(--border); border-radius:12px; padding:16px 8px; background:var(--white); min-height:84px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;">
-                  <span style="font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text);">02</span>
-                  <span style="font-size:12px; font-weight:600; color:var(--black); line-height:1.3;">Extract Data</span>
-                </div>
-                <span style="font-size:10px; color:var(--gray-text); line-height:1.5;">Name, price, specs, size options</span>
+              <div class="process-node">
+                <span class="process-node-num">02</span>
+                <strong>Read the products</strong>
+                <p>The app pulls out names, prices, specs, and images.</p>
               </div>
-              <div style="display:flex; align-items:flex-start; justify-content:center; padding-top:30px; color:var(--gray-text); font-size:14px;">›</div>
-
-              <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;">
-                <div style="width:100%; border:1.5px solid var(--border); border-radius:12px; padding:16px 8px; background:var(--white); min-height:84px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;">
-                  <span style="font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text);">03</span>
-                  <span style="font-size:12px; font-weight:600; color:var(--black); line-height:1.3;">Structure + Match</span>
-                </div>
-                <span style="font-size:10px; color:var(--gray-text); line-height:1.5;">Match specs against runner profile</span>
+              <div class="process-node important">
+                <span class="process-node-num">03</span>
+                <strong>Update the panel</strong>
+                <p>Scores, risks, rankings, and rejected shoes stay visible.</p>
               </div>
-              <div style="display:flex; align-items:flex-start; justify-content:center; padding-top:30px; color:var(--gray-text); font-size:14px;">›</div>
-
-              <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;">
-                <div style="width:100%; border:1.5px solid var(--border); border-radius:12px; padding:16px 8px; background:var(--white); min-height:84px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;">
-                  <span style="font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text);">04</span>
-                  <span style="font-size:12px; font-weight:600; color:var(--black); line-height:1.3;">Route Intent</span>
-                </div>
-                <span style="font-size:10px; color:var(--gray-text); line-height:1.5;">Compare? Analyze? Eliminate? Finalize?</span>
+              <div class="process-node">
+                <span class="process-node-num">04</span>
+                <strong>Decide</strong>
+                <p>The user gets a ranked shortlist and a clearer next step.</p>
               </div>
-              <div style="display:flex; align-items:flex-start; justify-content:center; padding-top:30px; color:var(--gray-text); font-size:14px;">›</div>
-
-              <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;">
-                <div style="width:100%; border:2px solid var(--black); border-radius:12px; padding:16px 8px; background:var(--black); min-height:84px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; position:relative;">
-                  <div style="position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:var(--white); border:1.5px solid var(--black); border-radius:999px; padding:2px 8px; font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap;">Key Step</div>
-                  <span style="font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.5);">05</span>
-                  <span style="font-size:12px; font-weight:600; color:var(--white); line-height:1.3;">Update Panel</span>
-                </div>
-                <span style="font-size:10px; color:var(--gray-text); line-height:1.5;">Add/remove candidates. Update scores. Tag risks.</span>
-              </div>
-              <div style="display:flex; align-items:flex-start; justify-content:center; padding-top:30px; color:var(--gray-text); font-size:14px;">›</div>
-
-              <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;">
-                <div style="width:100%; border:1.5px solid var(--border); border-radius:12px; padding:16px 8px; background:var(--white); min-height:84px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;">
-                  <span style="font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text);">06</span>
-                  <span style="font-size:12px; font-weight:600; color:var(--black); line-height:1.3;">Decision</span>
-                </div>
-                <span style="font-size:10px; color:var(--gray-text); line-height:1.5;">Top 3 ranked. Purchase report.</span>
-              </div>
-
             </div>
           </div>
-          <div style="padding:16px 32px; background:var(--white); border-top:1px solid var(--border);">
-            <p style="font-size:12px; color:var(--gray-text); line-height:1.6;">The chat keeps receiving new messages. The decision panel keeps your conditions, candidates, eliminations, and risks fixed until you finish. Information does not disappear the way it does in a standard AI chat.</p>
-          </div>
-        </div>
 
-        <!-- User Flow -->
-        <div style="margin-top:48px;">
-          <div style="background:var(--black); padding:16px 32px; border-radius:var(--radius-sm) var(--radius-sm) 0 0;">
-            <span style="font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.8);">User Flow — AI and User Behavior</span>
-          </div>
-          <div class="anno-img lb-trigger" style="border-radius:0 0 var(--radius-sm) var(--radius-sm); border-top:none; min-height:320px; background:var(--off-white); cursor:zoom-in;" onclick="openLightbox('assets/briefbuy/User Flow.png','User Flow diagram')">
+          <!-- User flow image -->
+          <div class="anno-img lb-trigger" style="border-radius:0; border:none; border-top:1px solid var(--border); min-height:300px; background:var(--off-white); cursor:zoom-in;" onclick="openLightbox('assets/briefbuy/User Flow.png','User Flow diagram')">
             <img src="assets/briefbuy/User Flow.png" alt="BriefBuy User Flow diagram" style="width:100%;height:100%;object-fit:contain;padding:24px;">
           </div>
+
         </div>
       </section>
 
       <!-- 04 Design -->
       <section class="cs-section reveal" id="design">
-        <span class="section-label">04 — Design</span>
-        <h2 class="section-title">Chat and fixed panel.<br>Two jobs, one screen.</h2>
+        <span class="section-label">04 Design</span>
+        <h2 class="section-title">Chat on one side.<br>Decisions on the other.</h2>
         <div class="section-body">
-          <p>The central UX decision was the two-panel layout. The left side is a chat. The right side is a fixed decision panel that never scrolls away. Chat is where you ask questions and refine your thinking. The panel is where your runner profile, your candidates, their fit scores, and your eliminated options stay permanently visible.</p>
-          <p>This solved the context-drift problem directly. <span class="highlight">The panel updates with every message, but it never moves.</span> You do not have to scroll up to remember what you told the AI. You do not have to ask it to re-apply your conditions. Your runner profile is injected automatically into every Claude call that touches the comparison, so the AI always knows who it is talking to.</p>
+          <p>The main design choice was a two panel layout. The chat is where users ask questions. The panel is where the decision stays organized.</p>
+          <p><span class="highlight">The panel updates with every message, but it never moves.</span> Users can always see their profile, candidates, fit scores, and rejected options.</p>
         </div>
 
         <!-- Two-panel layout visual -->
         <div style="margin-top:48px; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;">
           <div style="background:var(--black); padding:16px 32px;">
-            <span style="font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.8);">Two-Panel Architecture</span>
+            <span style="font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.8);">Two panel layout</span>
           </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; min-height:200px;">
+          <div class="mobile-stack" style="display:grid; grid-template-columns:1fr 1fr; min-height:200px;">
             <div style="padding:32px; border-right:1px solid var(--border);">
               <p style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:16px;">Left: Chat</p>
-              <p style="font-size:14px; font-weight:600; color:var(--black); margin-bottom:12px;">Free conversation with follow-up commands</p>
-              <p style="font-size:13px; color:var(--gray-text); line-height:1.7;">Paste URLs, ask questions, refine by cushion or price. Suggestion chips at the bottom make common commands one click. A ThinkingIndicator (three-dot bounce) shows when Claude is working. Duplicate submission is blocked while a request is in flight.</p>
+              <p style="font-size:14px; font-weight:600; color:var(--black); margin-bottom:12px;">Ask, compare, refine</p>
+              <p style="font-size:13px; color:var(--gray-text); line-height:1.7;">Users paste links, ask follow ups, and narrow the list by fit, cushion, or price.</p>
             </div>
             <div style="padding:32px;">
               <p style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:16px;">Right: Fixed Decision Panel</p>
-              <p style="font-size:14px; font-weight:600; color:var(--black); margin-bottom:12px;">Persistent workspace that stays in view</p>
-              <p style="font-size:13px; color:var(--gray-text); line-height:1.7;">Runner profile, candidate shoe cards with fit scores, Crown ranking badges (1st/2nd/3rd), and eliminated models with reasons. Updates live as the conversation evolves. Never scrolls away. Always current.</p>
+              <p style="font-size:14px; font-weight:600; color:var(--black); margin-bottom:12px;">A workspace that stays visible</p>
+              <p style="font-size:13px; color:var(--gray-text); line-height:1.7;">The profile, scores, rankings, and rejected shoes stay in one place while the chat changes.</p>
             </div>
           </div>
-          <div class="anno-img lb-trigger" style="border-top:1px solid var(--border); border-radius:0; min-height:360px; background:var(--off-white); cursor:zoom-in;" onclick="openLightbox('assets/briefbuy/briefbuy_intro_comparison.png','BriefBuy — Two-panel comparison workspace')">
-            <img src="assets/briefbuy/briefbuy_intro_comparison.png" alt="BriefBuy two-panel layout — chat on left, decision workspace on right" style="width:100%;height:100%;object-fit:cover;object-position:top left;padding:0;">
+          <div class="anno-img lb-trigger" style="border-top:1px solid var(--border); border-radius:0; min-height:360px; background:var(--off-white); cursor:zoom-in;" onclick="openLightbox('assets/briefbuy/briefbuy_intro_comparison.png','BriefBuy two panel comparison workspace')">
+            <img src="assets/briefbuy/briefbuy_intro_comparison.png" alt="BriefBuy two panel layout with chat and decision workspace" style="width:100%;height:100%;object-fit:cover;object-position:top left;padding:0;">
           </div>
         </div>
 
-        <!-- 01 Brand and Design System -->
-        <div style="margin-top:52px;">
-          <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);">
-            <span style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--black);padding:6px 14px;border-radius:999px;white-space:nowrap;">01</span>
-            <span style="font-size:15px;font-weight:600;color:var(--black);">Brand and Design System</span>
+        <!-- Design system tabs -->
+        <div style="margin-top:52px; margin-bottom:20px;">
+          <span style="font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); display:block; margin-bottom:12px;">Inside the design</span>
+          <p style="font-size:22px; font-weight:700; letter-spacing:-.025em; line-height:1.2; color:var(--black);">Three components. Each solving a different part of the decision.</p>
+        </div>
+        <div class="feat-tabs" style="margin-top:0;">
+          <div class="feat-tab-bar">
+            <button class="feat-tab-btn active" data-tab="dtab1">
+              <span class="tab-num">01</span>Brand and Design System
+            </button>
+            <button class="feat-tab-btn" data-tab="dtab2">
+              <span class="tab-num">02</span>Runner Profile
+            </button>
+            <button class="feat-tab-btn" data-tab="dtab3">
+              <span class="tab-num">03</span>ScoreCircle and Crown Ranking
+            </button>
           </div>
+
+          <!-- Panel 1: Brand and Design System -->
+          <div class="feat-tab-panel active" id="dtab1">
           <!-- Two-column: character widget left, description right -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+          <div class="mobile-stack" style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
 
           <!-- Left: Interactive character level-up widget -->
           <div id="charWidget" style="background:linear-gradient(160deg,#f4f3ff 0%,#edfefe 100%); border:1px solid var(--border); border-radius:var(--radius); padding:48px 32px 40px; display:flex; flex-direction:column; align-items:center; position:relative; overflow:hidden; transition:background .5s ease;">
@@ -829,12 +948,12 @@
               <span style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(0,0,0,0.45);">Try it</span>
             </div>
 
-            <!-- Level dots -->
+            <!-- Level buttons -->
             <div style="display:flex;gap:8px;margin-bottom:36px;position:relative;z-index:1;">
-              <button id="dot-1" onclick="setCharLevel(1)" style="width:32px;height:32px;border-radius:50%;border:1.5px solid #111;background:#111;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">1</button>
-              <button id="dot-2" onclick="setCharLevel(2)" style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.65);background:rgba(255,255,255,0.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:rgba(80,80,80,0.75);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">2</button>
-              <button id="dot-3" onclick="setCharLevel(3)" style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.65);background:rgba(255,255,255,0.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:rgba(80,80,80,0.75);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">3</button>
-              <button id="dot-4" onclick="setCharLevel(4)" style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.65);background:rgba(255,255,255,0.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:rgba(80,80,80,0.75);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">4</button>
+              <button id="dot-1" onclick="setCharLevel(1)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="padding:8px 18px;border-radius:999px;border:1.5px solid #111;background:#111;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.04em;" data-active="1">Lv.1</button>
+              <button id="dot-2" onclick="setCharLevel(2)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="padding:8px 18px;border-radius:999px;border:1.5px solid #999;background:rgba(255,255,255,0.7);color:#555;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.04em;" data-active="0">Lv.2</button>
+              <button id="dot-3" onclick="setCharLevel(3)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="padding:8px 18px;border-radius:999px;border:1.5px solid #999;background:rgba(255,255,255,0.7);color:#555;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.04em;" data-active="0">Lv.3</button>
+              <button id="dot-4" onclick="setCharLevel(4)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="padding:8px 18px;border-radius:999px;border:1.5px solid #999;background:rgba(255,255,255,0.7);color:#555;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.04em;" data-active="0">Lv.4</button>
             </div>
 
             <!-- Character SVG viewport -->
@@ -874,8 +993,8 @@
 
             <!-- Right: Description -->
             <div class="section-body" style="display:flex;flex-direction:column;gap:20px;">
-              <p>The typeface pairing is Outfit for display and Inter for body. Outfit has just enough energy to feel like a product people would actually enjoy using, without reading as gimmicky. The color system is a purple to teal gradient that runs through scores, highlights, and interactive elements.</p>
-              <p>The AI companion character evolves across four levels as the user chats more. It starts as a plain starter and unlocks arms, a cap, and sunglasses as confidence builds.</p>
+              <p>I wanted the product to feel useful, but still friendly. Outfit gave the interface a bit of energy, and Inter kept the longer text easy to read.</p>
+              <p>The companion character grows as the user chats more. It starts simple, then slowly unlocks more personality.</p>
             </div>
 
           </div><!-- /two-column grid -->
@@ -884,10 +1003,10 @@
           (function(){
             var charLevel = 1;
             var levels = [
-              { name:'Starter',         desc:'Your new companion, fresh and ready to help.',    unlock:null,           bg:'linear-gradient(160deg,#f4f3ff 0%,#edfefe 100%)', glow:'rgba(93,92,255,.12)',  btn:'#111',     mode:'walk' },
-              { name:'Explorer',        desc:'Getting warmed up. Arms out, ready to compare.',  unlock:'+ Arms',       bg:'linear-gradient(160deg,#f5f3ff 0%,#ede9fe 100%)', glow:'rgba(124,58,237,.14)', btn:'#111',     mode:'walk' },
-              { name:'Regular Explorer',desc:'A seasoned shopper. Sporting a fresh cap.',       unlock:'+ Cap',        bg:'linear-gradient(160deg,#f0f4ff 0%,#ede9fe 100%)', glow:'rgba(93,92,255,.16)',  btn:'#111',     mode:'walk' },
-              { name:'Shopping Legend', desc:'Shades on, full speed. You have done this before.',unlock:'+ Sunglasses',bg:'linear-gradient(160deg,#f0fdfa 0%,#ccfbf1 100%)', glow:'rgba(45,212,191,.18)', btn:'#0d9488',  mode:'run'  }
+              { name:'Starter',         desc:'Fresh and ready to help.',        unlock:null,             bg:'linear-gradient(160deg,#f4f3ff 0%,#edfefe 100%)', glow:'rgba(93,92,255,.12)',  btn:'#111',     mode:'walk' },
+              { name:'Explorer',        desc:'Warmed up and ready to compare.', unlock:'Arms added',     bg:'linear-gradient(160deg,#f5f3ff 0%,#ede9fe 100%)', glow:'rgba(124,58,237,.14)', btn:'#111',     mode:'walk' },
+              { name:'Regular Explorer',desc:'Now it has a cap.',              unlock:'Cap added',      bg:'linear-gradient(160deg,#f0f4ff 0%,#ede9fe 100%)', glow:'rgba(93,92,255,.16)',  btn:'#111',     mode:'walk' },
+              { name:'Shopping Legend', desc:'Shades on. Ready to run.',        unlock:'Sunglasses added',bg:'linear-gradient(160deg,#f0fdfa 0%,#ccfbf1 100%)', glow:'rgba(45,212,191,.18)', btn:'#0d9488',  mode:'run'  }
             ];
 
             function buildChar(level, id, mode, dur) {
@@ -942,11 +1061,14 @@
                 if (!d) continue;
                 if (i === lv) {
                   d.style.background = '#111'; d.style.color = '#fff'; d.style.borderColor = '#111';
+                  d.dataset.active = '1';
                 } else if (i < lv) {
                   d.style.background = 'rgba(93,92,255,.15)'; d.style.color = '#5d5cff'; d.style.borderColor = '#5d5cff';
+                  d.dataset.active = '0';
                 } else {
-                  d.style.background = 'rgba(255,255,255,0.45)'; d.style.color = 'rgba(80,80,80,0.75)'; d.style.borderColor = 'rgba(255,255,255,0.65)';
-                  d.style.backdropFilter = 'blur(10px)'; d.style.webkitBackdropFilter = 'blur(10px)';
+                  d.style.background = 'rgba(255,255,255,0.7)'; d.style.color = '#555'; d.style.borderColor = '#999';
+                  d.style.backdropFilter = ''; d.style.webkitBackdropFilter = '';
+                  d.dataset.active = '0';
                 }
               }
 
@@ -1013,25 +1135,21 @@
             setCharLevel(1);
           })();
           </script>
-        </div>
+          </div><!-- /feat-tab-panel dtab1 -->
 
-        <!-- 02 Runner Profile -->
-        <div style="margin-top:52px;">
-          <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);">
-            <span style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--black);padding:6px 14px;border-radius:999px;white-space:nowrap;">02</span>
-            <span style="font-size:15px;font-weight:600;color:var(--black);">Runner Profile</span>
-          </div>
+          <!-- Panel 2: Runner Profile -->
+          <div class="feat-tab-panel" id="dtab2">
           <div class="section-body" style="margin-bottom:32px;">
-            <p>The runner profile is the foundation of every comparison. I designed a short onboarding form that collects the variables that actually change a recommendation: current shoes, foot width, weekly distance, main use, preferred cushion, budget, any pain points, brand preferences. Once saved, the profile auto-injects as context into every Claude call. You set it once and it follows every session.</p>
+            <p>The runner profile carries the details that change the recommendation. Users set it once, and the app keeps using it during the session.</p>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+          <div class="mobile-stack" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
             <div class="anno-card">
               <svg class="anno-card-icon" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="8" r="4"/>
                 <path d="M3 20c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
               </svg>
-              <p class="anno-card-title">Set once, always in context</p>
-              <p class="anno-card-desc">The profile is stored and auto-injected into the system prompt for every comparison. Claude always knows your runner type without you having to re-state it.</p>
+              <p class="anno-card-title">Set once</p>
+              <p class="anno-card-desc">The profile follows every comparison, so users do not have to repeat themselves.</p>
             </div>
             <div class="anno-card" style="background:var(--black);border-color:transparent;">
               <svg class="anno-card-icon" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--white);">
@@ -1040,8 +1158,8 @@
                 <line x1="8" y1="12" x2="14" y2="12"/>
                 <line x1="8" y1="16" x2="11" y2="16"/>
               </svg>
-              <p class="anno-card-title" style="color:var(--white);">Conditions that actually move the recommendation</p>
-              <p class="anno-card-desc" style="color:rgba(255,255,255,.8);">Foot width, drop preference, weekly mileage, and injury history change which shoe fits best. These are not preference filters. They are the variables the model reasons from.</p>
+              <p class="anno-card-title" style="color:var(--white);">Details that matter</p>
+              <p class="anno-card-desc" style="color:rgba(255,255,255,.8);">Foot width, mileage, budget, and pain points all shape the recommendation.</p>
             </div>
             <div class="anno-card">
               <svg class="anno-card-icon" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1049,22 +1167,18 @@
                 <path d="M2 17l10 5 10-5"/>
                 <path d="M2 12l10 5 10-5"/>
               </svg>
-              <p class="anno-card-title">Visible in the fixed panel</p>
-              <p class="anno-card-desc">Your profile summary stays at the top of the decision panel. You can see at a glance what conditions are shaping the comparison and edit them mid-session if something changes.</p>
+              <p class="anno-card-title">Always visible</p>
+              <p class="anno-card-desc">The profile stays at the top of the decision panel, so users can check it quickly.</p>
             </div>
           </div>
           <div class="anno-img lb-trigger" style="margin-top:20px; min-height:340px; background:var(--off-white); cursor:zoom-in;" onclick="openLightbox('assets/briefbuy/runner_porfile.png','Runner Profile form')">
-            <img src="assets/briefbuy/runner_porfile.png" alt="Runner Profile modal — set once, used every comparison" style="width:100%;height:100%;object-fit:contain;padding:16px;">
+            <img src="assets/briefbuy/runner_porfile.png" alt="Runner profile modal used for every comparison" style="width:100%;height:100%;object-fit:contain;padding:16px;">
           </div>
-        </div>
+          </div><!-- /feat-tab-panel dtab2 -->
 
-        <!-- 03 ScoreCircle and Crown system -->
-        <div style="margin-top:52px;">
-          <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);">
-            <span style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--black);padding:6px 14px;border-radius:999px;white-space:nowrap;">03</span>
-            <span style="font-size:15px;font-weight:600;color:var(--black);">ScoreCircle and Crown Ranking</span>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <!-- Panel 3: ScoreCircle and Crown Ranking -->
+          <div class="feat-tab-panel" id="dtab3">
+          <div class="mobile-stack" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
             <div class="anno-card">
               <svg class="anno-card-icon" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"/>
@@ -1072,7 +1186,7 @@
                 <circle cx="11" cy="11" r="1.5" fill="currentColor" stroke="none"/>
               </svg>
               <p class="anno-card-title">Fit score at a glance</p>
-              <p class="anno-card-desc">The ScoreCircle communicates a complex multi-variable match as a single readable number. You see the headline, then dig into the factors below if you want to know why.</p>
+              <p class="anno-card-desc">A single score gives users a quick read before they open the details.</p>
             </div>
             <div class="anno-card" style="background:var(--black);border-color:transparent;">
               <svg class="anno-card-icon" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--white);">
@@ -1081,30 +1195,29 @@
                 <rect x="7" y="17" width="8" height="2" rx="1"/>
                 <line x1="11" y1="14" x2="11" y2="17"/>
               </svg>
-              <p class="anno-card-title" style="color:var(--white);">Crown badges update with follow-up chat</p>
-              <p class="anno-card-desc" style="color:rgba(255,255,255,.8);">Ask to "prioritize cushioning" and the ranking rearranges. The Crown on the top card moves. You always see who won and why, without re-reading a paragraph.</p>
+              <p class="anno-card-title" style="color:var(--white);">Rankings can change</p>
+              <p class="anno-card-desc" style="color:rgba(255,255,255,.8);">If the user changes priorities, the top pick can move with the conversation.</p>
             </div>
           </div>
           <div class="anno-img lb-trigger" style="margin-top:20px; min-height:340px; background:var(--off-white); cursor:zoom-in;" onclick="openLightbox('assets/briefbuy/shoedetail_porfile.png','Shoe Details with ScoreCircle')">
             <img src="assets/briefbuy/shoedetail_porfile.png" alt="Shoe Details modal with ScoreCircle fit score" style="width:100%;height:100%;object-fit:contain;padding:16px;">
           </div>
-        </div>
+          </div><!-- /feat-tab-panel dtab3 -->
 
-        <!-- Decision workspace mockup — REMOVED -->
-        <!-- Routing table — REMOVED -->
+        </div><!-- /feat-tabs -->
       </section>
 
       <!-- 05 Version 2 -->
       <section class="cs-section reveal" id="version2">
-        <span class="section-label">05 — Version 2</span>
+        <span class="section-label">05 Version 2</span>
         <h2 class="section-title">After the challenge.<br>Save your work and come back to it.</h2>
         <div class="section-body">
-          <p>The first build had no memory across sessions. You could run a full comparison, close the tab, and it was gone. Version 2 added a history board so users can save a comparison board or a shoe detail board and revisit it any time. Each saved entry reopens exactly as you left it. Users can also remove boards from the history when they no longer need them.</p>
+          <p>The first build lost everything when the tab closed. In Version 2, I added a history board so users can save a comparison and come back later.</p>
         </div>
 
         <!-- V2 history board demo video -->
         <div style="margin-top:48px;">
-          <p style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:12px;">History Board — save, revisit, and remove comparison and shoe detail boards</p>
+          <p style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:12px;">History board: save, revisit, and remove boards</p>
           <div style="border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; background:var(--black);">
             <video controls preload="metadata" style="width:100%;display:block;border-radius:var(--radius-sm);" poster="assets/briefbuy/briefbuy_intro_comparison.png">
               <source src="assets/briefbuy/version2_historyboard_demo.mp4" type="video/mp4">
@@ -1116,24 +1229,24 @@
 
       <!-- 05 Outcome -->
       <section class="cs-section reveal" id="outcome">
-        <span class="section-label">06 — Outcome</span>
-        <h2 class="section-title">Four weeks. A working product.<br>Numbers that held up to testing.</h2>
+        <span class="section-label">06 Outcome</span>
+        <h2 class="section-title">Four weeks later,<br>we had a working product.</h2>
         <div class="section-body">
-          <p>We ran five test cases at the end of week three to measure accuracy and speed. The happy path (three Nike running shoes, same category) completed in 30 seconds: 13.5 seconds to extract all three products in parallel, 16.5 seconds for Claude to compare and rank them. The recommendation, Nike Pegasus 42, was appropriate for the test conditions of "30km per week, budget under 250,000 won."</p>
-          <p>The most satisfying result was the cache. Second time you visit the same product URL, the extraction takes 63 milliseconds. The same URL cold runs about 13 seconds. <span class="highlight">That is 207 times faster.</span> For a tool people will use across multiple sessions while researching the same shortlist, that matters.</p>
+          <p>We tested five common cases for speed and accuracy. The main flow worked, and the recommendation matched the runner conditions we gave it.</p>
+          <p>The best result was caching. A repeated product link loaded in 63 milliseconds instead of about 13 seconds. <span class="highlight">That made repeat research feel instant.</span></p>
         </div>
         <div class="outcome-grid">
           <div class="outcome-card filled">
             <span class="outcome-num">5/5</span>
-            <p class="outcome-desc">Extraction accuracy across test URLs. Title, price, image, and category all correct. Trail shoes correctly aliased to running shoes. Lifestyle shoes correctly classified as non-running.</p>
+            <p class="outcome-desc">All five test URLs returned the right title, price, image, and category.</p>
           </div>
           <div class="outcome-card">
             <span class="outcome-num">207×</span>
-            <p class="outcome-desc">Speed improvement on cached URLs. Cold extraction runs about 13 seconds per URL. A cached URL returns in 63 milliseconds.</p>
+            <p class="outcome-desc">Cached product links loaded much faster than the first extraction.</p>
           </div>
           <div class="outcome-card">
             <span class="outcome-num">11.4s</span>
-            <p class="outcome-desc">Time to updated recommendation after a chat follow-up. Ask "prioritize cushioning" and the ranking rearranges with new reasoning in under 12 seconds.</p>
+            <p class="outcome-desc">A follow up request could update the ranking in under 12 seconds.</p>
           </div>
         </div>
 
@@ -1143,59 +1256,35 @@
             <span style="font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.8);">Week 3 Test Results</span>
           </div>
           <div style="display:flex; flex-direction:column;">
-            <div style="display:grid; grid-template-columns:2fr 1fr 1fr; background:var(--off-white); border-bottom:1px solid var(--border); padding:14px 28px; gap:16px;">
+            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; background:var(--off-white); border-bottom:1px solid var(--border); padding:14px 28px; gap:16px;">
               <p style="font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gray-text);">Test Case</p>
               <p style="font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gray-text);">Time</p>
               <p style="font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gray-text);">Result</p>
             </div>
-            <div style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
-              <p style="font-size:13px; color:var(--black); font-weight:500;">Happy path: 3 Nike running shoes, same category</p>
+            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
+              <p style="font-size:13px; color:var(--black); font-weight:500;">Three Nike running shoes</p>
               <p style="font-size:13px; color:var(--gray-text);">30.0s total</p>
-              <p style="font-size:13px; color:var(--black);">Pegasus 42 recommended. Correct for conditions.</p>
+              <p style="font-size:13px; color:var(--black);">Pegasus 42 recommended.</p>
             </div>
-            <div style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
-              <p style="font-size:13px; color:var(--black); font-weight:500;">Mixed: 2 running shoes + 1 lifestyle shoe (Air Force 1)</p>
+            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
+              <p style="font-size:13px; color:var(--black); font-weight:500;">Two running shoes plus one lifestyle shoe</p>
               <p style="font-size:13px; color:var(--gray-text);">40.4s total</p>
-              <p style="font-size:13px; color:var(--black);">Lifestyle shoe correctly flagged as not a running shoe. Recommendation held.</p>
+              <p style="font-size:13px; color:var(--black);">Lifestyle shoe was flagged correctly.</p>
             </div>
-            <div style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
+            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
               <p style="font-size:13px; color:var(--black); font-weight:500;">Invalid URL in the list</p>
               <p style="font-size:13px; color:var(--gray-text);">0.39s to fail</p>
-              <p style="font-size:13px; color:var(--black);">URL chip turned red. Remaining URLs processed normally.</p>
+              <p style="font-size:13px; color:var(--black);">Bad link was flagged. Other links still worked.</p>
             </div>
-            <div style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
-              <p style="font-size:13px; color:var(--black); font-weight:500;">Same URLs requested again (cache test)</p>
+            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
+              <p style="font-size:13px; color:var(--black); font-weight:500;">Same URLs requested again</p>
               <p style="font-size:13px; color:var(--gray-text);">63ms average</p>
-              <p style="font-size:13px; color:var(--black);">207× faster than cold. Identical output.</p>
+              <p style="font-size:13px; color:var(--black);">Loaded from cache.</p>
             </div>
-            <div style="display:grid; grid-template-columns:2fr 1fr 1fr; padding:18px 28px; gap:16px; align-items:center;">
-              <p style="font-size:13px; color:var(--black); font-weight:500;">Chat follow-up: "prioritize cushioning"</p>
+            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; padding:18px 28px; gap:16px; align-items:center;">
+              <p style="font-size:13px; color:var(--black); font-weight:500;">Follow up request</p>
               <p style="font-size:13px; color:var(--gray-text);">11.4s</p>
-              <p style="font-size:13px; color:var(--black);">Ranking changed. New reasoning generated. Crown badge moved to cushion-first model.</p>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top:24px; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;">
-          <div style="background:var(--black); padding:16px 32px;">
-            <span style="font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.8);">Tech Stack</span>
-          </div>
-          <div style="display:grid; grid-template-columns:repeat(4,1fr);">
-            <div style="padding:24px 28px; border-right:1px solid var(--border);">
-              <p style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:8px;">Frontend</p>
-              <p style="font-size:13px; color:var(--black); line-height:1.6;">Next.js 14 App Router · shadcn/ui · Tailwind CSS · TypeScript</p>
-            </div>
-            <div style="padding:24px 28px; border-right:1px solid var(--border);">
-              <p style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:8px;">AI Layer</p>
-              <p style="font-size:13px; color:var(--black); line-height:1.6;">Claude API (Opus/Sonnet/Haiku) · Prompt caching · build_scores tool</p>
-            </div>
-            <div style="padding:24px 28px; border-right:1px solid var(--border);">
-              <p style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:8px;">Data</p>
-              <p style="font-size:13px; color:var(--black); line-height:1.6;">Zod schemas · SHA-256 file cache · 7-day TTL · Parallel extraction</p>
-            </div>
-            <div style="padding:24px 28px;">
-              <p style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:8px;">Design</p>
-              <p style="font-size:13px; color:var(--black); line-height:1.6;">Outfit + Inter · Purple to teal · ScoreCircle · Crown badges</p>
+              <p style="font-size:13px; color:var(--black);">Ranking changed with new reasoning.</p>
             </div>
           </div>
         </div>
@@ -1203,11 +1292,11 @@
 
       <!-- 06 What I Learned -->
       <section class="cs-section reveal" id="learned">
-        <span class="section-label">07 — What I Learned</span>
-        <h2 class="section-title">What four weeks of building fast<br>actually teaches you.</h2>
+        <span class="section-label">07 What I Learned</span>
+        <h2 class="section-title">Building fast taught me<br>where the product was strongest.</h2>
         <div class="section-body">
-          <p>The most concrete thing I took away: <span class="highlight">persistent state is a design primitive, not a UI detail.</span> BriefBuy worked because the decision panel is a separate, permanent surface the chat cannot scroll away. Design and data contract are also the same problem in AI products. The shape of what Claude returns determines what you can build. You cannot design a ScoreCircle before the API promises a fit score. The design work and the schema work have to happen together.</p>
-          <p>I wanted no URLs required. Just describe what you need and let the AI suggest options from its knowledge. The rest of the team was louder, and we shipped with URL paste as the entry point. I still think it is a barrier most real shoppers would give up on before they start. Most people do not have a product URL ready when they open a tab to research shoes. They have a question. That disagreement stayed unresolved in V1, and the weekly deadlines made sure it survived into the final product.</p>
+          <p>The biggest lesson was simple: <span class="highlight">memory is part of the design.</span> BriefBuy worked because the decision panel stayed visible while the chat kept changing.</p>
+          <p>I also learned where I would push the product next. I still think users should be able to describe what they need first, without finding product links before they start.</p>
         </div>
       </section>
 
@@ -1230,7 +1319,7 @@
             </div>
             <div class="related-body">
               <span class="related-tag">01 · Policy Data Visualization</span>
-              <p class="related-title">CAN–U.S. District Dashboard</p>
+              <p class="related-title">Canada and U.S. District Dashboard</p>
             </div>
           </a>
         </div>
@@ -1274,6 +1363,19 @@
   }, { threshold: 0.12 });
   cardEls.forEach(c => cardObs.observe(c));
 
+  // Process step flow: reveal one by one
+  const processFlow = document.getElementById('processStepFlow');
+  if (processFlow) {
+    const pfObs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        const items = processFlow.querySelectorAll('.step-pill, .step-connector');
+        items.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 180));
+        pfObs.unobserve(processFlow);
+      }
+    }, { threshold: 0.4 });
+    pfObs.observe(processFlow);
+  }
+
   // Smooth scroll
   navLinks.forEach(a => {
     a.addEventListener('click', e => {
@@ -1303,6 +1405,17 @@
   overlay.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
   overlay.addEventListener('click', e => { if (e.target === overlay) closeLightbox(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // Design section tabs
+  document.querySelectorAll('.feat-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.closest('.feat-tabs');
+      group.querySelectorAll('.feat-tab-btn').forEach(b => b.classList.remove('active'));
+      group.querySelectorAll('.feat-tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
 </script>
 
 </body>

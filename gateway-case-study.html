@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gateway Case Study · Goeun Choi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Overused+Grotesk:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --white:     #ffffff; --off-white: #f8f8f8; --gray-light: #f0f0f0;
+      --gray-text: #888888; --black:     #111111; --border:     #e8e8e8;
+      --radius:    20px;    --radius-sm: 12px;
+      --shadow:    0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+      --brand:     #3D5A4F; --brand-light: #edf2f0;
+    }
+    body { font-family:'Overused Grotesk','Inter',system-ui,sans-serif; background:var(--white); color:var(--black); line-height:1.6; font-size:16px; font-weight:400; }
+
+    /* Nav */
+    nav { position:sticky; top:0; background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--border); border-radius:0 0 20px 20px; z-index:100; }
+    .nav-inner { max-width:1280px; margin:0 auto; padding:24px 64px; display:flex; justify-content:space-between; align-items:center; }
+    .nav-logo { font-size:15px; font-weight:600; color:var(--black); text-decoration:none; letter-spacing:-.01em; }
+    .nav-links { display:flex; gap:36px; list-style:none; }
+    .nav-links a { font-size:13px; color:var(--gray-text); text-decoration:none; transition:color .15s; }
+    .nav-links a:hover { color:var(--black); }
+
+    /* Page */
+    .page { max-width:1280px; margin:0 auto; padding:0 64px; }
+
+    /* Hero */
+    .hero { padding:72px 0 64px; border-bottom:1px solid var(--border); }
+    .hero-meta { display:flex; align-items:center; gap:12px; margin-bottom:32px; }
+    .hero-back { font-size:13px; color:var(--gray-text); text-decoration:none; display:flex; align-items:center; gap:6px; transition:color .15s; }
+    .hero-back:hover { color:var(--black); }
+    .hero-meta-sep { color:var(--border); }
+    .hero-meta-tag { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); }
+    .hero-tags { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:36px; }
+    .hero-tag-pill { font-size:11px; font-weight:500; background:var(--off-white); color:var(--black); border:1px solid var(--border); border-radius:999px; padding:5px 14px; }
+    .hero-tag-pill.filled { background:var(--black); color:var(--white); border-color:transparent; }
+    h1.hero-title { font-size:clamp(34px,4.5vw,66px); font-weight:700; letter-spacing:-.035em; line-height:1.05; color:var(--black); margin-bottom:20px; }
+    p.hero-desc { font-size:17px; color:var(--gray-text); line-height:1.65; margin-bottom:48px; }
+
+    /* Stats */
+    .hero-stats { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; margin-top:52px; }
+    .hero-stat { padding:28px 32px; border-right:1px solid var(--border); }
+    .hero-stat:last-child { border-right:none; }
+    .hero-stat-num { font-size:38px; font-weight:700; letter-spacing:-.03em; display:block; margin-bottom:6px; }
+    .hero-stat-label { font-size:12px; color:var(--gray-text); line-height:1.4; }
+
+    /* Cover */
+    .hero-cover { width:100%; aspect-ratio:16/7; background:var(--brand); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; overflow:hidden; margin-top:52px; }
+    .cover-ph { font-size:13px; color:rgba(255,255,255,.3); letter-spacing:.04em; }
+    .hero-cover img { width:100%; height:100%; object-fit:cover; object-position:top; }
+
+    /* Overview bar */
+    .cs-overview {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 52px;
+    }
+    .cs-overview-item {
+      padding: 28px 32px;
+      border-right: 1px solid var(--border);
+    }
+    .cs-overview-item:last-child { border-right: none; }
+    .cs-overview-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: var(--black);
+      color: var(--white);
+      padding: 10px 32px;
+      margin: -28px -32px 20px -32px;
+    }
+    .cs-overview-label svg { flex-shrink: 0; opacity: .75; }
+    .cs-overview-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--black);
+      line-height: 1.5;
+    }
+
+    /* Body layout */
+    .body-layout {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 0;
+      align-items: start;
+    }
+
+    /* Left sticky sidebar nav */
+    .section-nav {
+      position: sticky;
+      top: 96px;
+      padding: 30px 32px 80px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .section-nav a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-text);
+      text-decoration: none;
+      padding: 8px 16px 6px 18px;
+      border-radius: 999px;
+      white-space: nowrap;
+      transition: color .2s, background .2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .section-nav a:hover { color: var(--black); }
+    .section-nav a.active {
+      background: var(--black);
+      color: var(--white);
+      font-weight: 600;
+    }
+    .snav-icon { width: 14px; height: 14px; flex-shrink: 0; color: inherit; }
+
+    /* Content */
+    .content { padding: 80px 0 120px; padding-left: 72px; border-left: 1px solid var(--border); }
+    .cs-section { padding:72px 0; border-bottom:1px solid var(--border); }
+    .cs-section:last-child { border-bottom:none; }
+
+    /* Typography */
+    .section-label { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); margin-bottom:20px; display:block; }
+    .section-title { font-size:clamp(24px,2.8vw,38px); font-weight:700; letter-spacing:-.025em; line-height:1.1; margin-bottom:24px; }
+    .section-body { font-size:16px; line-height:1.8; color:#333; }
+    .section-body p+p { margin-top:20px; }
+
+    /* Layout helpers */
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:48px; align-items:start; }
+    .three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:48px; }
+
+    /* Callout */
+    .callout { background:var(--off-white); border-radius:var(--radius-sm); padding:28px 32px; margin-top:40px; }
+    .callout.dark { background:var(--black); color:var(--white); }
+    .callout-label { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:10px; display:block; }
+    .callout.dark .callout-label { color:rgba(255,255,255,.8); }
+    .callout-text { font-size:18px; font-weight:600; line-height:1.5; letter-spacing:-.01em; }
+    .callout.dark .callout-text { color:var(--white); }
+    [class*="dark"],
+    .bento-card,
+    .outcome-card.filled { color: var(--white); }
+
+    /* Annotated layout */
+    .anno-layout { display:flex; flex-direction:column; gap:12px; margin-top:48px; }
+    .anno-row { display:grid; gap:12px; align-items:stretch; }
+    .anno-row.img-right { grid-template-columns:1fr 2fr; }
+    .anno-row.img-left  { grid-template-columns:2fr 1fr; }
+    .anno-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:28px; display:grid; grid-template-columns:26px 1fr; grid-template-rows:auto auto; gap:6px 12px; align-items:start; flex:1; transition:transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s; }
+    .anno-card:hover { transform:translateY(-4px); box-shadow:0 10px 36px rgba(0,0,0,.1); }
+    .anno-card-icon { width:26px; height:26px; color:var(--black); flex-shrink:0; grid-column:1; grid-row:1; margin-top:2px; }
+    .anno-card-title { font-size:14px; font-weight:600; color:var(--black); line-height:1.3; margin-bottom:0; grid-column:2; grid-row:1; align-self:center; }
+    .anno-card-desc { font-size:13px; color:var(--gray-text); line-height:1.65; grid-column:1 / -1; grid-row:2; }
+    .anno-img { background:var(--off-white); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; min-height:320px; display:flex; align-items:center; justify-content:center; }
+    .anno-img img { width:100%; height:100%; object-fit:contain; display:block; padding:10px; }
+    .anno-bottom { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+
+    /* Summary card */
+    .summary-card { border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; margin-top:40px; }
+    .summary-card-brief { padding:28px 32px; background:var(--off-white); border-bottom:1px solid var(--border); }
+
+    /* Process steps */
+    .process-steps { display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; margin-top:48px; }
+    .process-step { padding:28px 24px; border-right:1px solid var(--border); }
+    .process-step:last-child { border-right:none; }
+    .step-num { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:10px; display:block; }
+    .step-title { font-size:14px; font-weight:600; margin-bottom:8px; }
+    .step-desc { font-size:12px; color:var(--gray-text); line-height:1.5; }
+
+    /* Step flow (animated pills) */
+    .step-flow { display:flex; align-items:center; margin-top:32px; margin-bottom:48px; }
+    .step-pill { border:1.5px solid var(--border); border-radius:999px; padding:18px 26px; text-align:center; flex-shrink:0; opacity:0; transform:translateY(10px); transition:opacity .45s ease, transform .45s cubic-bezier(.25,.46,.45,.94); }
+    .step-pill.visible { opacity:1; transform:none; }
+    .step-pill.featured { background:var(--black); border-color:var(--black); }
+    .step-pill-title { font-size:14px; font-weight:600; color:var(--black); letter-spacing:-.01em; }
+    .step-pill.featured .step-pill-title { color:var(--white); }
+    .step-pill-label { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); display:block; margin-top:4px; }
+    .step-pill.featured .step-pill-label { color:rgba(255,255,255,.5); }
+    .step-connector { flex:1; display:flex; align-items:center; opacity:0; transition:opacity .4s ease; }
+    .step-connector.visible { opacity:1; }
+    .step-dash { flex:1; border-top:1.5px dashed var(--border); }
+    .step-dot { width:8px; height:8px; border-radius:50%; background:var(--brand); flex-shrink:0; }
+    @media(max-width:700px){ .step-flow { flex-direction:column; align-items:stretch; gap:8px; } .step-connector { display:none; } .step-pill { border-radius:var(--radius-sm); text-align:left; padding:16px 20px; } }
+
+    /* Outcome */
+    .outcome-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:48px; }
+    .outcome-card { padding:32px 28px; border:1px solid var(--border); border-radius:var(--radius-sm); }
+    .outcome-card.filled { background:var(--black); border-color:transparent; }
+    .outcome-num { font-size:42px; font-weight:700; letter-spacing:-.03em; display:block; margin-bottom:6px; }
+    .outcome-card.filled .outcome-num { color:var(--white); }
+    .outcome-desc { font-size:13px; color:var(--gray-text); line-height:1.5; }
+    .outcome-card.filled .outcome-desc { color:rgba(255,255,255,.8); }
+    .outcome-card { transition:transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s; }
+    .outcome-card:hover { transform:translateY(-4px); box-shadow:0 10px 36px rgba(0,0,0,.08); }
+
+    /* Comparison section */
+    .comparison-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:48px; }
+    .comparison-col { border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; }
+    .comparison-col-label { font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; padding:12px 20px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border); }
+    .comparison-col.problem .comparison-col-label { background:var(--off-white); color:var(--gray-text); }
+    .comparison-col.solution .comparison-col-label { background:var(--black); color:var(--white); }
+    .comparison-col-label span { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .comparison-col.problem .comparison-col-label span { background:#ccc; }
+    .comparison-col.solution .comparison-col-label span { background:#fff; }
+    .comparison-points { padding:20px; display:flex; flex-direction:column; gap:12px; }
+    .comparison-point { display:flex; align-items:flex-start; gap:10px; transition:transform .2s cubic-bezier(.22,1,.36,1); cursor:default; }
+    .comparison-point:hover { transform:translateX(4px); }
+    .comparison-point-icon { width:18px; height:18px; flex-shrink:0; margin-top:2px; }
+    .comparison-col.problem .comparison-point-icon { color:#e53e3e; }
+    .comparison-col.solution .comparison-point-icon { color:var(--brand); }
+    .comparison-point-text { font-size:13px; line-height:1.6; color:#333; }
+    .comparison-col.problem .comparison-point-text { color:var(--gray-text); }
+
+    /* Image blocks */
+    .img-block { width:100%; background:var(--off-white); border:1px solid var(--border); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; margin-top:40px; }
+    .img-block.dark { background:var(--brand); border-color:transparent; }
+    .img-ph { font-size:12px; color:var(--gray-text); letter-spacing:.04em; padding:60px 40px; text-align:center; }
+    .img-block.dark .img-ph { color:rgba(255,255,255,.35); }
+    .img-block img { width:100%; border-radius:var(--radius-sm); display:block; }
+
+    /* Colour swatch strip */
+    .swatch-row { display:flex; gap:12px; margin-top:40px; flex-wrap:wrap; }
+    .swatch { flex:1; min-width:120px; border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--border); }
+    .swatch-color { height:80px; }
+    .swatch-info { padding:14px 16px; background:var(--white); }
+    .swatch-name { font-size:13px; font-weight:600; color:var(--black); display:block; }
+    .swatch-hex { font-size:11px; color:var(--gray-text); letter-spacing:.05em; margin-top:2px; display:block; }
+
+    /* Type specimen */
+    .type-specimen { margin-top:40px; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; }
+    .type-specimen-row { padding:28px 32px; border-bottom:1px solid var(--border); display:flex; align-items:baseline; gap:24px; }
+    .type-specimen-row:last-child { border-bottom:none; }
+    .type-label { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); min-width:100px; flex-shrink:0; }
+    .type-sample { color:var(--black); }
+
+    /* Bento grid */
+    .bento-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:48px; }
+    .bento-card { background:var(--black); border-radius:var(--radius-sm); overflow:hidden; }
+    .bento-card-body { padding:28px; display:flex; flex-direction:column; min-height:220px; }
+    .bento-num { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.8); display:block; margin-bottom:10px; }
+    .bento-title { font-size:17px; font-weight:600; color:var(--white); line-height:1.3; margin-bottom:10px; }
+    .bento-desc { font-size:13px; color:rgba(255,255,255,.8); line-height:1.6; }
+    .bento-span-2 { grid-column:span 2; }
+
+    /* Role badge row */
+    .role-row { display:grid; grid-template-columns:repeat(2,1fr); gap:0; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; margin-top:48px; }
+    .role-cell { padding:28px 32px; border-right:1px solid var(--border); }
+    .role-cell:last-child { border-right:none; }
+    .role-cell-tag { font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); display:block; margin-bottom:10px; }
+    .role-cell-name { font-size:15px; font-weight:600; color:var(--black); margin-bottom:6px; }
+    .role-cell-desc { font-size:12px; color:var(--gray-text); line-height:1.5; }
+
+    /* Related */
+    .related { padding:64px 0; border-top:1px solid var(--border); }
+    .related h3 { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); margin-bottom:32px; }
+    .related-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    .related-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; text-decoration:none; display:block; transition:box-shadow .3s,transform .3s; }
+    .related-card:hover { box-shadow:var(--shadow); transform:translateY(-3px); }
+    .related-thumb { width:100%; aspect-ratio:16/9; background:var(--off-white); display:flex; align-items:center; justify-content:center; }
+    .related-thumb.dark { background:var(--black); }
+    .related-thumb-ph { font-size:12px; color:var(--gray-text); }
+    .related-thumb.dark .related-thumb-ph { color:rgba(255,255,255,.25); }
+    .related-body { padding:20px 24px; }
+    .related-tag { font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gray-text); margin-bottom:6px; display:block; }
+    .related-title { font-size:17px; font-weight:600; color:var(--black); letter-spacing:-.01em; }
+
+    /* Text utilities */
+    strong, .bold { font-weight: 600; letter-spacing: -.01em; }
+
+    /* Card entrance animation */
+    .card-enter { opacity: 0; transform: translateY(28px) scale(0.97); }
+    .card-enter.card-visible { opacity: 1; transform: none; transition: opacity .65s ease, transform .7s cubic-bezier(.22,.68,0,1.15); }
+
+    /* Reveal */
+    .reveal { opacity:0; transform:translateY(22px); transition:opacity .7s ease,transform .7s cubic-bezier(.25,.46,.45,.94); }
+    .reveal.visible { opacity:1; transform:none; }
+    .hero.reveal { opacity:1; transform:none; }
+
+    /* Lightbox */
+    .lightbox-overlay { position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:1000; display:flex; align-items:center; justify-content:center; padding:32px; opacity:0; pointer-events:none; transition:opacity .2s ease; }
+    .lightbox-overlay.open { opacity:1; pointer-events:all; }
+    .lightbox-overlay img { max-width:100%; max-height:100%; border-radius:var(--radius-sm); object-fit:contain; transform:scale(.95); transition:transform .25s cubic-bezier(.25,.46,.45,.94); box-shadow:0 24px 80px rgba(0,0,0,.5); }
+    .lightbox-overlay.open img { transform:scale(1); }
+    .lightbox-close { position:absolute; top:24px; right:28px; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.12); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; transition:background .15s; }
+    .lightbox-close:hover { background:rgba(255,255,255,.22); }
+    .lb-trigger { cursor:zoom-in; }
+
+    @media(max-width:900px){
+      html, body { width:100%; max-width:100%; overflow-x:hidden; }
+      .page { width:100%; max-width:100%; overflow:hidden; padding:0 28px; }
+      .nav-inner { padding:20px 28px; }
+      .hero { padding:48px 0; }
+      img, video, svg { max-width:100%; }
+      .hero-stats, .two-col, .three-col, .outcome-grid, .related-grid, .comparison-grid { grid-template-columns:1fr; }
+      .role-row { grid-template-columns:1fr; }
+      .role-cell { border-right:none; border-bottom:1px solid var(--border); }
+      .role-cell:last-child { border-bottom:none; }
+      .process-steps { grid-template-columns:1fr 1fr; }
+      .process-step { border-right:none; border-bottom:1px solid var(--border); }
+      .bento-grid { grid-template-columns:1fr; }
+      .bento-span-2 { grid-column:span 1; }
+      .body-layout { grid-template-columns:1fr; }
+      .section-nav { display:none; }
+      .content { border-left:none; padding-left:0; }
+      .anno-row.img-right, .anno-row.img-left { grid-template-columns:1fr; }
+      .anno-bottom { grid-template-columns:1fr !important; }
+      .cs-overview { grid-template-columns:1fr 1fr; }
+      .cs-overview-item:nth-child(2) { border-right:none; }
+      .cs-overview-item:nth-child(3) { border-top:1px solid var(--border); }
+      .cs-overview-item:nth-child(4) { border-top:1px solid var(--border); border-right:none; }
+      .swatch-row { flex-direction:column; }
+      .swatch { min-width:auto; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">Goeun Choi</a>
+    <ul class="nav-links">
+      <li><a href="index.html#works">Works</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="mailto:goeunchoi9090@gmail.com">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero reveal">
+    <div class="hero-meta">
+      <a href="index.html#works" class="hero-back">← Works</a>
+      <span class="hero-meta-sep">/</span>
+      <span class="hero-meta-tag">Case Study · Brand Identity Design</span>
+    </div>
+    <div class="hero-tags">
+      <span class="hero-tag-pill filled">Brand Identity</span>
+      <span class="hero-tag-pill">Brand Designer</span>
+      <span class="hero-tag-pill">Richcraft Homes</span>
+      <span class="hero-tag-pill">Figma · Adobe Creative Suite</span>
+    </div>
+    <h1 class="hero-title">A new community needed a brand<br>that felt nothing like real estate.</h1>
+    <p class="hero-desc">Gateway is a Richcraft Homes residential community built for younger buyers entering the market for the first time. I collaborated on the launch rollout, helping shape the brand across layouts, collateral, digital assets, and campaign touchpoints so the launch felt clear, consistent, and approachable.</p>
+
+    <div class="cs-overview">
+      <div class="cs-overview-item">
+        <span class="cs-overview-label">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="4.5" r="2.5"/><path d="M2 12c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg>
+          Role
+        </span>
+        <span class="cs-overview-value">Brand Designer · Visual System</span>
+      </div>
+      <div class="cs-overview-item">
+        <span class="cs-overview-label">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2.5l2 2-7 7-2.5.5.5-2.5 7-7z"/><line x1="8" y1="4" x2="10" y2="6"/></svg>
+          Tools
+        </span>
+        <span class="cs-overview-value">Figma · Illustrator · InDesign · Photoshop · After Effects · Premiere Pro</span>
+      </div>
+      <div class="cs-overview-item">
+        <span class="cs-overview-label">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="1.5" width="11" height="11" rx="2"/><line x1="1.5" y1="5.5" x2="12.5" y2="5.5"/><line x1="1.5" y1="9" x2="12.5" y2="9"/><line x1="5.5" y1="5.5" x2="5.5" y2="12.5"/></svg>
+          Type
+        </span>
+        <span class="cs-overview-value">Client Work · Brand Identity</span>
+      </div>
+      <div class="cs-overview-item">
+        <span class="cs-overview-label">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1.5L1.5 5v8h4V9.5h3V13h4V5z"/></svg>
+          Client
+        </span>
+        <span class="cs-overview-value">Richcraft Homes</span>
+      </div>
+    </div>
+
+    <div class="hero-cover">
+      <video autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover; border-radius:var(--radius);">
+        <source src="assets/gateway/gateway-intro.mp4" type="video/mp4">
+      </video>
+    </div>
+
+  </div>
+
+  <div class="body-layout">
+
+    <!-- Sidebar nav -->
+    <div class="section-nav">
+      <a href="#background" class="active">
+        <svg class="snav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="2" y1="3.5" x2="12" y2="3.5"/>
+          <line x1="2" y1="6.5" x2="12" y2="6.5"/>
+          <line x1="2" y1="9.5" x2="8" y2="9.5"/>
+        </svg>
+        Background
+      </a>
+      <a href="#problem">
+        <svg class="snav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="7" cy="6" r="4.5"/>
+          <line x1="7" y1="4" x2="7" y2="6.5"/>
+          <circle cx="7" cy="8.5" r=".5" fill="currentColor"/>
+        </svg>
+        The Problem
+      </a>
+      <a href="#strategy">
+        <svg class="snav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="3" cy="7" r="1.5"/>
+          <circle cx="7" cy="4" r="1.5"/>
+          <circle cx="11" cy="7" r="1.5"/>
+          <line x1="4.5" y1="6" x2="5.5" y2="5"/>
+          <line x1="8.5" y1="5" x2="9.5" y2="6"/>
+        </svg>
+        Strategy
+      </a>
+      <a href="#identity">
+        <svg class="snav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10L10.5 2l1.5 1.5L5.5 11 4 10z"/>
+          <line x1="3" y1="11" x2="1.5" y2="12.5"/>
+          <line x1="3" y1="12.5" x2="5" y2="12.5"/>
+        </svg>
+        Identity
+      </a>
+      <a href="#applications">
+        <svg class="snav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1.5" y="1.5" width="5" height="5" rx="1"/>
+          <rect x="7.5" y="1.5" width="5" height="5" rx="1"/>
+          <rect x="1.5" y="7.5" width="5" height="5" rx="1"/>
+          <rect x="7.5" y="7.5" width="5" height="5" rx="1"/>
+        </svg>
+        Applications
+      </a>
+      <a href="#outcome">
+        <svg class="snav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="1.5" y1="12.5" x2="12.5" y2="12.5"/>
+          <rect x="2.5" y="7.5" width="2" height="5" rx=".5"/>
+          <rect x="6" y="4.5" width="2" height="8" rx=".5"/>
+          <rect x="9.5" y="2" width="2" height="10.5" rx=".5"/>
+        </svg>
+        Outcome
+      </a>
+      <a href="#learned">
+        <svg class="snav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 1.5a3.5 3.5 0 0 1 2 6.3V9.5H5V7.8A3.5 3.5 0 0 1 7 1.5z"/>
+          <line x1="5.5" y1="11" x2="8.5" y2="11"/>
+          <line x1="6" y1="12.5" x2="8" y2="12.5"/>
+        </svg>
+        Learned
+      </a>
+    </div>
+
+    <div class="content">
+
+      <!-- 01 Background -->
+      <section class="cs-section reveal" id="background">
+        <span class="section-label">01 Background</span>
+        <h2 class="section-title">Richcraft was launching a community<br>for people who had never bought a home.</h2>
+        <div class="section-body">
+          <p>Richcraft Homes is one of Ottawa's established residential builders. Most of their communities target move-up buyers. Gateway was different. It was designed for millennials and Gen Z buyers in their 20s and early 30s, people purchasing their first property and coming to it with skepticism toward traditional real estate marketing.</p>
+          <p>I was one of the designers on the project, collaborating on the brand rollout from concept through launch. The work focused on building a visual system that could stay consistent across every touchpoint while still feeling warm, modern, and accessible.</p>
+        </div>
+
+        <div class="summary-card" style="margin-top:40px;">
+          <div class="summary-card-brief">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gray-text);flex-shrink:0;"><rect x="4" y="1.5" width="8" height="3" rx="1"/><rect x="2" y="3" width="12" height="11.5" rx="1.5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="10.5" x2="9" y2="10.5"/></svg>
+              <span class="callout-label" style="margin-bottom:0;">The brief</span>
+            </div>
+            <p class="callout-text">Build a cohesive launch system for Gateway that connects with younger first-time buyers. It should feel contemporary and personal, not corporate, and work across print, digital, and on-site signage from day one.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 The Problem -->
+      <section class="cs-section reveal" id="problem">
+        <span class="section-label">02 The Problem</span>
+        <h2 class="section-title">Real estate branding keeps using the same visual language.<br>Younger buyers have learned to ignore it.</h2>
+        <div class="section-body">
+          <p>Most residential brands look the same. Dark serifs, gold accents, cold photography. To a first-time buyer in their late 20s, that language reads as formal and not built for them. Gateway needed to feel like a beginning, not a prestige purchase.</p>
+        </div>
+
+        <div class="comparison-grid">
+          <div class="comparison-col problem">
+            <div class="comparison-col-label">
+              <span></span>
+              Conventional real estate branding
+            </div>
+            <div class="comparison-points">
+              <div class="comparison-point">
+                <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
+                <span class="comparison-point-text">Heavy serif fonts that signal authority over approachability</span>
+              </div>
+              <div class="comparison-point">
+                <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
+                <span class="comparison-point-text">Gold and navy palettes borrowed from luxury hospitality</span>
+              </div>
+              <div class="comparison-point">
+                <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
+                <span class="comparison-point-text">Photography that shows lifestyle, not actual community life</span>
+              </div>
+              <div class="comparison-point">
+                <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
+                <span class="comparison-point-text">Copy that talks to buyers as investors, not as people finding a home</span>
+              </div>
+            </div>
+          </div>
+          <div class="comparison-col solution">
+            <div class="comparison-col-label">
+              <span></span>
+              What Gateway needed to be
+            </div>
+            <div class="comparison-points">
+              <div class="comparison-point">
+                <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="3,9 7,13 15,5"/></svg>
+                <span class="comparison-point-text">Clean, modern type that feels friendly rather than formal</span>
+              </div>
+              <div class="comparison-point">
+                <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="3,9 7,13 15,5"/></svg>
+                <span class="comparison-point-text">A visual system that used colour with restraint and consistency</span>
+              </div>
+              <div class="comparison-point">
+                <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="3,9 7,13 15,5"/></svg>
+                <span class="comparison-point-text">Visuals that reflect how younger buyers actually see their space</span>
+              </div>
+              <div class="comparison-point">
+                <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="3,9 7,13 15,5"/></svg>
+                <span class="comparison-point-text">A brand that feels like a beginning, honest and accessible</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 Strategy -->
+      <section class="cs-section reveal" id="strategy">
+        <span class="section-label">03 Strategy</span>
+        <h2 class="section-title">I started with the architecture,<br>not a mood board.</h2>
+        <div class="section-body">
+          <p>Most brand projects begin with references from other industries. I did the opposite. The 3D architectural renderings for Gateway already existed, and they told me what the community actually looked like: clean lines, warm stone and concrete tones, generous windows, open green space.</p>
+          <p>I used those renderings as the reference point for how the colour direction should behave across layouts. That kept the work grounded in the actual architecture instead of feeling like a generic real estate campaign.</p>
+        </div>
+
+        <div class="callout dark" style="margin-top:40px;">
+          <span class="callout-label">Design Direction</span>
+          <p class="callout-text">Modern simplicity. Every element earns its place. If it does not add clarity or warmth, it comes out.</p>
+        </div>
+
+        <div class="two-col" style="margin-top:40px;">
+          <div>
+            <p style="font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:12px;">Architecture reference</p>
+            <div class="img-block lb-trigger" style="margin-top:0; aspect-ratio:4/3;">
+              <img src="assets/gateway/flat-elevation.jpg" alt="Gateway flat elevation architectural render" style="width:100%; height:100%; object-fit:cover; border-radius:var(--radius-sm);">
+            </div>
+          </div>
+          <div>
+            <p style="font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:12px;">Branding moodboard</p>
+            <div class="img-block lb-trigger" style="margin-top:0; aspect-ratio:4/3;">
+              <img src="assets/gateway/branding_moodboard.png" alt="Gateway branding moodboard" style="width:100%; height:100%; object-fit:cover; border-radius:var(--radius-sm);">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 Brand Identity -->
+      <section class="cs-section reveal" id="identity">
+        <span class="section-label">04 Brand Identity</span>
+        <h2 class="section-title">Clean lines, warm tones,<br>and type that does not try too hard.</h2>
+        <div class="section-body">
+          <p>The launch system brought together the core identity, layout principles, and asset system into one cohesive structure. Each piece had to hold up across formats, from a small digital ad to a full-size sales center banner.</p>
+        </div>
+
+        <!-- Logo animation -->
+        <div class="img-block dark" style="aspect-ratio:16/7; margin-top:40px; padding:0; overflow:hidden;">
+          <video autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover; display:block; border-radius:var(--radius-sm);">
+            <source src="assets/gateway/logo.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Colour palette -->
+        <h3 style="font-size:15px; font-weight:600; margin-top:48px; margin-bottom:4px;">Color palette</h3>
+        <p style="font-size:14px; color:var(--gray-text); margin-bottom:0;">The palette was applied to echo the tones in the 3D architectural renderings.</p>
+
+        <div class="swatch-row">
+          <div class="swatch">
+            <div class="swatch-color" style="background:#242B37;"></div>
+            <div class="swatch-info">
+              <span class="swatch-name">Midnight</span>
+              <span class="swatch-hex">#242B37</span>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#C2B9AA;"></div>
+            <div class="swatch-info">
+              <span class="swatch-name">Stone</span>
+              <span class="swatch-hex">#C2B9AA</span>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#303038;"></div>
+            <div class="swatch-info">
+              <span class="swatch-name">Slate</span>
+              <span class="swatch-hex">#303038</span>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#F4F3F0; border:1px solid var(--border);"></div>
+            <div class="swatch-info">
+              <span class="swatch-name">Ghost</span>
+              <span class="swatch-hex">#F4F3F0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Typography -->
+        <h3 style="font-size:15px; font-weight:600; margin-top:48px; margin-bottom:4px;">Typography</h3>
+        <p style="font-size:14px; color:var(--gray-text); margin-bottom:0;">Roboto appeared in the logo, while Poppins carried the supporting copy across the launch system.</p>
+
+        <div class="type-specimen">
+          <div class="type-specimen-row">
+            <span class="type-label">Logo<br><span style="font-weight:400; font-size:9px; letter-spacing:.05em;">Roboto</span></span>
+            <span class="type-sample" style="font-size:42px; font-weight:500; line-height:1; font-family:'Roboto',sans-serif; text-transform:uppercase;">GATEWAY</span>
+          </div>
+          <div class="type-specimen-row">
+            <span class="type-label">Heading<br><span style="font-weight:400; font-size:9px; letter-spacing:.05em;">Poppins</span></span>
+            <span class="type-sample" style="font-size:24px; font-weight:600; font-family:'Poppins',sans-serif;">Your first home. Your way in.</span>
+          </div>
+          <div class="type-specimen-row">
+            <span class="type-label">Body<br><span style="font-weight:400; font-size:9px; letter-spacing:.05em;">Poppins</span></span>
+            <span class="type-sample" style="font-size:15px; font-weight:400; line-height:1.7; color:#444; font-family:'Poppins',sans-serif;">Modern homes designed for how people actually live. Open layouts, natural light, and every detail considered.</span>
+          </div>
+          <div class="type-specimen-row">
+            <span class="type-label">Label<br><span style="font-weight:400; font-size:9px; letter-spacing:.05em;">Poppins</span></span>
+            <span class="type-sample" style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); font-family:'Poppins',sans-serif;">Register Now · Ottawa, ON</span>
+          </div>
+        </div>
+
+        <!-- Identity system feature cards -->
+        <div class="anno-layout">
+          <div class="anno-row" style="grid-template-columns:repeat(3,1fr);">
+
+            <div class="anno-card">
+              <svg class="anno-card-icon" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="13" cy="13" r="10"/><path d="M9 13h8M13 9v8"/>
+              </svg>
+              <span class="anno-card-title">Simple type application</span>
+              <span class="anno-card-desc">Roboto stayed with the logo, while Poppins carried the supporting hierarchy across headlines, body copy, and labels.</span>
+            </div>
+
+            <div class="anno-card">
+              <svg class="anno-card-icon" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="15" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="15" width="8" height="8" rx="1.5"/><rect x="15" y="15" width="8" height="8" rx="1.5"/>
+              </svg>
+              <span class="anno-card-title">Generous white space</span>
+              <span class="anno-card-desc">Layouts breathe. Crowded design signals anxiety. Open space signals confidence and quality without saying either word.</span>
+            </div>
+
+            <div class="anno-card">
+              <svg class="anno-card-icon" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 13h16M13 5l8 8-8 8"/>
+              </svg>
+              <span class="anno-card-title">Architecture-led color</span>
+              <span class="anno-card-desc">The palette was applied with the 3D renders in mind, so the campaign felt connected to the built environment.</span>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 Applications -->
+      <section class="cs-section reveal" id="applications">
+        <span class="section-label">05 Applications</span>
+        <h2 class="section-title">The system had to hold up<br>from a banner to a browser.</h2>
+        <div class="section-body">
+          <p>A brand system is only useful if it works in every format the team actually needs. For Gateway, that meant print collateral for the sales center, digital ads for social and search, email campaigns to the registrant list, and on-site signage.</p>
+          <p>I built a set of templates for each format so the marketing team could produce new assets without the design drifting. Every template used the same palette, type scale, and spacing rules from the core system.</p>
+        </div>
+
+        <!-- Print collateral -->
+        <div class="img-block lb-trigger" style="aspect-ratio:2720/1502; margin-top:40px; padding:0; overflow:hidden;">
+          <img src="assets/gateway/print-assets-brochure.png" alt="Gateway print assets and brochure layout" style="width:100%; height:100%; object-fit:cover; border-radius:var(--radius-sm);">
+        </div>
+
+        <!-- Feature cards for application types -->
+        <div class="anno-layout" style="margin-top:32px;">
+          <div class="anno-row" style="grid-template-columns:1fr 1fr;">
+
+            <div class="anno-card">
+              <svg class="anno-card-icon" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="3" width="18" height="20" rx="2"/><line x1="8" y1="9" x2="18" y2="9"/><line x1="8" y1="13" x2="18" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/>
+              </svg>
+              <span class="anno-card-title">Print and sales center</span>
+              <span class="anno-card-desc">Brochures, floor plan sheets, site maps, and sales center signage. All produced in InDesign with a consistent grid that made updates fast.</span>
+            </div>
+
+            <div class="anno-card">
+              <svg class="anno-card-icon" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="5" width="20" height="16" rx="2"/><line x1="3" y1="10" x2="23" y2="10"/>
+              </svg>
+              <span class="anno-card-title">Digital ads and social</span>
+              <span class="anno-card-desc">Static and animated assets for Instagram, Facebook, and Google Display. Sized for every placement from story to feed to banner.</span>
+            </div>
+
+          </div>
+          <div class="anno-row" style="grid-template-columns:1fr 1fr;">
+
+            <div class="anno-card">
+              <svg class="anno-card-icon" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="6" width="20" height="14" rx="2"/><polyline points="3,10 13,15 23,10"/>
+              </svg>
+              <span class="anno-card-title">Email campaigns</span>
+              <span class="anno-card-desc">Templates for the registrant list: launch announcements, open house invites, and VIP preview events. All staying within the brand's clean layout language.</span>
+            </div>
+
+            <div class="anno-card">
+              <svg class="anno-card-icon" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 21V8l8-5 8 5v13"/><rect x="9" y="13" width="8" height="8" rx="1"/>
+              </svg>
+              <span class="anno-card-title">On-site signage</span>
+              <span class="anno-card-desc">Construction hoarding, street signs, and the sales center exterior. Large-format files prepared for production with proper bleeds and safe zones.</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Digital and social assets -->
+        <div class="two-col" style="margin-top:12px; gap:12px;">
+          <div class="img-block lb-trigger" style="margin-top:0; aspect-ratio:4/3; padding:0; overflow:hidden;">
+            <img src="assets/gateway/social-mockup.png" alt="Gateway social media mockup" style="width:100%; height:100%; object-fit:cover; border-radius:var(--radius-sm);">
+          </div>
+          <div class="img-block lb-trigger" style="margin-top:0; aspect-ratio:4/3; padding:0; overflow:hidden;">
+            <img src="assets/gateway/emailcompagin.png" alt="Gateway email campaign design" style="width:100%; height:100%; object-fit:cover; border-radius:var(--radius-sm);">
+          </div>
+        </div>
+
+        <!-- Social campaign video -->
+        <div style="margin-top:12px; border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--border);">
+          <video autoplay muted loop playsinline style="width:100%; display:block; border-radius:var(--radius-sm);">
+            <source src="assets/gateway/social-campain.mp4" type="video/mp4">
+          </video>
+        </div>
+      </section>
+
+      <!-- 06 Outcome -->
+      <section class="cs-section reveal" id="outcome">
+        <span class="section-label">06 Outcome</span>
+        <h2 class="section-title">The brand connected with<br>exactly who it was built for.</h2>
+        <div class="section-body">
+          <p>Gateway launched and the registrant numbers came back strong. The target demographic responded. Over 600 people from the 20 to 35 age range registered within the launch window, and the broader engagement across brand materials reached more than 4,100 new users.</p>
+          <p>The 35% conversion rate from initial interest to action was above the benchmark for comparable new community launches in the Ottawa market.</p>
+        </div>
+
+        <div class="outcome-grid">
+          <div class="outcome-card filled">
+            <span class="outcome-num">600+</span>
+            <p class="outcome-desc">Registrants from the target demographic within the launch window</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-num">4,100+</span>
+            <p class="outcome-desc">New users engaging with Gateway brand materials across channels</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-num">35%</span>
+            <p class="outcome-desc">Conversion rate from registration interest to confirmed action</p>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:40px;">
+          <span class="callout-label">What drove it</span>
+          <p class="callout-text">The brand looked different from everything else in the market. Younger buyers noticed. When a brand does not try to impress the wrong person, it reaches the right one faster.</p>
+        </div>
+      </section>
+
+      <!-- 07 What I Learned -->
+      <section class="cs-section reveal" id="learned">
+        <span class="section-label">07 What I Learned</span>
+        <h2 class="section-title">Restraint made the system stronger.</h2>
+        <div class="section-body">
+          <p>Gateway taught me that a brand system does not need more pieces to feel complete. It needs a clear source of truth, disciplined application, and templates that help the work stay consistent after handoff.</p>
+        </div>
+
+        <div class="bento-grid">
+          <div class="bento-card">
+            <div class="bento-card-body">
+              <span class="bento-num">Lesson 01</span>
+              <p class="bento-title">Start from what already exists</p>
+              <p class="bento-desc">The renders helped the visual direction feel connected to the actual community.</p>
+            </div>
+          </div>
+          <div class="bento-card">
+            <div class="bento-card-body">
+              <span class="bento-num">Lesson 02</span>
+              <p class="bento-title">Templates are design work</p>
+              <p class="bento-desc">Templates kept the system usable for the team beyond the launch.</p>
+            </div>
+          </div>
+          <div class="bento-card">
+            <div class="bento-card-body">
+              <span class="bento-num">Lesson 03</span>
+              <p class="bento-title">Less signals confidence</p>
+              <p class="bento-desc">Clean space helped the brand feel more confident and approachable.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- end content -->
+  </div><!-- end body-layout -->
+
+  <!-- Related projects -->
+  <div class="related">
+    <h3>More Work</h3>
+    <div class="related-grid">
+      <a class="related-card" href="bdlnow-case-study.html">
+        <div class="related-thumb dark">
+          <img src="assets/bdlnow/bdlnow_page_screen.png" alt="BDLNow platform" style="width:100%;height:100%;object-fit:contain;display:block;">
+        </div>
+        <div class="related-body">
+          <span class="related-tag">Product Design · Data Visualization</span>
+          <p class="related-title">BDLNow — Canada's real-time GDP nowcast, made readable</p>
+        </div>
+      </a>
+      <a class="related-card" href="briefbuy-case-study.html">
+        <div class="related-thumb">
+          <img src="assets/home/briefbuy-tumbnail.png" alt="BriefBuy product thumbnail" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+        <div class="related-body">
+          <span class="related-tag">AI Product · Side Project</span>
+          <p class="related-title">BriefBuy — AI running shoe comparison, built in four weeks</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+</div><!-- end page -->
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">✕</button>
+  <img src="" alt="" id="lightbox-img">
+</div>
+
+<script>
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const revObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revObs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => revObs.observe(el));
+
+  // Card enter
+  const cards = document.querySelectorAll('.card-enter');
+  const cardObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('card-visible'); cardObs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  cards.forEach(el => cardObs.observe(el));
+
+  // Sidebar nav scroll-based active
+  const sections = Array.from(document.querySelectorAll('.cs-section[id]'));
+  const navLinks = document.querySelectorAll('.section-nav a');
+  function updateActiveNav() {
+    let current = sections[0].id;
+    sections.forEach(s => {
+      if (s.getBoundingClientRect().top <= 130) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
+    });
+  }
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  updateActiveNav();
+
+  // Lightbox
+  const overlay = document.getElementById('lightbox');
+  const lbImg   = document.getElementById('lightbox-img');
+  document.querySelectorAll('.lb-trigger').forEach(el => {
+    el.addEventListener('click', () => {
+      lbImg.src = el.querySelector('img') ? el.querySelector('img').src : el.src;
+      overlay.classList.add('open');
+    });
+  });
+  document.getElementById('lightbox-close').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+</script>
+
+</body>
+</html>
