@@ -538,6 +538,14 @@
     .feat-side-layout { display:grid; grid-template-columns:2fr 1fr; gap:16px; align-items:start; }
     .feat-side-cards { display:flex; flex-direction:column; gap:12px; }
     @media(max-width:900px){ .feat-side-layout { grid-template-columns:1fr; } }
+    @media(max-width:480px){
+      .cs-overview{grid-template-columns:1fr;}
+      .cs-overview-item{border-right:none; border-bottom:1px solid var(--border);}
+      .cs-overview-item:nth-child(2){border-right:none;}
+      .cs-overview-item:nth-child(3){border-top:none;}
+      .cs-overview-item:nth-child(4){border-top:none; border-right:none;}
+      .cs-overview-item:last-child{border-bottom:none;}
+    }
   </style>
 </head>
 <body>

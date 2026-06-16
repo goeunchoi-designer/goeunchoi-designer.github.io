@@ -863,13 +863,25 @@
       .hero-img-wrap img { max-width: 220px; }
       .skills-layout { grid-template-columns: 1fr; gap: 40px; }
       .skills-sticky { order: -1; position: relative; top: auto; animation: none; }
-      .project-card,
+      /* Flip cards (BDLNow, Gateway): stack vertically, text first, thumbnail below */
       .project-card.flip {
         grid-template-columns: 1fr;
-        gap: 36px;
+        gap: 28px;
       }
       .project-card.flip .project-info { order: 1; }
-      .project-card.flip .project-visual { order: 2; }
+      .project-card.flip .project-visual-link { order: 2; }
+
+      /* Regular cards (BriefBuy, Canada/US): thumbnail left, text right */
+      .project-card:not(.flip) {
+        grid-template-columns: 130px 1fr;
+        gap: 20px;
+        align-items: start;
+        padding: 40px 0;
+      }
+      .project-card:not(.flip) .project-visual-link { order: -1; }
+      .project-card:not(.flip) .project-visual {
+        aspect-ratio: 1 / 1;
+      }
       .about-pg { grid-template-columns: 1fr 1fr; min-height: unset; gap: 12px; }
       .ab-headline { grid-column: 1 / -1; grid-row: auto; font-size: 28px; }
       .ab-time, .ab-status, .ab-role, .ab-interests, .ab-stats, .ab-building, .ab-exp, .ab-ottawa { grid-column: span 1; grid-row: auto; }
@@ -906,7 +918,7 @@
       <ul class="nav-links">
         <li><a href="#works">Works</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="mailto:goeunchoi9090@gmail.com">Contact</a></li>
       </ul>
     </div>
   </nav>

@@ -323,6 +323,14 @@
       .swatch-row { flex-direction:column; }
       .swatch { min-width:auto; }
     }
+    @media(max-width:480px){
+      .cs-overview{grid-template-columns:1fr;}
+      .cs-overview-item{border-right:none; border-bottom:1px solid var(--border);}
+      .cs-overview-item:nth-child(2){border-right:none;}
+      .cs-overview-item:nth-child(3){border-top:none;}
+      .cs-overview-item:nth-child(4){border-top:none; border-right:none;}
+      .cs-overview-item:last-child{border-bottom:none;}
+    }
   </style>
 </head>
 <body>
