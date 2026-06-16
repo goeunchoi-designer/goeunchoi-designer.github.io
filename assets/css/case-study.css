@@ -401,7 +401,7 @@ p.hero-desc {
   flex-shrink: 0;
   grid-column: 1;
   grid-row: 1;
-  margin-top: 2px;
+  align-self: center;
 }
 
 .anno-card-title {
