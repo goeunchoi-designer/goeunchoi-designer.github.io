@@ -315,7 +315,34 @@
     .hero.reveal { opacity:1; transform:none; }
 
     @media(max-width:900px){
-      .page{padding:0 28px;} .nav-inner{padding:20px 28px;} .hero{padding:48px 0;}
+      html,
+      body {
+        width:100%;
+        max-width:100%;
+        overflow-x:hidden;
+      }
+      .page{width:100%;max-width:100%;overflow:hidden;padding:0 28px;} .nav-inner{padding:20px 28px;} .hero{padding:48px 0;}
+      img,
+      video,
+      svg {
+        max-width:100%;
+      }
+      .content,
+      .cs-section,
+      .section-body,
+      .callout,
+      .summary-card,
+      .summary-card-brief,
+      .summary-card-body,
+      .comparison-grid,
+      .comparison-col,
+      .anno-img,
+      .img-block,
+      .browser-mockup,
+      .hero-cover {
+        min-width:0;
+        max-width:100%;
+      }
       .hero-stats,.two-col,.three-col,.decision-grid,.outcome-grid,.related-grid{grid-template-columns:1fr;}
       .hero-stat{border-right:none;border-bottom:1px solid var(--border);} .hero-stat:last-child{border-bottom:none;}
       .process-steps{grid-template-columns:1fr 1fr;} .process-step:nth-child(2){border-right:none;}
@@ -334,7 +361,7 @@
       .cs-overview-item:nth-child(3){border-top:1px solid var(--border);}
       .cs-overview-item:nth-child(4){border-top:1px solid var(--border); border-right:none;}
     }
-    @media(max-width:480px){
+    @media(max-width:340px){
       .cs-overview{grid-template-columns:1fr;}
       .cs-overview-item{border-right:none; border-bottom:1px solid var(--border);}
       .cs-overview-item:nth-child(2){border-right:none;}
@@ -343,6 +370,7 @@
       .cs-overview-item:last-child{border-bottom:none;}
     }
   </style>
+  <link rel="stylesheet" href="assets/css/case-study.css">
 </head>
 <body>
 
@@ -751,94 +779,7 @@
   </div><!-- /body-layout -->
 </div><!-- /page -->
 
-<script>
-  // Scroll reveal
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.08, rootMargin: '0px 0px -48px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-  // Active section nav
-  const sections = document.querySelectorAll('.cs-section');
-  const navLinks = document.querySelectorAll('.section-nav a');
-  const sObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        navLinks.forEach(a => a.classList.remove('active'));
-        const lnk = document.querySelector(`.section-nav a[href="#${e.target.id}"]`);
-        if (lnk) lnk.classList.add('active');
-      }
-    });
-  }, { threshold: 0.35 });
-  sections.forEach(s => sObs.observe(s));
-
-  // Card scroll-in entrance
-  const cardEls = document.querySelectorAll('.callout, .obs-item, .insight-card, .decision-card, .outcome-card, .related-card, .hero-stat, .process-step');
-  cardEls.forEach(c => c.classList.add('card-enter'));
-
-  // Stagger cards within grid containers
-  document.querySelectorAll('.decision-grid, .outcome-grid, .three-col, .obs-list, .hero-stats, .process-steps, .related-grid').forEach(grid => {
-    Array.from(grid.children).forEach((child, i) => {
-      if (child.classList.contains('card-enter')) {
-        child.style.transitionDelay = `${i * 0.1}s`;
-      }
-    });
-  });
-
-  const cardObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('card-visible');
-        cardObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  cardEls.forEach(c => cardObs.observe(c));
-
-  // Smooth scroll
-  navLinks.forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      const t = document.querySelector(a.getAttribute('href'));
-      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
-
-  // Card slide-in
-  const slideObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('in'); slideObs.unobserve(e.target); }
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.slide-left, .slide-right').forEach(el => slideObs.observe(el));
-
-  // Lightbox
-  const overlay = document.createElement('div');
-  overlay.className = 'lightbox-overlay';
-  overlay.innerHTML = '<button class="lightbox-close" aria-label="Close">✕</button><img>';
-  document.body.appendChild(overlay);
-  const lbImg = overlay.querySelector('img');
-
-  function openLightbox(src, alt) {
-    lbImg.src = src;
-    lbImg.alt = alt || '';
-    overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeLightbox() {
-    overlay.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  document.querySelectorAll('.img-block img, .anno-img img').forEach(img => {
-    img.classList.add('lb-trigger');
-    img.addEventListener('click', () => openLightbox(img.src, img.alt));
-  });
-
-  overlay.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
-  overlay.addEventListener('click', e => { if (e.target === overlay) closeLightbox(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-</script>
+<script src="assets/js/case-study.js" defer></script>
 
 </body>
 </html>

@@ -871,20 +871,18 @@
       .project-card.flip .project-info { order: 1; }
       .project-card.flip .project-visual-link { order: 2; }
 
-      /* Regular cards (BriefBuy, Canada/US): thumbnail left, text right */
+      /* Regular cards (BriefBuy, Canada/US): stack like flip cards — text top, thumbnail below */
       .project-card:not(.flip) {
-        grid-template-columns: 130px 1fr;
-        gap: 20px;
-        align-items: start;
-        padding: 40px 0;
-      }
-      .project-card:not(.flip) .project-visual-link { order: -1; }
-      .project-card:not(.flip) .project-visual {
-        aspect-ratio: 1 / 1;
+        grid-template-columns: 1fr;
+        gap: 28px;
       }
       .about-pg { grid-template-columns: 1fr 1fr; min-height: unset; gap: 12px; }
       .ab-headline { grid-column: 1 / -1; grid-row: auto; font-size: 28px; }
       .ab-time, .ab-status, .ab-role, .ab-interests, .ab-stats, .ab-building, .ab-exp, .ab-ottawa { grid-column: span 1; grid-row: auto; }
+      .ab-interior { display: grid; grid-template-columns: 110px 1fr; grid-template-rows: auto 1fr; grid-column: 1 / -1; }
+      .ab-interior > .ab-label { grid-column: 1 / -1; }
+      .ab-interior-img { grid-column: 1; height: 100%; min-height: 110px; }
+      .ab-interior-body { grid-column: 2; align-self: center; }
       footer { background: var(--black); }
       .footer-inner {
         padding: 56px 28px 40px;

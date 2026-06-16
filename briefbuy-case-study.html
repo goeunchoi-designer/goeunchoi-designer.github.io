@@ -438,6 +438,48 @@
       .mobile-stack > * + * {
         border-top: 1px solid var(--border);
       }
+      .test-results-card {
+        border-radius: var(--radius-sm);
+      }
+      .test-results-card .test-results-head {
+        display: none !important;
+      }
+      .test-results-card .test-result-row {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+        padding: 20px 22px !important;
+        align-items: start !important;
+      }
+      .test-results-card .test-result-row > * {
+        border-top: none !important;
+      }
+      .test-results-card .test-result-row p:nth-child(1) {
+        font-size: 14px !important;
+        line-height: 1.45;
+      }
+      .test-results-card .test-result-row p:nth-child(2),
+      .test-results-card .test-result-row p:nth-child(3) {
+        display: grid;
+        grid-template-columns: 64px 1fr;
+        gap: 12px;
+        font-size: 13px !important;
+        line-height: 1.45;
+      }
+      .test-results-card .test-result-row p:nth-child(2)::before,
+      .test-results-card .test-result-row p:nth-child(3)::before {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--gray-text);
+      }
+      .test-results-card .test-result-row p:nth-child(2)::before {
+        content: "Time";
+      }
+      .test-results-card .test-result-row p:nth-child(3)::before {
+        content: "Result";
+      }
       .pipeline-grid {
         grid-template-columns: 1fr !important;
         gap: 12px !important;
@@ -532,13 +574,38 @@
     .feat-tab-btn .tab-num { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; background:var(--gray-light); color:var(--gray-text); padding:3px 8px; border-radius:999px; flex-shrink:0; transition:background .2s, color .2s; }
     .feat-tab-btn.active { color:var(--white); background:var(--black); font-weight:600; }
     .feat-tab-btn.active .tab-num { background:rgba(255,255,255,.15); color:var(--white); }
-    .feat-tab-btn:hover:not(.active) { color:var(--black); }
+    .feat-tab-btn:hover:not(.active) { color:var(--black); background:var(--white); }
+    .feat-tab-btn:hover:not(.active) .tab-num { background:var(--black); color:var(--white); }
     .feat-tab-panel { display:none; padding:32px; }
     .feat-tab-panel.active { display:block; }
     .feat-side-layout { display:grid; grid-template-columns:2fr 1fr; gap:16px; align-items:start; }
     .feat-side-cards { display:flex; flex-direction:column; gap:12px; }
     @media(max-width:900px){ .feat-side-layout { grid-template-columns:1fr; } }
-    @media(max-width:480px){
+    @media(max-width:600px){
+      .feat-tab-bar {
+        display:grid;
+        grid-template-columns:1fr;
+      }
+      .feat-tab-btn {
+        width:100%;
+        min-width:0;
+        justify-content:flex-start;
+        white-space:normal;
+        font-size:12px;
+        line-height:1.3;
+        padding:13px 16px;
+        gap:8px;
+        border-right:none;
+        border-bottom:1px solid var(--border);
+      }
+      .feat-tab-btn:last-child {
+        border-bottom:none;
+      }
+      .feat-tab-panel {
+        padding:20px;
+      }
+    }
+    @media(max-width:340px){
       .cs-overview{grid-template-columns:1fr;}
       .cs-overview-item{border-right:none; border-bottom:1px solid var(--border);}
       .cs-overview-item:nth-child(2){border-right:none;}
@@ -547,6 +614,7 @@
       .cs-overview-item:last-child{border-bottom:none;}
     }
   </style>
+  <link rel="stylesheet" href="assets/css/case-study.css">
 </head>
 <body>
 
@@ -576,7 +644,7 @@
       <span class="hero-tag-pill">Vibe Coding</span>
       <span class="hero-tag-pill">Figma · Next.js · Claude API</span>
     </div>
-    <h1 class="hero-title">Running shoe shopping gets messy fast.<br>BriefBuy keeps the decision clear.</h1>
+    <h1 class="hero-title">Running shoe shopping gets messy fast. <br>BriefBuy keeps the decision clear.</h1>
     <p class="hero-desc">BriefBuy is an AI running shoe comparison app. You paste product links, and it turns the research into fit scores, ranked options, and shoes you can rule out. I built it with a data engineer and a frontend developer in four weeks.</p>
 
     <div class="cs-overview">
@@ -1260,37 +1328,37 @@
         </div>
 
         <!-- Test results table -->
-        <div style="margin-top:40px; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;">
+        <div class="test-results-card" style="margin-top:40px; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;">
           <div style="background:var(--black); padding:16px 32px;">
             <span style="font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.8);">Week 3 Test Results</span>
           </div>
           <div style="display:flex; flex-direction:column;">
-            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; background:var(--off-white); border-bottom:1px solid var(--border); padding:14px 28px; gap:16px;">
+            <div class="mobile-stack test-results-head" style="display:grid; grid-template-columns:2fr 1fr 1fr; background:var(--off-white); border-bottom:1px solid var(--border); padding:14px 28px; gap:16px;">
               <p style="font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gray-text);">Test Case</p>
               <p style="font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gray-text);">Time</p>
               <p style="font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gray-text);">Result</p>
             </div>
-            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
+            <div class="mobile-stack test-result-row" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
               <p style="font-size:13px; color:var(--black); font-weight:500;">Three Nike running shoes</p>
               <p style="font-size:13px; color:var(--gray-text);">30.0s total</p>
               <p style="font-size:13px; color:var(--black);">Pegasus 42 recommended.</p>
             </div>
-            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
+            <div class="mobile-stack test-result-row" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
               <p style="font-size:13px; color:var(--black); font-weight:500;">Two running shoes plus one lifestyle shoe</p>
               <p style="font-size:13px; color:var(--gray-text);">40.4s total</p>
               <p style="font-size:13px; color:var(--black);">Lifestyle shoe was flagged correctly.</p>
             </div>
-            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
+            <div class="mobile-stack test-result-row" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
               <p style="font-size:13px; color:var(--black); font-weight:500;">Invalid URL in the list</p>
               <p style="font-size:13px; color:var(--gray-text);">0.39s to fail</p>
               <p style="font-size:13px; color:var(--black);">Bad link was flagged. Other links still worked.</p>
             </div>
-            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
+            <div class="mobile-stack test-result-row" style="display:grid; grid-template-columns:2fr 1fr 1fr; border-bottom:1px solid var(--border); padding:18px 28px; gap:16px; align-items:center;">
               <p style="font-size:13px; color:var(--black); font-weight:500;">Same URLs requested again</p>
               <p style="font-size:13px; color:var(--gray-text);">63ms average</p>
               <p style="font-size:13px; color:var(--black);">Loaded from cache.</p>
             </div>
-            <div class="mobile-stack" style="display:grid; grid-template-columns:2fr 1fr 1fr; padding:18px 28px; gap:16px; align-items:center;">
+            <div class="mobile-stack test-result-row" style="display:grid; grid-template-columns:2fr 1fr 1fr; padding:18px 28px; gap:16px; align-items:center;">
               <p style="font-size:13px; color:var(--black); font-weight:500;">Follow up request</p>
               <p style="font-size:13px; color:var(--gray-text);">11.4s</p>
               <p style="font-size:13px; color:var(--black);">Ranking changed with new reasoning.</p>
@@ -1338,94 +1406,7 @@
   </div><!-- /body-layout -->
 </div><!-- /page -->
 
-<script>
-  // Scroll reveal
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.08, rootMargin: '0px 0px -48px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-  // Active section nav — fires when a section's top edge enters the top 20% of the viewport
-  const sections = document.querySelectorAll('.cs-section');
-  const navLinks = document.querySelectorAll('.section-nav a');
-  const sObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        navLinks.forEach(a => a.classList.remove('active'));
-        const lnk = document.querySelector(`.section-nav a[href="#${e.target.id}"]`);
-        if (lnk) lnk.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
-  sections.forEach(s => sObs.observe(s));
-
-  // Card entrance animation
-  const cardEls = document.querySelectorAll('.callout, .outcome-card, .related-card, .anno-card, .role-cell');
-  cardEls.forEach(c => c.classList.add('card-enter'));
-  const cardObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('card-visible');
-        cardObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  cardEls.forEach(c => cardObs.observe(c));
-
-  // Process step flow: reveal one by one
-  const processFlow = document.getElementById('processStepFlow');
-  if (processFlow) {
-    const pfObs = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        const items = processFlow.querySelectorAll('.step-pill, .step-connector');
-        items.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 180));
-        pfObs.unobserve(processFlow);
-      }
-    }, { threshold: 0.4 });
-    pfObs.observe(processFlow);
-  }
-
-  // Smooth scroll
-  navLinks.forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      const t = document.querySelector(a.getAttribute('href'));
-      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
-
-  // Slide animations
-  const slideObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('in'); slideObs.unobserve(e.target); }
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.slide-left, .slide-right').forEach(el => slideObs.observe(el));
-
-  // Lightbox
-  const overlay = document.createElement('div');
-  overlay.className = 'lightbox-overlay';
-  overlay.innerHTML = '<button class="lightbox-close" aria-label="Close">✕</button><img>';
-  document.body.appendChild(overlay);
-  const lbImg = overlay.querySelector('img');
-  function openLightbox(src, alt) { lbImg.src = src; lbImg.alt = alt || ''; overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
-  function closeLightbox() { overlay.classList.remove('open'); document.body.style.overflow = ''; }
-  document.querySelectorAll('.anno-img img').forEach(img => { img.classList.add('lb-trigger'); img.addEventListener('click', () => openLightbox(img.src, img.alt)); });
-  overlay.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
-  overlay.addEventListener('click', e => { if (e.target === overlay) closeLightbox(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-
-  // Design section tabs
-  document.querySelectorAll('.feat-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const group = btn.closest('.feat-tabs');
-      group.querySelectorAll('.feat-tab-btn').forEach(b => b.classList.remove('active'));
-      group.querySelectorAll('.feat-tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(btn.dataset.tab).classList.add('active');
-    });
-  });
-</script>
+<script src="assets/js/case-study.js" defer></script>
 
 </body>
 </html>

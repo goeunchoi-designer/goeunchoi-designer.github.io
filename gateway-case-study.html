@@ -15,7 +15,8 @@
       --shadow:    0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
       --brand:     #3D5A4F; --brand-light: #edf2f0;
     }
-    body { font-family:'Overused Grotesk','Inter',system-ui,sans-serif; background:var(--white); color:var(--black); line-height:1.6; font-size:16px; font-weight:400; }
+    html { overflow-x: hidden; }
+    body { font-family:'Overused Grotesk','Inter',system-ui,sans-serif; background:var(--white); color:var(--black); line-height:1.6; font-size:16px; font-weight:400; overflow-x: hidden; }
 
     /* Nav */
     nav { position:sticky; top:0; background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--border); border-radius:0 0 20px 20px; z-index:100; }
@@ -303,6 +304,31 @@
       .nav-inner { padding:20px 28px; }
       .hero { padding:48px 0; }
       img, video, svg { max-width:100%; }
+      .body-layout,
+      .content,
+      .cs-section,
+      .section-body,
+      .callout,
+      .summary-card,
+      .summary-card-brief,
+      .comparison-grid,
+      .comparison-col,
+      .anno-img,
+      .anno-row,
+      .anno-card,
+      .img-block,
+      .browser-mockup,
+      .hero-cover {
+        min-width: 0;
+        max-width: 100%;
+      }
+      .content {
+        width: 100%;
+      }
+      .hero-meta,
+      .nav-inner {
+        flex-wrap: wrap;
+      }
       .hero-stats, .two-col, .three-col, .outcome-grid, .related-grid, .comparison-grid { grid-template-columns:1fr; }
       .role-row { grid-template-columns:1fr; }
       .role-cell { border-right:none; border-bottom:1px solid var(--border); }
@@ -314,24 +340,40 @@
       .body-layout { grid-template-columns:1fr; }
       .section-nav { display:none; }
       .content { border-left:none; padding-left:0; }
-      .anno-row.img-right, .anno-row.img-left { grid-template-columns:1fr; }
+      .anno-row,
+      .anno-row.img-right,
+      .anno-row.img-left {
+        grid-template-columns:1fr !important;
+      }
+      .anno-card {
+        width: 100%;
+      }
       .anno-bottom { grid-template-columns:1fr !important; }
       .cs-overview { grid-template-columns:1fr 1fr; }
       .cs-overview-item:nth-child(2) { border-right:none; }
       .cs-overview-item:nth-child(3) { border-top:1px solid var(--border); }
       .cs-overview-item:nth-child(4) { border-top:1px solid var(--border); border-right:none; }
-      .swatch-row { flex-direction:column; }
+      .swatch-row {
+        display:grid;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+      }
       .swatch { min-width:auto; }
     }
     @media(max-width:480px){
+      h1.hero-title br, h2.section-title br { display:none; }
+      h1.hero-title, h2.section-title { word-break:break-word; }
+    }
+    @media(max-width:340px){
       .cs-overview{grid-template-columns:1fr;}
       .cs-overview-item{border-right:none; border-bottom:1px solid var(--border);}
       .cs-overview-item:nth-child(2){border-right:none;}
       .cs-overview-item:nth-child(3){border-top:none;}
       .cs-overview-item:nth-child(4){border-top:none; border-right:none;}
       .cs-overview-item:last-child{border-bottom:none;}
+      .swatch-row { grid-template-columns:1fr; }
     }
   </style>
+  <link rel="stylesheet" href="assets/css/case-study.css">
 </head>
 <body>
 
@@ -859,49 +901,7 @@
   <img src="" alt="" id="lightbox-img">
 </div>
 
-<script>
-  // Reveal on scroll
-  const reveals = document.querySelectorAll('.reveal');
-  const revObs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revObs.unobserve(e.target); } });
-  }, { threshold: 0.08 });
-  reveals.forEach(el => revObs.observe(el));
-
-  // Card enter
-  const cards = document.querySelectorAll('.card-enter');
-  const cardObs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('card-visible'); cardObs.unobserve(e.target); } });
-  }, { threshold: 0.1 });
-  cards.forEach(el => cardObs.observe(el));
-
-  // Sidebar nav scroll-based active
-  const sections = Array.from(document.querySelectorAll('.cs-section[id]'));
-  const navLinks = document.querySelectorAll('.section-nav a');
-  function updateActiveNav() {
-    let current = sections[0].id;
-    sections.forEach(s => {
-      if (s.getBoundingClientRect().top <= 130) current = s.id;
-    });
-    navLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
-    });
-  }
-  window.addEventListener('scroll', updateActiveNav, { passive: true });
-  updateActiveNav();
-
-  // Lightbox
-  const overlay = document.getElementById('lightbox');
-  const lbImg   = document.getElementById('lightbox-img');
-  document.querySelectorAll('.lb-trigger').forEach(el => {
-    el.addEventListener('click', () => {
-      lbImg.src = el.querySelector('img') ? el.querySelector('img').src : el.src;
-      overlay.classList.add('open');
-    });
-  });
-  document.getElementById('lightbox-close').addEventListener('click', () => overlay.classList.remove('open'));
-  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') overlay.classList.remove('open'); });
-</script>
+<script src="assets/js/case-study.js" defer></script>
 
 </body>
 </html>
