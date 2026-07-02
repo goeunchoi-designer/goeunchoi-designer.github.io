@@ -183,7 +183,7 @@
       <span class="hero-tag-pill">Figma · WordPress · Illustrator · Photoshop · After Efffects</span>
     </div>
     <h1 class="hero-title">Making Canada's real-time GDP estimate readable by anyone</h1>
-    <p class="hero-desc">BDLNow is the Business Data Lab's weekly GDP nowcast for Canada. A nowcast estimates economic growth in real time, before official data is published. Powered by 45 indicators, updated every Monday, months ahead of Statistics Canada. I designed it end to end.</p>
+    <p class="hero-desc">BDLNow is the Business Data Lab's weekly GDP nowcast for Canada. A nowcast estimates economic growth in real time, before official data is published. Powered by 45 indicators, updated every Monday, months ahead of Statistics Canada. I designed the interface and integrated the R Shiny application into the live WordPress site.</p>
 
     <!-- Overview bar — styled like hero-stats -->
     <div class="cs-overview">
@@ -217,20 +217,12 @@
 
     <!-- Left sticky sidebar nav -->
     <div class="section-nav">
-      <!-- Background: document/text lines -->
-      <a href="#background" class="active">
-        <svg class="snav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-          <line x1="2" y1="3.5" x2="12" y2="3.5"/>
-          <line x1="2" y1="6.5" x2="12" y2="6.5"/>
-          <line x1="2" y1="9.5" x2="8" y2="9.5"/>
-        </svg>Background
-      </a>
-      <!-- The Gap: two blocks with space between -->
-      <a href="#problem">
+      <!-- The Problem -->
+      <a href="#problem" class="active">
         <svg class="snav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <rect x="1.5" y="3.5" width="4" height="7" rx="1"/>
           <rect x="8.5" y="3.5" width="4" height="7" rx="1"/>
-        </svg>The Gap
+        </svg>The Problem
       </a>
       <!-- Research: magnifying glass -->
       <a href="#research">
@@ -268,37 +260,13 @@
 
   <div class="content">
 
-    <!-- 01 Background -->
-    <section class="cs-section reveal" id="background">
-      <span class="section-label">01 — Background</span>
-      <h2 class="section-title">The model was ready.<br>Nobody outside the team could read it.</h2>
-      <div class="section-body">
-        <p>Official GDP data takes about 60 days to come out. By then, businesses have already made hiring and spending decisions on gut feeling. Our economists built a model that tracks 45 live signals and estimates GDP every week, updating every Monday.</p>
-        <p>My job was to take that model and turn it into something <span class="highlight">a journalist, policymaker, or CEO could read and trust in seconds.</span></p>
-      </div>
-     
-      <div class="summary-card">
-        <div class="summary-card-brief">
-          <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gray-text);flex-shrink:0;"><rect x="4" y="1.5" width="8" height="3" rx="1"/><rect x="2" y="3" width="12" height="11.5" rx="1.5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="10.5" x2="9" y2="10.5"/></svg>
-            <span class="callout-label" style="margin-bottom:0;">The brief</span>
-          </div>
-          <p class="callout-text">Make real-time GDP estimates readable by anyone. Business executive or financial journalist. Without losing what makes the model credible.</p>
-        </div>
-     
-          <div class="summary-card-stats">
-           
-        </div>
-      </div>
-    </section>
-
-    <!-- 02 The Gap -->
+    <!-- 01 The Problem -->
     <section class="cs-section reveal" id="problem">
-      <span class="section-label">02 — The Gap</span>
-      <h2 class="section-title">Real Decisions.<br>Delayed Data.</h2>
+      <span class="section-label">01 — The Problem</span>
+      <h2 class="section-title">The model was ready.<br>Nobody outside the team could read it.</h2>
 
       <div class="section-body" style="margin-top:24px;">
-        <p>Official GDP data from Statistics Canada takes about 60 days to be published. By then, business leaders and policymakers have already made critical hiring and investment decisions based on partial signal.</p>
+        <p>Official GDP data from Statistics Canada takes about 60 days to be published. By then, business leaders and policymakers have already made critical hiring and investment decisions based on partial signal. My job was to take our economists' model and turn it into something <span class="highlight">a journalist, policymaker, or CEO could read and trust in seconds.</span></p>
       </div>
 
       <div style="display:flex; flex-direction:column; margin-top:48px; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;">
@@ -343,11 +311,11 @@
 
     <!-- 03 Research -->
     <section class="cs-section reveal" id="research">
-      <span class="section-label">03 — Research</span>
+      <span class="section-label">02 — Research</span>
       <h2 class="section-title">Comparative Audit</h2>
       <div class="section-body">
         <p>I pulled in colleagues from across the Chamber. Policy advisors, communications staff, membership managers. I put the New York Fed's nowcast in front of them and asked them to find the GDP estimate.</p>
-        <p>Nobody found it quickly. Most were still searching past the one-minute mark. <span class="highlight">The page was built by researchers for researchers,</span> and everyone else could tell.</p>
+        <p>Most took well over 30 seconds just to locate the GDP estimate. And even when they found it, <span class="highlight">the probability ranges left them unsure whether the number meant anything.</span></p>
         <p>The NY Fed model was our benchmark. It showed what a public-facing GDP nowcast could look like. BDLNow was built to do the same thing for Canada, and actually be readable.</p>
       </div>
 
@@ -362,15 +330,15 @@
           <div class="research-flaw" style="padding:36px 32px; flex:1; border-bottom:1px solid rgba(255,255,255,.1); position:relative; overflow:hidden;">
             <span style="position:absolute; top:-16px; right:16px; font-size:96px; font-weight:700; letter-spacing:-.04em; color:#ffffff; line-height:1; pointer-events:none; user-select:none; opacity:0.4;">01</span>
             <span style="font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#ffffff; display:block; margin-bottom:14px;">Flaw 01</span>
-            <p style="font-size:15px; font-weight:600; letter-spacing:-.01em; color:var(--white); margin-bottom:12px; line-height:1.3;">Answer Last</p>
-            <p style="font-size:14px; color:#ffffff; line-height:1.75;">My colleagues arrived looking for a conclusion. The page gave them the proof first and buried the answer in the middle.</p>
+            <p style="font-size:15px; font-weight:600; letter-spacing:-.01em; color:var(--white); margin-bottom:12px; line-height:1.3;">Hidden on Hover</p>
+            <p style="font-size:14px; color:#ffffff; line-height:1.75;">The estimate is a dot on the chart, the same visual weight as every other point. No label, no callout. The number only appears when you hover. Most people scrolled past it without knowing it was there.</p>
           </div>
 
           <div class="research-flaw" style="padding:36px 32px; flex:1; position:relative; overflow:hidden;">
             <span style="position:absolute; top:-16px; right:16px; font-size:96px; font-weight:700; letter-spacing:-.04em; color:#ffffff; line-height:1; pointer-events:none; user-select:none; opacity:0.4;">02</span>
             <span style="font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#ffffff; display:block; margin-bottom:14px;">Flaw 02</span>
-            <p style="font-size:15px; font-weight:600; letter-spacing:-.01em; color:var(--white); margin-bottom:12px; line-height:1.3;">No Clear Starting Point</p>
-            <p style="font-size:14px; color:#ffffff; line-height:1.75;">Four probability bands stacked on a chart. A bell curve beside it. A table of interval ranges below. The actual estimate only shows on hover. My colleagues were already lost before they found the number.</p>
+            <p style="font-size:15px; font-weight:600; letter-spacing:-.01em; color:var(--white); margin-bottom:12px; line-height:1.3;">Number Without Meaning</p>
+            <p style="font-size:14px; color:#ffffff; line-height:1.75;">Four probability bands, a bell curve, raw interval ranges. Once they found the estimate, nothing helped them judge it. Precise, but unreadable.</p>
           </div>
 
         </div>
@@ -383,27 +351,21 @@
         <span class="callout-label">The UX Challenge</span>
         <p class="callout-text">The NY Fed proved the model could be public. BDLNow had to prove it could also be readable.</p>
       </div>
-    </section>
 
-    <!-- 04 Design -->
-    <section class="cs-section reveal" id="design">
-      <span class="section-label">04 — Design</span>
-      <h2 class="section-title">Same model, completely different reader.</h2>
-      <div class="section-body">
-        <p><span class="highlight">Every decision in BDLNow responds to a specific problem on the NY Fed page.</span> The comparison below shows exactly what we changed and why.</p>
+      <div class="section-body" style="margin-top:52px;">
+        <p>From that audit, I mapped every friction point to a direct design response. <span class="highlight">Same model. The interface is completely different because the reader is completely different.</span></p>
       </div>
 
-      <div class="comparison-grid" style="margin-top:48px;">
+      <div class="comparison-grid" style="margin-top:32px;">
 
         <div class="comparison-col problem">
           <div class="comparison-col-label">
             <span></span>NY Fed Staff Nowcast
           </div>
-       
           <div class="comparison-points">
             <div class="comparison-point">
               <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><line x1="6" y1="6" x2="12" y2="12"/><line x1="12" y1="6" x2="6" y2="12"/></svg>
-              <p class="comparison-point-text"><strong>Estimate buried in paragraph text.</strong> "The New York Fed Staff Nowcast for 2026:Q2 is 2.7%, with the 50% probability..." You have to read a sentence to find the number. It has no visual weight on its own.</p>
+              <p class="comparison-point-text"><strong>Estimate hidden on hover.</strong> The current estimate is a dot on the chart, identical to every other data point. No label, no callout. The number only appears when you hover directly over it. Nothing on the page signals that you need to.</p>
             </div>
             <div class="comparison-point">
               <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><line x1="6" y1="6" x2="12" y2="12"/><line x1="12" y1="6" x2="6" y2="12"/></svg>
@@ -438,9 +400,14 @@
 
       </div>
 
+    </section>
 
-      <div class="section-body" style="margin-top:52px;">
-        <p><span class="highlight">One rule drove every decision: conclusion first, context second.</span> The answer is on screen instantly. The data behind it is one click away.</p>
+    <!-- 04 Design -->
+    <section class="cs-section reveal" id="design">
+      <span class="section-label">03 — Design</span>
+      <h2 class="section-title">Conclusion first, context second.</h2>
+      <div class="section-body">
+        <p>That one rule drove every decision. The answer is on screen the moment the page loads. The data behind it is one click away.</p>
       </div>
       <!-- Feature tabs -->
       <div style="margin-top:52px; margin-bottom:20px;">
@@ -529,27 +496,9 @@
 
     <!-- 06 Outcome -->
     <section class="cs-section reveal" id="outcome">
-      <span class="section-label">05 — Outcome</span>
+      <span class="section-label">04 — Outcome</span>
       <h2 class="section-title">Live, public, and updated every week.</h2>
-      <div class="section-body">
-        <p>BDLNow launched in September 2025. It is free, open to anyone, and updated every Monday. The platform tracks two consecutive quarters and refreshes automatically when Statistics Canada publishes.</p>
-        <p>It is the first public Canadian nowcast of its kind. Model-driven, updated weekly, no editorial adjustment.</p>
-      </div>
-      <div class="outcome-grid">
-        <div class="outcome-card filled">
-          <span class="outcome-num">~60 days</span>
-          <p class="outcome-desc">Ahead of Statistics Canada's official release. Business leaders and policymakers get a credible estimate while the official number is still weeks away.</p>
-        </div>
-        <div class="outcome-card">
-          <span class="outcome-num">Every<br>Monday</span>
-          <p class="outcome-desc">A new estimate every week, not every quarter. When new data moves the model, users can see exactly what changed and why.</p>
-        </div>
-        <div class="outcome-card">
-          <span class="outcome-num">45</span>
-          <p class="outcome-desc">Live indicators behind the estimate. Retail, employment, commodities, financial markets. All re-weighted automatically as new data arrives.</p>
-        </div>
-      </div>
-      <div class="browser-mockup">
+      <div class="browser-mockup" style="margin-bottom:40px;">
         <div class="browser-chrome">
           <div class="browser-dots">
             <span></span><span></span><span></span>
@@ -560,15 +509,32 @@
           <img src="assets/bdlnow/bdlnow_page_screen.png" alt="BDLNow live platform" />
         </div>
       </div>
+      <div class="section-body">
+        <p>BDLNow is the first freely available public nowcast of Canadian GDP. It launched in September 2025 and has been running every Monday since. No editorial adjustment. No paywall.</p>
+      </div>
+      <div class="outcome-grid">
+        <div class="outcome-card filled">
+          <span class="outcome-num">~60 days</span>
+          <p class="outcome-desc">Ahead of Statistics Canada's official release. Business leaders and policymakers get a credible estimate while the official number is still being calculated.</p>
+        </div>
+        <div class="outcome-card">
+          <span class="outcome-num">Every<br>Monday</span>
+          <p class="outcome-desc">Markets and decisions don't wait for quarterly reports. A fresh estimate every week means the number stays current as conditions change.</p>
+        </div>
+        <div class="outcome-card">
+          <span class="outcome-num">45</span>
+          <p class="outcome-desc">Indicators across retail, employment, housing, commodities, and financial markets. More sources means no single data release can throw off the whole estimate.</p>
+        </div>
+      </div>
     </section>
 
     <!-- 07 What I Learned -->
     <section class="cs-section reveal" id="learned">
-      <span class="section-label">06 — What I Learned</span>
+      <span class="section-label">05 — What I Learned</span>
       <h2 class="section-title">What this project<br>taught me.</h2>
       <div class="section-body">
-        <p>Understanding the model was part of the design work. I sat with the economists until I could explain what drove the week-over-week change and why the Bloomberg comparison mattered to different readers. That knowledge changed almost every decision I made on screen. You cannot design the communication of something you do not understand.</p>
-        <p><span class="highlight">Public tools carry a different kind of responsibility.</span> BDLNow was built to be referenced in boardrooms and cited in news coverage. Getting the framing right, especially the distinction between a nowcast and a forecast, was a design problem. The copy, the hierarchy, and the visual structure all had to work together before anyone scrolled past the first paragraph.</p>
+        <p>Understanding the model was part of the design work. I sat with the economists until I could explain what moved the number each week and what the Bloomberg range actually meant. That knowledge changed decisions I made on screen. You cannot design the communication of something you do not understand.</p>
+        <p>BDLNow gets read by people making decisions and writing headlines. <span class="highlight">I couldn't just put data on a screen and hope they figured it out.</span> The top of the page had to be clear enough that anyone landing there for the first time understood exactly what the number meant, where it came from, and why they should trust it.</p>
       </div>
     </section>
 
