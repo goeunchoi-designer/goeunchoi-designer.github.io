@@ -10,7 +10,7 @@
   <style>
     :root {
       --white:     #ffffff; --off-white: #f8f8f8; --gray-light: #f0f0f0;
-      --gray-text: #888888; --black:     #111111; --border:     #e8e8e8;
+      --gray-text: #767676; --black:     #111111; --border:     #e8e8e8;
       --radius:    20px;    --radius-sm: 12px;
       --shadow:    0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
       --highlight: #fef3c7; --note-bg:  #fef9e7;
@@ -180,7 +180,7 @@
     <div class="hero-tags">
       <span class="hero-tag-pill filled">Live</span>
       <span class="hero-tag-pill">Product Designer</span>
-      <span class="hero-tag-pill">Figma · WordPress · Illustrator · Photoshop · After Efffects</span>
+      <span class="hero-tag-pill">Figma · WordPress · Illustrator · Photoshop · After Effects</span>
     </div>
     <h1 class="hero-title">Making Canada's real-time GDP estimate readable by anyone</h1>
     <p class="hero-desc">BDLNow is the Business Data Lab's weekly GDP nowcast for Canada. A nowcast estimates economic growth in real time, before official data is published. Powered by 45 indicators, updated every Monday, months ahead of Statistics Canada. I designed the interface and integrated the R Shiny application into the live WordPress site.</p>
@@ -193,7 +193,7 @@
       </div>
       <div class="cs-overview-item">
         <span class="cs-overview-label"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2.5l2 2-7 7-2.5.5.5-2.5 7-7z"/><line x1="8" y1="4" x2="10" y2="6"/></svg>Tools</span>
-        <span class="cs-overview-value">Figma · WordPress · Illustrator · Photoshop · After Efffects</span>
+        <span class="cs-overview-value">Figma · WordPress · Illustrator · Photoshop · After Effects</span>
       </div>
       <div class="cs-overview-item">
         <span class="cs-overview-label"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="1.5" width="11" height="11" rx="2"/><line x1="1.5" y1="5.5" x2="12.5" y2="5.5"/><line x1="1.5" y1="9" x2="12.5" y2="9"/><line x1="5.5" y1="5.5" x2="5.5" y2="12.5"/></svg>Service</span>
@@ -331,14 +331,14 @@
             <span style="position:absolute; top:-16px; right:16px; font-size:96px; font-weight:700; letter-spacing:-.04em; color:#ffffff; line-height:1; pointer-events:none; user-select:none; opacity:0.4;">01</span>
             <span style="font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#ffffff; display:block; margin-bottom:14px;">Flaw 01</span>
             <p style="font-size:15px; font-weight:600; letter-spacing:-.01em; color:var(--white); margin-bottom:12px; line-height:1.3;">Hidden on Hover</p>
-            <p style="font-size:14px; color:#ffffff; line-height:1.75;">The estimate is a dot on the chart, the same visual weight as every other point. No label, no callout. The number only appears when you hover. Most people scrolled past it without knowing it was there.</p>
+            <p style="font-size:14px; color:#ffffff; line-height:1.75;">The estimate is a dot on the chart, the same visual weight as every other point. Most people scrolled past it without knowing it was there.</p>
           </div>
 
           <div class="research-flaw" style="padding:36px 32px; flex:1; position:relative; overflow:hidden;">
             <span style="position:absolute; top:-16px; right:16px; font-size:96px; font-weight:700; letter-spacing:-.04em; color:#ffffff; line-height:1; pointer-events:none; user-select:none; opacity:0.4;">02</span>
             <span style="font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#ffffff; display:block; margin-bottom:14px;">Flaw 02</span>
             <p style="font-size:15px; font-weight:600; letter-spacing:-.01em; color:var(--white); margin-bottom:12px; line-height:1.3;">Number Without Meaning</p>
-            <p style="font-size:14px; color:#ffffff; line-height:1.75;">Four probability bands, a bell curve, raw interval ranges. Once they found the estimate, nothing helped them judge it. Precise, but unreadable.</p>
+            <p style="font-size:14px; color:#ffffff; line-height:1.75;">Four probability bands, a bell curve, raw interval ranges stacked on top of each other. Precise, but unreadable.</p>
           </div>
 
         </div>
@@ -360,40 +360,40 @@
 
         <div class="comparison-col problem">
           <div class="comparison-col-label">
-            <span></span>NY Fed Staff Nowcast
+            <span></span>NY Fed Friction
           </div>
           <div class="comparison-points">
             <div class="comparison-point">
               <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><line x1="6" y1="6" x2="12" y2="12"/><line x1="12" y1="6" x2="6" y2="12"/></svg>
-              <p class="comparison-point-text"><strong>Estimate hidden on hover.</strong> The current estimate is a dot on the chart, identical to every other data point. No label, no callout. The number only appears when you hover directly over it. Nothing on the page signals that you need to.</p>
+              <p class="comparison-point-text">The estimate is buried in text or revealed only through chart interaction.</p>
             </div>
             <div class="comparison-point">
               <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><line x1="6" y1="6" x2="12" y2="12"/><line x1="12" y1="6" x2="6" y2="12"/></svg>
-              <p class="comparison-point-text"><strong>Four probability bands, a bell curve, and a table of intervals.</strong> The chart layers 50%, 60%, 70%, and 80% probability bands on top of each other. A separate bell curve sits beside it. Below that, a table lists raw ranges like [1.66, 3.88]. The estimate itself only appears when you hover. Most readers give up before they get there.</p>
+              <p class="comparison-point-text">Probability bands require statistical confidence to understand.</p>
             </div>
             <div class="comparison-point">
               <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><line x1="6" y1="6" x2="12" y2="12"/><line x1="12" y1="6" x2="6" y2="12"/></svg>
-              <p class="comparison-point-text"><strong>No external benchmark.</strong> The number sits alone. Nothing tells you whether 2.7% is strong, weak, or where it sits relative to what other forecasters think.</p>
+              <p class="comparison-point-text">The model's credibility is not obvious to non-experts.</p>
             </div>
           </div>
         </div>
 
         <div class="comparison-col solution">
           <div class="comparison-col-label">
-            <span></span>BDLNow
+            <span></span>Design Angle
           </div>
           <div class="comparison-points">
             <div class="comparison-point">
               <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><polyline points="5.5,9 8,11.5 12.5,6.5"/></svg>
-              <p class="comparison-point-text"><strong>The number is on the chart.</strong> The estimate is labeled directly on the line. One plain sentence above it gives the date, the current figure, the previous estimate, and the weekly change.</p>
+              <p class="comparison-point-text">Make the answer visible before asking users to interpret the model.</p>
             </div>
             <div class="comparison-point">
               <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><polyline points="5.5,9 8,11.5 12.5,6.5"/></svg>
-              <p class="comparison-point-text"><strong>Bloomberg Survey Range as the confidence frame.</strong> The shaded band shows where professional forecasters sit. You can see at a glance whether BDLNow's estimate is inside or outside consensus. No statistics background needed.</p>
+              <p class="comparison-point-text">Replace statistical abstraction with a consensus frame.</p>
             </div>
             <div class="comparison-point">
               <svg class="comparison-point-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><polyline points="5.5,9 8,11.5 12.5,6.5"/></svg>
-              <p class="comparison-point-text"><strong>Context is part of the layout.</strong> The Bloomberg range, the labeled estimate, and the weekly change all sit together. You do not have to look for meaning. It is already there.</p>
+              <p class="comparison-point-text">Let users judge the model's track record in one view.</p>
             </div>
           </div>
         </div>
@@ -408,6 +408,7 @@
       <h2 class="section-title">Conclusion first, context second.</h2>
       <div class="section-body">
         <p>That one rule drove every decision. The answer is on screen the moment the page loads. The data behind it is one click away.</p>
+        <p>It's how the three design angles from the audit became a real interface: <span class="highlight">the estimate labeled on the chart, the Bloomberg range standing in for statistical confidence, and the model's track record visible in one view.</span></p>
       </div>
       <!-- Feature tabs -->
       <div style="margin-top:52px; margin-bottom:20px;">
