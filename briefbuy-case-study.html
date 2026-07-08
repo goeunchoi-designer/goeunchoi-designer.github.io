@@ -637,7 +637,7 @@
           <div style="background:var(--black); padding:16px 32px;">
             <span style="font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#ffffff;">Two panel layout</span>
           </div>
-          <div class="mobile-stack" style="display:grid; grid-template-columns:1fr 1fr; min-height:200px;">
+          <div class="mobile-stack" style="display:grid; grid-template-columns:1fr 1fr;">
             <div style="padding:32px; border-right:1px solid var(--border);">
               <p style="font-size:14px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:16px;">Left: Chat</p>
               <p style="font-size:14px; color:var(--gray-text); line-height:1.7;">Users paste links, ask follow ups, and narrow the list by fit, cushion, or price.</p>
@@ -652,82 +652,101 @@
           </div>
         </div>
 
-        <!-- Design system tabs -->
+        <!-- Brand and Design System (standalone, above Inside the design tabs) -->
         <div style="margin-top:52px; margin-bottom:20px;">
-          <span style="font-size:14px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); display:block; margin-bottom:12px;">Inside the design</span>
-          <p style="font-size:22px; font-weight:700; letter-spacing:-.025em; line-height:1.2; color:var(--black);">Three components. Each solving a different part of the decision.</p>
+          <span style="font-size:14px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); display:block; margin-bottom:12px;">Brand and Design System</span>
+          <p style="font-size:22px; font-weight:700; letter-spacing:-.025em; line-height:1.2; color:var(--black);">A companion character that grows with the user.</p>
         </div>
-        <div class="feat-tabs" style="margin-top:0;">
-          <div class="feat-tab-bar">
-            <button class="feat-tab-btn active" data-tab="dtab1">
-              <span class="tab-num">01</span>Brand and Design System
-            </button>
-            <button class="feat-tab-btn" data-tab="dtab2">
-              <span class="tab-num">02</span>Runner Profile
-            </button>
-            <button class="feat-tab-btn" data-tab="dtab3">
-              <span class="tab-num">03</span>ScoreCircle and Crown Ranking
-            </button>
-          </div>
-
-          <!-- Panel 1: Brand and Design System -->
-          <div class="feat-tab-panel active" id="dtab1">
+        <div style="margin-bottom:52px;">
           <!-- Two-column: character widget left, description right -->
           <div class="mobile-stack" style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
 
-          <!-- Left: Interactive character level-up widget -->
-          <div id="charWidget" style="background:linear-gradient(160deg,#f4f3ff 0%,#edfefe 100%); border:1px solid var(--border); border-radius:var(--radius); padding:48px 32px 40px; display:flex; flex-direction:column; align-items:center; position:relative; overflow:hidden; transition:background .5s ease;">
+          <!-- Left: Interactive character level-up widget, styled as a handheld console -->
+          <div id="charWidget" style="background:linear-gradient(160deg,#e4e2ff 0%,#dcf9f4 100%); border:1px solid var(--border); border-radius:26px; padding:20px 20px 26px; display:flex; flex-direction:column; align-items:center; position:relative; overflow:hidden; transition:background .5s ease; box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 16px 32px rgba(93,92,255,.14);">
             <div id="charGlow" style="position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(93,92,255,.12) 0%,transparent 70%);top:20px;left:50%;transform:translateX(-50%);pointer-events:none;transition:background .5s ease;"></div>
 
             <!-- Interactive hint badge -->
-            <div style="position:absolute;top:16px;right:18px;display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.85);border-radius:999px;padding:5px 11px;z-index:2;">
+            <div style="align-self:center;display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.85);border-radius:999px;padding:5px 11px;margin-bottom:14px;z-index:2;">
               <svg width="10" height="10" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;color:#111111;">
                 <path d="M2 1L2 9.5L4 7.5L5.5 11L6.5 10.5L5 7L7.5 6.5L2 1Z" fill="currentColor"/>
               </svg>
               <span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#111111;">Try it</span>
             </div>
 
-            <!-- Level buttons -->
-            <div style="display:flex;gap:8px;margin-bottom:36px;position:relative;z-index:1;">
-              <button id="dot-1" onclick="setCharLevel(1)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="padding:8px 18px;border-radius:999px;border:1.5px solid #111;background:#111;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.04em;" data-active="1">Lv.1</button>
-              <button id="dot-2" onclick="setCharLevel(2)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="padding:8px 18px;border-radius:999px;border:1.5px solid #999;background:rgba(255,255,255,0.7);color:#555;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.04em;" data-active="0">Lv.2</button>
-              <button id="dot-3" onclick="setCharLevel(3)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="padding:8px 18px;border-radius:999px;border:1.5px solid #999;background:rgba(255,255,255,0.7);color:#555;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.04em;" data-active="0">Lv.3</button>
-              <button id="dot-4" onclick="setCharLevel(4)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="padding:8px 18px;border-radius:999px;border:1.5px solid #999;background:rgba(255,255,255,0.7);color:#555;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.04em;" data-active="0">Lv.4</button>
+            <!-- Console shell top: brand mark -->
+            <div style="width:100%;display:flex;justify-content:center;margin-bottom:14px;position:relative;z-index:1;">
+              <span style="font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#6b6b99;">BriefBuy Companion</span>
             </div>
 
-            <!-- Character SVG viewport -->
-            <div style="position:relative;margin-bottom:32px;z-index:1;width:175px;height:140px;display:flex;align-items:center;justify-content:center;">
-              <div id="char-svg-container" style="display:flex;align-items:center;justify-content:center;"></div>
+            <!-- Screen bezel -->
+            <div style="width:100%;background:#232338;border-radius:18px;padding:16px 16px 14px;position:relative;z-index:1;box-shadow:inset 0 2px 6px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.06);">
+              <!-- LCD screen -->
+              <div style="background:linear-gradient(160deg,#f4f3ff 0%,#edfefe 100%);border-radius:10px;padding:22px 12px 16px;display:flex;flex-direction:column;align-items:center;box-shadow:inset 0 2px 10px rgba(0,0,0,.2);min-height:230px;justify-content:center;">
 
-              <!-- Sparkle burst -->
-              <div id="c-sparkle" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .15s;">
-                <svg width="140" height="140" viewBox="0 0 140 140" style="overflow:visible;">
-                  <g stroke-linecap="round">
-                    <line x1="70" y1="70" x2="70" y2="16" stroke="#fbbf24" stroke-width="2.5" opacity=".9"/>
-                    <line x1="70" y1="70" x2="108" y2="32" stroke="#f59e0b" stroke-width="2" opacity=".7"/>
-                    <line x1="70" y1="70" x2="124" y2="70" stroke="#fbbf24" stroke-width="2.5" opacity=".9"/>
-                    <line x1="70" y1="70" x2="108" y2="108" stroke="#f59e0b" stroke-width="2" opacity=".7"/>
-                    <line x1="70" y1="70" x2="70" y2="124" stroke="#fbbf24" stroke-width="2.5" opacity=".9"/>
-                    <line x1="70" y1="70" x2="32" y2="108" stroke="#f59e0b" stroke-width="2" opacity=".7"/>
-                    <line x1="70" y1="70" x2="16" y2="70" stroke="#fbbf24" stroke-width="2.5" opacity=".9"/>
-                    <line x1="70" y1="70" x2="32" y2="32" stroke="#f59e0b" stroke-width="2" opacity=".7"/>
-                  </g>
-                </svg>
+                <!-- Character SVG viewport -->
+                <div style="position:relative;margin-bottom:20px;width:175px;height:140px;display:flex;align-items:center;justify-content:center;">
+                  <div id="char-svg-container" style="display:flex;align-items:center;justify-content:center;"></div>
+
+                  <!-- Sparkle burst -->
+                  <div id="c-sparkle" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .15s;">
+                    <svg width="140" height="140" viewBox="0 0 140 140" style="overflow:visible;">
+                      <g stroke-linecap="round">
+                        <line x1="70" y1="70" x2="70" y2="16" stroke="#fbbf24" stroke-width="2.5" opacity=".9"/>
+                        <line x1="70" y1="70" x2="108" y2="32" stroke="#f59e0b" stroke-width="2" opacity=".7"/>
+                        <line x1="70" y1="70" x2="124" y2="70" stroke="#fbbf24" stroke-width="2.5" opacity=".9"/>
+                        <line x1="70" y1="70" x2="108" y2="108" stroke="#f59e0b" stroke-width="2" opacity=".7"/>
+                        <line x1="70" y1="70" x2="70" y2="124" stroke="#fbbf24" stroke-width="2.5" opacity=".9"/>
+                        <line x1="70" y1="70" x2="32" y2="108" stroke="#f59e0b" stroke-width="2" opacity=".7"/>
+                        <line x1="70" y1="70" x2="16" y2="70" stroke="#fbbf24" stroke-width="2.5" opacity=".9"/>
+                        <line x1="70" y1="70" x2="32" y2="32" stroke="#f59e0b" stroke-width="2" opacity=".7"/>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Level info -->
+                <div style="text-align:center;">
+                  <span id="c-num" style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray-text);display:block;margin-bottom:6px;">Level 1</span>
+                  <p id="c-name" style="font-size:22px;font-weight:700;color:var(--black);letter-spacing:-.02em;margin-bottom:8px;">Starter</p>
+                  <p id="c-desc" style="font-size:14px;color:var(--gray-text);line-height:1.65;max-width:260px;">Your new companion, fresh and ready to help.</p>
+                  <div style="height:28px;display:flex;align-items:center;justify-content:center;margin-top:10px;">
+                    <span id="c-unlock" style="font-size:14px;font-weight:600;background:var(--black);color:var(--white);padding:4px 14px;border-radius:999px;display:none;"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Screen label -->
+              <div style="text-align:right;margin-top:8px;">
+                <span style="font-size:8px;letter-spacing:.14em;color:#8686ad;font-weight:700;">LEVEL-UP DISPLAY</span>
               </div>
             </div>
 
-            <!-- Level info -->
-            <div style="text-align:center;position:relative;z-index:1;margin-bottom:28px;">
-              <span id="c-num" style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray-text);display:block;margin-bottom:6px;">Level 1</span>
-              <p id="c-name" style="font-size:22px;font-weight:700;color:var(--black);letter-spacing:-.02em;margin-bottom:8px;">Starter</p>
-              <p id="c-desc" style="font-size:14px;color:var(--gray-text);line-height:1.65;max-width:260px;">Your new companion, fresh and ready to help.</p>
-              <div style="height:28px;display:flex;align-items:center;justify-content:center;margin-top:10px;">
-                <span id="c-unlock" style="font-size:14px;font-weight:600;background:var(--black);color:var(--white);padding:4px 14px;border-radius:999px;display:none;"></span>
-              </div>
-            </div>
+            <!-- Physical control cluster: d-pad, level select, and the level-up action button -->
+            <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-top:24px;position:relative;z-index:1;">
 
-            <!-- Level Up button -->
-            <button id="c-btn" onclick="levelUpChar()" style="background:var(--black);color:var(--white);border:none;border-radius:999px;padding:14px 36px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:-.01em;position:relative;z-index:1;transition:transform .2s cubic-bezier(.34,1.56,.64,1),background .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Level Up →</button>
+              <!-- D-pad: doubles as level up/down control -->
+              <div style="position:relative;width:58px;height:58px;flex-shrink:0;">
+                <div style="position:absolute;top:0;left:19px;width:20px;height:58px;background:#3a3a55;border-radius:5px;box-shadow:0 2px 0 #24243a;pointer-events:none;"></div>
+                <div style="position:absolute;top:19px;left:0;width:58px;height:20px;background:#3a3a55;border-radius:5px;box-shadow:0 2px 0 #24243a;pointer-events:none;"></div>
+                <div style="position:absolute;top:19px;left:19px;width:20px;height:20px;background:#2c2c44;border-radius:4px;pointer-events:none;"></div>
+
+                <button onclick="levelUpChar()" aria-label="Level up" title="Level up" style="position:absolute;top:0;left:19px;width:20px;height:19px;background:transparent;border:none;padding:0;cursor:pointer;"></button>
+                <button onclick="levelDownChar()" aria-label="Level down" title="Level down" style="position:absolute;top:39px;left:19px;width:20px;height:19px;background:transparent;border:none;padding:0;cursor:pointer;"></button>
+                <button onclick="levelDownChar()" aria-label="Previous level" title="Previous level" style="position:absolute;top:19px;left:0;width:19px;height:20px;background:transparent;border:none;padding:0;cursor:pointer;"></button>
+                <button onclick="levelUpChar()" aria-label="Next level" title="Next level" style="position:absolute;top:19px;left:39px;width:19px;height:20px;background:transparent;border:none;padding:0;cursor:pointer;"></button>
+              </div>
+
+              <!-- Level select, styled like Start/Select buttons -->
+              <div style="display:flex;gap:8px;">
+                <button id="dot-1" onclick="setCharLevel(1)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="width:34px;height:34px;border-radius:50%;border:1.5px solid #111;background:#111;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;" data-active="1">1</button>
+                <button id="dot-2" onclick="setCharLevel(2)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="width:34px;height:34px;border-radius:50%;border:1.5px solid #999;background:rgba(255,255,255,0.7);color:#555;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;" data-active="0">2</button>
+                <button id="dot-3" onclick="setCharLevel(3)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="width:34px;height:34px;border-radius:50%;border:1.5px solid #999;background:rgba(255,255,255,0.7);color:#555;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;" data-active="0">3</button>
+                <button id="dot-4" onclick="setCharLevel(4)" onmouseover="if(this.dataset.active!='1')this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" style="width:34px;height:34px;border-radius:50%;border:1.5px solid #999;background:rgba(255,255,255,0.7);color:#555;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;" data-active="0">4</button>
+              </div>
+
+              <!-- Level Up button, styled as the console's A button -->
+              <button id="c-btn" onclick="levelUpChar()" style="width:72px;height:72px;border-radius:50%;background:var(--black);color:var(--white);border:none;font-size:11px;font-weight:700;font-family:inherit;line-height:1.2;cursor:pointer;letter-spacing:-.01em;transition:transform .2s cubic-bezier(.34,1.56,.64,1),background .3s;box-shadow:0 4px 0 #000, 0 4px 0 rgba(0,0,0,.25);flex-shrink:0;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Level Up →</button>
+            </div>
           </div>
 
             <!-- Right: Description -->
@@ -870,10 +889,53 @@
                 if (btn) { btn.style.transform = 'scale(.95)'; setTimeout(function(){ btn.style.transform = 'scale(1)'; }, 150); }
               }
             };
+            window.levelDownChar = function() {
+              if (charLevel > 1) { setCharLevel(charLevel - 1); }
+            };
 
             setCharLevel(1);
           })();
           </script>
+          </div><!-- /Brand and Design System -->
+
+        <!-- Inside the design tabs -->
+        <div style="margin-top:52px; margin-bottom:20px;">
+          <span style="font-size:14px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); display:block; margin-bottom:12px;">Inside the design</span>
+          <p style="font-size:22px; font-weight:700; letter-spacing:-.025em; line-height:1.2; color:var(--black);">Four screens. Each solving a different part of the decision.</p>
+        </div>
+        <div class="feat-tabs" style="margin-top:0;">
+          <div class="feat-tab-bar">
+            <button class="feat-tab-btn active" data-tab="dtab1">
+              <span class="tab-num">01</span>Landing Screen
+            </button>
+            <button class="feat-tab-btn" data-tab="dtab3">
+              <span class="tab-num">02</span>Shoe Detail
+            </button>
+            <button class="feat-tab-btn" data-tab="dtab2">
+              <span class="tab-num">03</span>Runner Profile
+            </button>
+            <button class="feat-tab-btn" data-tab="dtab4">
+              <span class="tab-num">04</span>Comparison Lightbox
+            </button>
+          </div>
+
+          <!-- Panel 1: Landing Screen -->
+          <div class="feat-tab-panel active" id="dtab1">
+          <div class="section-body" style="margin-bottom:32px;">
+            <p>The landing screen has one job: get the first product links pasted in. No sign up, no empty state to figure out, just a single input and a short explanation of what the app does.</p>
+            <p>Setting up a runner profile is optional here. Users can skip it and get a general comparison, or fill it in once and let foot width, mileage, budget, and pain points shape a more personal result.</p>
+          </div>
+          <div class="browser-mockup" style="margin-top:0;">
+            <div class="browser-chrome">
+              <div class="browser-dots"><span></span><span></span><span></span></div>
+              <div class="browser-url">briefbuy.app</div>
+            </div>
+            <div style="background:#fff;">
+              <video autoplay loop muted playsinline style="width:100%;display:block;">
+                <source src="assets/briefbuy/AI Product Comparison landing screen.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
           </div><!-- /feat-tab-panel dtab1 -->
 
           <!-- Panel 2: Runner Profile -->
@@ -915,17 +977,20 @@
           </div>
           </div><!-- /feat-tab-panel dtab2 -->
 
-          <!-- Panel 3: ScoreCircle and Crown Ranking -->
+          <!-- Panel 3: Shoe Detail -->
           <div class="feat-tab-panel" id="dtab3">
-          <div class="mobile-stack" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="section-body" style="margin-bottom:32px;">
+            <p>The shoe detail view is where a user checks the reasoning behind a recommendation before committing to one option.</p>
+          </div>
+          <div class="mobile-stack" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
             <div class="anno-card">
               <svg class="anno-card-icon" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"/>
                 <path d="M11 11 L11 5" stroke-linecap="round" stroke-width="2"/>
                 <circle cx="11" cy="11" r="1.5" fill="currentColor" stroke="none"/>
               </svg>
-              <p class="anno-card-title">Fit score at a glance</p>
-              <p class="anno-card-desc">A single score gives users a quick read before they open the details.</p>
+              <p class="anno-card-title">ScoreCircle breaks down the match</p>
+              <p class="anno-card-desc">The ring shows the overall match score, and the bars underneath split it into biomechanical fit, specs alignment, use case, price and value, and reviews.</p>
             </div>
             <div class="anno-card" style="background:var(--black);border-color:transparent;">
               <svg class="anno-card-icon" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--white);">
@@ -934,14 +999,35 @@
                 <rect x="7" y="17" width="8" height="2" rx="1"/>
                 <line x1="11" y1="14" x2="11" y2="17"/>
               </svg>
-              <p class="anno-card-title" style="color:var(--white);">Rankings can change</p>
-              <p class="anno-card-desc" style="color:#ffffff;">If the user changes priorities, the top pick can move with the conversation.</p>
+              <p class="anno-card-title" style="color:var(--white);">Strengths and considerations badges</p>
+              <p class="anno-card-desc" style="color:#ffffff;">Badges call out what the shoe is good at, like durability or energy return, and flag tradeoffs like a premium price, all at a glance.</p>
+            </div>
+            <div class="anno-card">
+              <svg class="anno-card-icon" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="16" height="16" rx="2"/>
+                <line x1="7" y1="8" x2="15" y2="8"/>
+                <line x1="7" y1="11" x2="15" y2="11"/>
+                <line x1="7" y1="14" x2="12" y2="14"/>
+              </svg>
+              <p class="anno-card-title">Specs with a flag when it matters</p>
+              <p class="anno-card-desc">Detailed specs like drop, weight, terrain, and stack height sit next to a small badge, such as Over Budget, whenever a number needs a second look.</p>
             </div>
           </div>
           <div class="anno-img lb-trigger" style="margin-top:20px; min-height:340px; background:var(--off-white); cursor:zoom-in;" onclick="openLightbox('assets/briefbuy/shoedetail_porfile.png','Shoe Details with ScoreCircle')">
             <img src="assets/briefbuy/shoedetail_porfile.png" alt="Shoe Details modal with ScoreCircle fit score" style="width:100%;height:100%;object-fit:contain;padding:16px;">
           </div>
           </div><!-- /feat-tab-panel dtab3 -->
+
+          <!-- Panel 4: Comparison Lightbox -->
+          <div class="feat-tab-panel" id="dtab4">
+          <div class="section-body" style="margin-bottom:32px;">
+            <p>The comparison lightbox opens up to three shoes side by side in full detail, so users do not have to hold specs in their head while scrolling between cards.</p>
+            <p>A crown badge marks whichever shoe wins the match score, and a "Best" tag calls out the winning value in each spec row, cushioning, weight, price, and more, so the differences that matter are easy to scan in one glance. Pros and cons badges sum up the tradeoffs underneath.</p>
+          </div>
+          <div class="anno-img lb-trigger" style="min-height:340px; background:var(--off-white); cursor:zoom-in;" onclick="openLightbox('assets/briefbuy/comparison-lightbox.png','Comparison lightbox with shoes side by side')">
+            <img src="assets/briefbuy/comparison-lightbox.png" alt="Comparison lightbox showing shoes side by side" style="width:100%;height:100%;object-fit:contain;padding:16px;">
+          </div>
+          </div><!-- /feat-tab-panel dtab4 -->
 
         </div><!-- /feat-tabs -->
       </section>
@@ -954,15 +1040,70 @@
           <p>The first build lost everything when the tab closed. In Version 2, I added a history board so users can save a comparison and come back later.</p>
         </div>
 
-        <!-- V2 history board demo video -->
+        <!-- V2 history board demo video, styled as a TV with a remote -->
         <div style="margin-top:48px;">
           <p style="font-size:14px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-text); margin-bottom:12px;">History board: save, revisit, and remove boards</p>
-          <div style="border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; background:var(--black);">
-            <video controls preload="metadata" style="width:100%;display:block;border-radius:var(--radius-sm);" poster="assets/briefbuy/briefbuy_intro_comparison.png">
-              <source src="assets/briefbuy/version2_historyboard_demo.mp4" type="video/mp4">
-            </video>
+
+          <div style="display:flex; align-items:flex-end; gap:28px; flex-wrap:wrap;">
+
+            <!-- TV -->
+            <div style="flex:1 1 420px; min-width:280px;">
+              <div style="background:#1c1c1e; border-radius:20px; padding:16px 16px 16px; box-shadow:0 24px 48px rgba(0,0,0,.28);">
+                <div style="background:#111; border-radius:10px; overflow:hidden; position:relative;">
+                  <video id="v2Video" preload="metadata" style="width:100%;display:block;" poster="assets/briefbuy/briefbuy_intro_comparison.png" onclick="toggleV2Video()" onplay="setV2Playing(true)" onpause="setV2Playing(false)" onended="setV2Playing(false)">
+                    <source src="assets/briefbuy/version2_historyboard_demo.mp4" type="video/mp4">
+                  </video>
+                  <!-- Center play button overlay -->
+                  <button id="v2PlayOverlay" onclick="toggleV2Video()" aria-label="Play video" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.92);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.3);transition:opacity .2s, transform .2s;">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="#111"><path d="M6 4l13 7-13 7V4z"/></svg>
+                  </button>
+                </div>
+              </div>
+              <!-- TV stand -->
+              <div style="width:64px;height:14px;background:#1c1c1e;border-radius:0 0 6px 6px;margin:0 auto;"></div>
+              <div style="width:120px;height:6px;background:#1c1c1e;border-radius:3px;margin:0 auto;opacity:.85;"></div>
+            </div>
+
+            <!-- Remote controller -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0;">
+              <span style="display:inline-flex;align-items:center;gap:5px;background:#111;color:#fff;border-radius:999px;padding:5px 11px;white-space:nowrap;">
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="#fff"><path d="M3 2l7 4-7 4V2z"/></svg>
+                <span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;">Play it</span>
+              </span>
+              <div style="width:64px;background:#2b2b2e;border-radius:26px;padding:18px 10px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 14px 28px rgba(0,0,0,.25);">
+                <div style="width:10px;height:10px;border-radius:50%;background:#4a4a4e;"></div>
+                <button id="v2RemoteBtn" onclick="toggleV2Video()" aria-label="Play or pause video" style="width:40px;height:40px;border-radius:50%;background:#3a3a3e;border:1px solid #4a4a4e;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+                  <svg id="v2RemoteIcon" width="14" height="14" viewBox="0 0 22 22" fill="#fff"><path d="M6 4l13 7-13 7V4z"/></svg>
+                </button>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <div style="width:30px;height:12px;background:#3a3a3e;border-radius:6px;"></div>
+                  <div style="width:30px;height:12px;background:#3a3a3e;border-radius:6px;"></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
+
+        <script>
+        (function(){
+          window.setV2Playing = function(isPlaying) {
+            var overlay = document.getElementById('v2PlayOverlay');
+            var icon    = document.getElementById('v2RemoteIcon');
+            if (overlay) { overlay.style.opacity = isPlaying ? '0' : '1'; overlay.style.pointerEvents = isPlaying ? 'none' : 'auto'; }
+            if (icon) {
+              icon.innerHTML = isPlaying
+                ? '<rect x="4" y="3" width="5" height="16" rx="1.5"/><rect x="13" y="3" width="5" height="16" rx="1.5"/>'
+                : '<path d="M6 4l13 7-13 7V4z"/>';
+            }
+          };
+          window.toggleV2Video = function() {
+            var video = document.getElementById('v2Video');
+            if (!video) return;
+            if (video.paused) { video.play(); } else { video.pause(); }
+          };
+        })();
+        </script>
       </section>
 
 
