@@ -8,18 +8,30 @@
   }
 
   ready(function () {
-    var revealObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -48px 0px' });
+    var revealEls = document.querySelectorAll('.reveal');
 
-    document.querySelectorAll('.reveal').forEach(function (el) {
-      revealObserver.observe(el);
-    });
+    if (!('IntersectionObserver' in window)) {
+      revealEls.forEach(function (el) { el.classList.add('visible'); });
+    } else {
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -48px 0px' });
+
+      revealEls.forEach(function (el) {
+        revealObserver.observe(el);
+      });
+
+      // Safety net: force everything visible if the observer misses an element
+      // (e.g. a scroll faster than the observer callback can keep up with).
+      setTimeout(function () {
+        revealEls.forEach(function (el) { el.classList.add('visible'); });
+      }, 2500);
+    }
 
     var sections = Array.from(document.querySelectorAll('.cs-section[id]'));
     var navLinks = Array.from(document.querySelectorAll('.section-nav a'));

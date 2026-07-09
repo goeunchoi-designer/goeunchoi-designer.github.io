@@ -397,7 +397,7 @@
       <!-- 01 Background -->
       <section class="cs-section reveal" id="background">
         <span class="section-label">01 Background</span>
-        <h2 class="section-title">I had four weeks to build an AI product.<br>I shipped the design and the frontend.</h2>
+        <h2 class="section-title">I had four weeks to build an AI product. <br>I shipped the design and the frontend.</h2>
         <div class="section-body">
           <p>In April 2026, a friend invited me to a Korean IT community challenge. Three people, four weeks, one working product.</p>
           <p>We chose an AI shopping assistant for running shoes because the buying decision is genuinely hard. Foot shape, distance, budget. Every detail changes the right answer. Most people spend hours researching and still feel uncertain at checkout.</p>
@@ -436,7 +436,7 @@
       <!-- 02 The Problem -->
       <section class="cs-section reveal" id="problem">
         <span class="section-label">02 The Problem</span>
-        <h2 class="section-title">Chat is great at explaining.<br>It is bad at helping you decide.</h2>
+        <h2 class="section-title">Chat is great at explaining. <br>It is bad at helping you decide.</h2>
         <div class="section-body">
           <p>By message ten, you can easily lose track. The longer a shoe conversation gets, the more your original conditions drift. AI has forgotten your wide feet and your budget.</p>
         </div>
@@ -626,7 +626,7 @@
       <!-- 04 Design -->
       <section class="cs-section reveal" id="design">
         <span class="section-label">04 Design</span>
-        <h2 class="section-title">Chat on one side.<br>Decisions on the other.</h2>
+        <h2 class="section-title">Chat on one side. <br>Decisions on the other.</h2>
         <div class="section-body">
           <p>The main design choice was a two panel layout. The chat is where users ask questions. The panel is where the decision stays organized.</p>
           <p><span class="highlight">The panel updates with every message, but it never moves.</span> Users can always see their profile, candidates, fit scores, and rejected options.</p>
@@ -657,12 +657,12 @@
           <span style="font-size:14px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gray-text); display:block; margin-bottom:12px;">Brand and Design System</span>
           <p style="font-size:22px; font-weight:700; letter-spacing:-.025em; line-height:1.2; color:var(--black);">A companion character that grows with the user.</p>
         </div>
-        <div style="margin-bottom:52px;">
+        <div style="margin-bottom:80px;">
           <!-- Two-column: character widget left, description right -->
           <div class="mobile-stack" style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
 
           <!-- Left: Interactive character level-up widget, styled as a handheld console -->
-          <div id="charWidget" style="background:linear-gradient(160deg,#e4e2ff 0%,#dcf9f4 100%); border:1px solid var(--border); border-radius:26px; padding:20px 20px 26px; display:flex; flex-direction:column; align-items:center; position:relative; overflow:hidden; transition:background .5s ease; box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 16px 32px rgba(93,92,255,.14);">
+          <div id="charWidget" style="background:linear-gradient(160deg,#e4e2ff 0%,#dcf9f4 100%); border:1px solid var(--border); border-radius:26px; padding:16px 16px 18px; display:flex; flex-direction:column; align-items:center; position:relative; overflow:hidden; transition:background .5s ease; box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 16px 32px rgba(93,92,255,.14);">
             <div id="charGlow" style="position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(93,92,255,.12) 0%,transparent 70%);top:20px;left:50%;transform:translateX(-50%);pointer-events:none;transition:background .5s ease;"></div>
 
             <!-- Interactive hint badge -->
@@ -674,17 +674,17 @@
             </div>
 
             <!-- Console shell top: brand mark -->
-            <div style="width:100%;display:flex;justify-content:center;margin-bottom:14px;position:relative;z-index:1;">
+            <div style="width:100%;display:flex;justify-content:center;margin-bottom:10px;position:relative;z-index:1;">
               <span style="font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#6b6b99;">BriefBuy Companion</span>
             </div>
 
             <!-- Screen bezel -->
-            <div style="width:100%;background:#232338;border-radius:18px;padding:16px 16px 14px;position:relative;z-index:1;box-shadow:inset 0 2px 6px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.06);">
+            <div style="width:100%;background:#232338;border-radius:18px;padding:12px 16px 10px;position:relative;z-index:1;box-shadow:inset 0 2px 6px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.06);">
               <!-- LCD screen -->
-              <div style="background:linear-gradient(160deg,#f4f3ff 0%,#edfefe 100%);border-radius:10px;padding:22px 12px 16px;display:flex;flex-direction:column;align-items:center;box-shadow:inset 0 2px 10px rgba(0,0,0,.2);min-height:230px;justify-content:center;">
+              <div style="background:linear-gradient(160deg,#f4f3ff 0%,#edfefe 100%);border-radius:10px;padding:16px 12px 12px;display:flex;flex-direction:column;align-items:center;box-shadow:inset 0 2px 10px rgba(0,0,0,.2);min-height:190px;justify-content:center;">
 
                 <!-- Character SVG viewport -->
-                <div style="position:relative;margin-bottom:20px;width:175px;height:140px;display:flex;align-items:center;justify-content:center;">
+                <div style="position:relative;margin-bottom:12px;width:150px;height:115px;display:flex;align-items:center;justify-content:center;">
                   <div id="char-svg-container" style="display:flex;align-items:center;justify-content:center;"></div>
 
                   <!-- Sparkle burst -->
@@ -722,7 +722,7 @@
             </div>
 
             <!-- Physical control cluster: d-pad, level select, and the level-up action button -->
-            <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-top:24px;position:relative;z-index:1;">
+            <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-top:16px;position:relative;z-index:1;">
 
               <!-- D-pad: doubles as level up/down control -->
               <div style="position:relative;width:58px;height:58px;flex-shrink:0;">
@@ -1035,7 +1035,7 @@
       <!-- 05 Version 2 -->
       <section class="cs-section reveal" id="version2">
         <span class="section-label">05 Version 2</span>
-        <h2 class="section-title">After the challenge.<br>Save your work and come back to it.</h2>
+        <h2 class="section-title">After the challenge. <br>Save your work and come back to it.</h2>
         <div class="section-body">
           <p>The first build lost everything when the tab closed. In Version 2, I added a history board so users can save a comparison and come back later.</p>
         </div>
@@ -1050,7 +1050,7 @@
             <div style="flex:1 1 420px; min-width:280px;">
               <div style="background:#1c1c1e; border-radius:20px; padding:16px 16px 16px; box-shadow:0 24px 48px rgba(0,0,0,.28);">
                 <div style="background:#111; border-radius:10px; overflow:hidden; position:relative;">
-                  <video id="v2Video" preload="metadata" style="width:100%;display:block;" poster="assets/briefbuy/briefbuy_intro_comparison.png" onclick="toggleV2Video()" onplay="setV2Playing(true)" onpause="setV2Playing(false)" onended="setV2Playing(false)">
+                  <video id="v2Video" preload="metadata" style="width:100%;display:block;" poster="assets/briefbuy/version2_historyboard_demo_poster.png" onclick="toggleV2Video()" onplay="setV2Playing(true)" onpause="setV2Playing(false)" onended="setV2Playing(false)">
                     <source src="assets/briefbuy/version2_historyboard_demo.mp4" type="video/mp4">
                   </video>
                   <!-- Center play button overlay -->
@@ -1110,7 +1110,7 @@
       <!-- 05 Outcome -->
       <section class="cs-section reveal" id="outcome">
         <span class="section-label">06 Outcome</span>
-        <h2 class="section-title">Four weeks later,<br>we had a working product.</h2>
+        <h2 class="section-title">Four weeks later, <br>we had a working product.</h2>
         <div class="section-body">
           <p>We tested five common cases for speed and accuracy. The main flow worked, and the recommendation matched the runner conditions we gave it.</p>
           <p>The best result was caching. A repeated product link loaded in 63 milliseconds instead of about 13 seconds. <span class="highlight">That made repeat research feel instant.</span></p>
@@ -1173,7 +1173,7 @@
       <!-- 06 What I Learned -->
       <section class="cs-section reveal" id="learned">
         <span class="section-label">07 What I Learned</span>
-        <h2 class="section-title">Building fast taught me<br>where the product was strongest.</h2>
+        <h2 class="section-title">Building fast taught me <br>where the product was strongest.</h2>
         <div class="section-body">
           <p>The biggest lesson was simple: <span class="highlight">memory is part of the design.</span> BriefBuy worked because the decision panel stayed visible while the chat kept changing.</p>
           <p>I also learned where I would push the product next. I still think users should be able to describe what they need first, without finding product links before they start.</p>
@@ -1186,7 +1186,7 @@
         <div class="related-grid">
           <a href="bdlnow-case-study.html" class="related-card">
             <div class="related-thumb">
-              <video src="assets/bdlnow/BDL_Now_Intro.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:contain;display:block;"></video>
+              <video src="assets/bdlnow/BDL_Now_Intro.mp4" poster="assets/bdlnow/BDL_Now_Intro_poster.png" autoplay muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:contain;display:block;"></video>
             </div>
             <div class="related-body">
               <span class="related-tag">02 · Data Platform Design</span>
@@ -1195,7 +1195,7 @@
           </a>
           <a href="can-us-case-study.html" class="related-card">
             <div class="related-thumb">
-              <video src="assets/can-us-case-stuy/Dashboard_intro.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:contain;display:block;"></video>
+              <video src="assets/can-us-case-stuy/Dashboard_intro.mp4" poster="assets/can-us-case-stuy/Dashboard_intro_poster.png" autoplay muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:contain;display:block;"></video>
             </div>
             <div class="related-body">
               <span class="related-tag">01 · Policy Data Visualization</span>
