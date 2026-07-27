@@ -59,6 +59,46 @@
     .related-thumb-ph { font-size:14px; color:var(--gray-text); }
     .related-thumb.dark .related-thumb-ph { color:#ffffff; }
 
+    /* Gateway mockup gallery */
+    .gateway-showcase {
+      margin-top: 12px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .gateway-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .gateway-showcase-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--off-white);
+      overflow: hidden;
+    }
+
+    .gateway-showcase-media {
+      width: 100%;
+      overflow: hidden;
+      background: var(--brand-light);
+    }
+
+    .gateway-showcase-media img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .gateway-showcase-media { aspect-ratio: 4 / 3; }
+
+    .gateway-showcase-wide {
+      grid-column: 1 / -1;
+      aspect-ratio: 16 / 8;
+    }
+
     @media(max-width:900px){
       .role-row { grid-template-columns:1fr; }
       .role-cell { border-right:none; border-bottom:1px solid var(--border); }
@@ -78,6 +118,7 @@
         grid-template-columns:repeat(2, minmax(0, 1fr));
       }
       .swatch { min-width:auto; }
+      .gateway-showcase-grid { grid-template-columns: 1fr; }
     }
     @media(max-width:340px){
       .swatch-row { grid-template-columns:1fr; }
@@ -493,13 +534,28 @@
           </div>
         </div>
 
-        <!-- Digital and social assets -->
-        <div class="two-col" style="margin-top:12px; gap:12px;">
-          <div class="img-block lb-trigger" style="margin-top:0; aspect-ratio:4/3; padding:0; overflow:hidden;">
-            <img src="assets/gateway/social-mockup.png" alt="Gateway social media mockup" style="width:100%; height:100%; object-fit:cover; border-radius:var(--radius-sm);">
-          </div>
-          <div class="img-block lb-trigger" style="margin-top:0; aspect-ratio:4/3; padding:0; overflow:hidden;">
-            <img src="assets/gateway/emailcompagin.png" alt="Gateway email campaign design" style="width:100%; height:100%; object-fit:cover; border-radius:var(--radius-sm);">
+        <!-- Digital, signage, and sales center assets -->
+        <div class="gateway-showcase" aria-label="Gateway campaign mockup gallery">
+          <div class="gateway-showcase-grid">
+            <div class="gateway-showcase-item gateway-showcase-media lb-trigger">
+              <img src="assets/gateway/social-mockup.png" alt="Gateway social media mockup">
+            </div>
+
+            <div class="gateway-showcase-item gateway-showcase-media lb-trigger">
+              <img src="assets/gateway/gatewaybillboard.jpg" alt="Gateway billboard campaign mockup with the message your gateway to modern living">
+            </div>
+
+            <div class="gateway-showcase-item gateway-showcase-media gateway-showcase-wide lb-trigger">
+              <img src="assets/gateway/emails.png" alt="Gateway email campaign design">
+            </div>
+
+            <div class="gateway-showcase-item gateway-showcase-media lb-trigger">
+              <img src="assets/gateway/gateway_mockup.png" alt="Gateway wall poster mockup being hung in an interior space">
+            </div>
+
+            <div class="gateway-showcase-item gateway-showcase-media lb-trigger">
+              <img src="assets/gateway/gateway-mockups.png" alt="Gateway framed poster mockup leaning against a wall">
+            </div>
           </div>
         </div>
 
@@ -516,7 +572,7 @@
         <span class="section-label">06 Outcome</span>
         <h2 class="section-title">The brand connected with <br>exactly who it was built for.</h2>
         <div class="section-body">
-          <p>Gateway launched and the registrant numbers came back strong. The target demographic responded. Over 600 people from the 20 to 35 age range registered within the launch window, and the broader engagement across brand materials reached more than 4,100 new users.</p>
+          <p>Within two weeks after product launch, Gateway's registrant numbers came back strong. The target demographic responded. Over 600 people from the 20 to 35 age range registered within the launch window, and the broader engagement across brand materials reached more than 4,100 new users.</p>
           <p>The 35% conversion rate from initial interest to action was above the benchmark for comparable new community launches in the Ottawa market.</p>
         </div>
 
