@@ -34,7 +34,7 @@
     }
 
     /* ── Custom pointer: a pen icon replaces the native cursor ── */
-    @media (hover: hover) and (pointer: fine) {
+    @media (hover: hover) and (pointer: fine) and (min-width: 769px) {
       * { cursor: none !important; }
       #customCursor {
         position: fixed;
@@ -1333,7 +1333,7 @@
     // ── Custom pointer: pen icon follows the mouse ──────────────────────────
     (function () {
       const cursor = document.getElementById('customCursor');
-      if (!cursor || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      if (!cursor || !window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 769px)').matches) return;
       window.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
