@@ -232,6 +232,10 @@ p.hero-desc {
 .section-nav {
   position: sticky;
   top: 96px;
+  align-self: start;
+  max-height: calc(100dvh - 112px);
+  overflow-y: auto;
+  scrollbar-width: thin;
   padding: 64px 32px 80px 0;
   display: flex;
   flex-direction: column;
@@ -813,6 +817,39 @@ p.hero-desc {
   color: var(--white);
 }
 
+.design-screen + .design-screen {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.design-screen-title {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--black);
+}
+
+.design-details {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+}
+
+.design-details > summary {
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--black);
+}
+
+.design-details > summary:focus-visible {
+  outline: 2px solid var(--black);
+  outline-offset: 4px;
+}
+
 .feat-tab-panel { display: none; padding: 32px; }
 .feat-tab-panel.active { display: block; }
 
@@ -938,6 +975,13 @@ p.hero-desc {
   font-weight: 600;
   color: var(--black);
   letter-spacing: -.01em;
+}
+
+.related-description {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--gray-text);
 }
 
 strong,

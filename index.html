@@ -3,11 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Goeun Choi, Designer</title>
+  <title>Goeun Choi, Product &amp; UI/UX Designer</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
+    @font-face {
+      font-family: 'Geist';
+      src: url('assets/fonts/Geist-Variable.woff2') format('woff2');
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -98,60 +106,347 @@
       padding: 0 64px;
     }
 
-    /* ── Hero (1280px split, right panel bleeds to vw edge) ── */
+    /* ── Hero (graphic portfolio hero; content capped at 1280px, black bg + canvas full bleed) ── */
     .hero-outer {
-      background: linear-gradient(to right, var(--white) 50%, var(--black) 50%);
+      background: var(--black);
       border-bottom: 1px solid #222;
       height: calc(100vh - var(--nav-h, 72px));
       display: flex;
       flex-direction: column;
       position: relative;
+      overflow: hidden;
     }
-    .hero {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      flex: 1;
-      min-height: 0;
+    .hero-draw-canvas {
+      position: absolute;
+      inset: 0;
       width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      cursor: crosshair;
     }
-    .hero-panel-left {
+    .hero-draw-hint {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 10001;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      padding: 10px 18px;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.9);
+      background: rgba(17,17,17,.38);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, 34px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+    .hero-draw-hint.following {
+      opacity: 1;
+      transform: translate(-50%, 42px);
+    }
+    .hero-draw-hint.hidden { opacity: 0; }
+    .hero-draw-hint .hint-icon {
+      display: inline-block;
+      font-size: 17px;
+      animation: hint-wiggle 2.2s ease-in-out infinite;
+    }
+    @keyframes hint-wiggle {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      25% { transform: rotate(-8deg) translateY(-2px); }
+      75% { transform: rotate(8deg) translateY(2px); }
+    }
+
+    /* ── About board: floating pencil/brush/marker toolbar ── */
+    .about-tool-dock {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      max-width: calc(100vw - 32px);
+      padding: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 999px;
+      box-shadow: 0 18px 44px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.08);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 16px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .about-tool-dock::-webkit-scrollbar { display: none; }
+    .about-tool-dock.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0);
+    }
+    .about-tool-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 999px;
       background: transparent;
+      color: rgba(0,0,0,.58);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 80px 64px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .about-tool-btn:hover { color: #111; background: rgba(0,0,0,.06); }
+    .about-tool-btn.active { background: #111; color: #fff; }
+    .about-tool-divider { width: 1px; height: 24px; background: rgba(0,0,0,.14); margin: 0 4px; }
+    .about-tool-text-icon { font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 800; line-height: 1; }
+    .about-sticker-toggle.active { background: #111; color: #fff; }
+    .about-sticker-toggle.active i { color: #fff !important; }
+
+    /* ── Sticker picker panel: pops up above the dock, like an emoji picker ── */
+    .sticker-panel {
+      position: fixed;
+      bottom: 88px;
+      left: 50%;
+      z-index: 200;
+      width: 260px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 12px;
+      background: rgba(255,255,255,.97);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 20px;
+      box-shadow: 0 18px 44px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.08);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px) scale(.96);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .sticker-panel.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0) scale(1);
+    }
+    .sticker-panel-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .sticker-panel-item {
+      width: 100%;
+      aspect-ratio: 1;
+      border: none;
+      border-radius: 12px;
+      background: rgba(0,0,0,.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .sticker-panel-item:hover { background: rgba(0,0,0,.09); transform: scale(1.06); }
+    .sticker-panel-item.active { background: #111; }
+    .sticker-panel-item img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+
+    .ab-canvas-sticker {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+      transition: transform 0.22s cubic-bezier(.22,1,.36,1), filter 0.22s ease;
+      z-index: 8;
+    }
+    .ab-canvas-sticker img { width: 100px; height: auto; object-fit: contain; pointer-events: none; filter: drop-shadow(0 8px 14px rgba(0,0,0,.18)); }
+    .ab-canvas-sticker:hover { transform: translate(-50%, -50%) rotate(0deg) scale(1.08); }
+    .ab-canvas-sticker.dragging { cursor: grabbing; z-index: 24; transition: none; }
+
+    .ab-canvas-text {
+      position: absolute;
+      min-width: 24px;
+      max-width: 60vw;
+      padding: 4px 8px;
+      border: 1.5px solid rgba(0,0,0,.35);
+      border-radius: 10px 10px 10px 2px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 8px 18px rgba(0,0,0,.08);
+      color: var(--black);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.25;
+      outline: none;
+      cursor: text;
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+      z-index: 9;
+    }
+    .ab-canvas-text:empty::before {
+      content: 'Type...';
+      color: rgba(0,0,0,.28);
+    }
+    .ab-canvas-text.locked {
+      cursor: grab;
+      user-select: none;
+    }
+    .ab-canvas-text.locked:hover { box-shadow: 0 0 0 1.5px rgba(0,0,0,.18); }
+    .ab-canvas-text.dragging { cursor: grabbing; z-index: 24; transition: none; }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      align-items: center;
+      gap: clamp(32px, 5vw, 80px);
+      padding: clamp(56px, 7vw, 100px) 64px;
+    }
+    .hero-panel-left {
+      background: transparent;
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
+      align-items: center;
+      align-self: stretch;
+      margin-left: auto;
+      text-align: center;
+      margin-top: 0;
+      padding-right: 0;
+      gap: 32px;
     }
     .hero-panel-right {
       background: transparent;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 80px 64px;
+      align-items: flex-start;
+      align-self: stretch;
+      padding: 0;
     }
     .hero-tag {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 400;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--white);
       margin-bottom: 28px;
     }
     .hero-title {
-      font-size: 52px;
+      font-size: clamp(54px, 7.2vw, 116px);
+      font-family: 'Geist', system-ui, sans-serif;
       font-weight: 700;
-      line-height: 1.06;
-      letter-spacing: -0.03em;
-      color: var(--white);
-      margin-bottom: 28px;
+      line-height: 0.94;
+      letter-spacing: 0;
+      color: transparent;
+      position: relative;
+      display: inline-block;
+      margin-bottom: 24px;
+      max-width: 680px;
     }
-    .hero-bio {
-      font-size: 16px;
-      line-height: 1.75;
+
+    .hero-title-outline {
+      display: inline-block;
       color: var(--white);
-      margin-bottom: 40px;
+      -webkit-text-fill-color: transparent;
+      -webkit-text-stroke: 1.5px var(--white);
+      text-stroke: 1.5px var(--white);
+      white-space: nowrap;
+      font-family: inherit;
+      font-weight: inherit;
     }
+
+    .hero-title-fill {
+      position: absolute;
+      inset: 0;
+      display: inline-block;
+      color: var(--white);
+      white-space: nowrap;
+      pointer-events: none;
+      font-family: inherit;
+      font-weight: inherit;
+      -webkit-text-stroke: 0;
+      text-stroke: 0;
+      clip-path: polygon(-3% -8%, -3.0% -8%, -3.0% 18%, -3.0% 43%, -3.0% 69%, -3.0% 108%, -3% 108%);
+      animation: paint-wave-fill 1.5s cubic-bezier(.45,.05,.15,1) 0.5s forwards;
+    }
+
+    @keyframes paint-wave-fill {
+      0% {
+        clip-path: polygon(-3% -8%, -3.0% -8%, -3.0% 18%, -3.0% 43%, -3.0% 69%, -3.0% 108%, -3% 108%);
+      }
+      8% {
+        clip-path: polygon(-3% -8%, 6.9% -8%, 7.5% 18%, 6.4% 43%, 4.7% 69%, 4.2% 108%, -3% 108%);
+      }
+      17% {
+        clip-path: polygon(-3% -8%, 17.9% -8%, 16.7% 18%, 13.5% 43%, 11.5% 69%, 12.6% 108%, -3% 108%);
+      }
+      25% {
+        clip-path: polygon(-3% -8%, 27.4% -8%, 23.4% 18%, 19.4% 43%, 19.6% 69%, 23.7% 108%, -3% 108%);
+      }
+      33% {
+        clip-path: polygon(-3% -8%, 34.1% -8%, 28.6% 18%, 26.8% 43%, 30.6% 69%, 36.1% 108%, -3% 108%);
+      }
+      42% {
+        clip-path: polygon(-3% -8%, 38.8% -8%, 34.9% 18%, 37.4% 43%, 43.6% 69%, 47.4% 108%, -3% 108%);
+      }
+      50% {
+        clip-path: polygon(-3% -8%, 44.2% -8%, 44.6% 18%, 50.4% 43%, 55.8% 69%, 55.4% 108%, -3% 108%);
+      }
+      58% {
+        clip-path: polygon(-3% -8%, 52.7% -8%, 57.1% 18%, 63.2% 43%, 64.9% 69%, 60.5% 108%, -3% 108%);
+      }
+      67% {
+        clip-path: polygon(-3% -8%, 64.4% -8%, 70.0% 18%, 73.3% 43%, 70.9% 69%, 65.3% 108%, -3% 108%);
+      }
+      75% {
+        clip-path: polygon(-3% -8%, 76.9% -8%, 80.7% 18%, 80.3% 43%, 76.1% 69%, 72.3% 108%, -3% 108%);
+      }
+      83% {
+        clip-path: polygon(-3% -8%, 87.6% -8%, 88.5% 18%, 86.2% 43%, 83.0% 69%, 82.2% 108%, -3% 108%);
+      }
+      92% {
+        clip-path: polygon(-3% -8%, 95.8% -8%, 95.1% 18%, 93.4% 43%, 92.5% 69%, 93.2% 108%, -3% 108%);
+      }
+      100% {
+        clip-path: polygon(-3% -8%, 103.0% -8%, 103.0% 18%, 103.0% 43%, 103.0% 69%, 103.0% 108%, -3% 108%);
+      }
+    }
+
+    .hero-support-copy {
+      max-width: none;
+      margin-bottom: 34px;
+      color: rgba(255,255,255,.74);
+      font-size: clamp(20px, 2.1vw, 34px);
+      font-weight: 300;
+      line-height: 1.26;
+      letter-spacing: -0.015em;
+    }
+
     .hero-status {
       display: flex;
       align-items: center;
@@ -298,84 +593,696 @@
 
     /* ── About Playground ── */
     .about {
-      padding: 80px 0 100px;
+      position: relative;
+      left: 50%;
+      width: 100vw;
+      min-height: 100vh;
+      margin-left: -50vw;
+      padding: 80px clamp(28px, 5vw, 80px) 100px;
       border-top: 1px solid var(--border);
+      background-color: #fff;
+      background-image: radial-gradient(#dedede 1.2px, transparent 1.2px);
+      background-size: 18px 18px;
+      background-position: 0 0;
+    }
+    .about-draw-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
     }
     .about-pg {
+      max-width: 1280px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       align-items: start;
     }
     .ab-headline {
-      grid-column: 1 / -1;
-      grid-row: auto;
-      font-size: clamp(32px, 3.8vw, 52px);
-      font-weight: 700;
+      font-size: clamp(24px, 2.2vw, 32px);
+      font-weight: 800;
       letter-spacing: -0.03em;
-      line-height: 1.12;
+      line-height: 1.15;
       color: var(--black);
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     .ab-headline em { font-style: italic; font-weight: 300; }
 
+    /* About board — explicit 2-row x 3-col grid (6 cells total) */
+    .ab-cell-status-map { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+
     .ab-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 20px;
-      transform: rotate(var(--rot, 0deg));
+
       transition: transform 0.3s cubic-bezier(.22,1,.36,1), box-shadow 0.3s;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
     }
     .ab-card:hover {
       transform: rotate(0deg) translateY(-3px);
-      box-shadow: 0 8px 32px rgba(0,0,0,.08);
       z-index: 10;
       position: relative;
     }
+    .ab-card.dragging {
+      cursor: grabbing;
+      z-index: 20;
+      position: relative;
+      transition: none;
+      box-shadow: 0 24px 56px rgba(0,0,0,.16), 0 6px 16px rgba(0,0,0,.08);
+    }
+
+    /* ── Stickers: small doodle badges scattered around the About board ── */
+    .ab-sticker {
+      position: absolute;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--white);
+      border: 1.5px solid var(--black);
+      border-radius: 50%;
+      color: var(--black);
+      box-shadow: 0 8px 20px rgba(0,0,0,.1);
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      transition: transform 0.25s cubic-bezier(.22,1,.36,1);
+      z-index: 5;
+    }
+    .ab-sticker svg { width: 26px; height: 26px; }
+    .ab-sticker:hover { transform: rotate(0deg) scale(1.08); z-index: 10; }
+    .ab-sticker.dragging { cursor: grabbing; z-index: 20; transition: none; }
+    .ab-sticker-star   { top: -18px; left: 28%; --rot: -12deg; transform: rotate(var(--rot)); }
+    .ab-sticker-coffee { top: 40%; right: -22px; --rot: 10deg; transform: rotate(var(--rot)); }
+    .ab-sticker-film   { bottom: -20px; left: 18%; --rot: 8deg; transform: rotate(var(--rot)); }
     .ab-label {
-      font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+      font-size: 12px; font-weight: 400; letter-spacing: 0.1em;
       text-transform: uppercase; color: var(--white);
       background: var(--black);
       display: block;
-      margin: -18px -20px 14px;
-      padding: 10px 20px;
-      border-radius: 15px 15px 0 0;
+      padding: 5px 20px;
+      border-radius: 10px 10px 0 0;
+      border: 0;
+      font-family: inherit;
+      text-align: center;
     }
+    button.ab-label { cursor: pointer; }
 
     /* Status */
-    .ab-status { grid-column: auto; grid-row: auto; --rot: -2deg; display: flex; align-items: center; gap: 10px; }
+    .ab-status { --rot: -2deg; display: flex; align-items: center; gap: 10px; }
     .ab-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(34,197,94,.2); }
     .ab-status-text { font-size: 14px; font-weight: 500; color: var(--black); }
 
-    /* Availability */
-    .ab-avail { grid-column: auto; grid-row: auto; --rot: 2deg; }
-    .ab-avail-list { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
-    .ab-avail-list span { font-size: 14px; color: var(--black); font-weight: 500; display: flex; align-items: center; gap: 6px; }
-    .ab-avail-list span::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--black); flex-shrink:0; }
+    /* Chalkboard world map — sits under the status card, using the full illustration (frame + gradients kept) */
+    .ab-chalk-map { width: 262px; max-width: 100%; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .ab-chalk-map-wrap {
+      position: relative; width: 100%; border-radius: 14px; overflow: hidden; cursor: pointer;
 
-    /* Experience card */
-    .ab-exp-role { grid-column: auto; grid-row: auto; --rot: -1.5deg; }
-    .ab-role-co { font-size: 14px; font-weight: 700; line-height: 1.3; display: block; margin-bottom: 3px; }
-    .ab-role-title { font-size: 14px; color: var(--gray-text); display: block; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
-    .ab-role-title:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+      transform: rotate(0deg) scale(1);
+      transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s cubic-bezier(.22,1,.36,1), filter .4s;
+    }
+    .ab-chalk-map-wrap:hover {
+      transform: rotate(-1deg) scale(1.035) translateY(-4px);
+      box-shadow: 0 20px 36px rgba(0,0,0,.22);
+      filter: brightness(1.05) saturate(1.1);
+    }
+    .ab-chalk-map-img { display: block; width: 100%; height: auto; transition: filter .4s; }
+    .ab-chalk-pin { position: absolute; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; }
+    .ab-chalk-pin-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e; border: 1.5px solid #f8f7f7;
+      box-shadow: 0 1px 3px rgba(0,0,0,.45);
+      position: relative; z-index: 2;
+      transition: transform .3s cubic-bezier(.22,1,.36,1);
+    }
+    .ab-chalk-pin--remote .ab-chalk-pin-dot { background: #f8f7f7; border: 1.5px solid #111; }
+    .ab-chalk-pin-pulse {
+      position: absolute; width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e; opacity: .6;
+      animation: ab-chalk-pulse 1.6s cubic-bezier(.22,.61,.36,1) infinite;
+    }
+    .ab-chalk-pin--remote .ab-chalk-pin-pulse { background: #f8f7f7; animation-duration: 2.4s; }
+    @keyframes ab-chalk-pulse {
+      0%   { transform: scale(1); opacity: .6; }
+      70%  { opacity: .12; }
+      100% { transform: scale(4.2); opacity: 0; }
+    }
+    .ab-chalk-map-wrap:hover .ab-chalk-pin-dot { transform: scale(1.35); }
+    .ab-chalk-pin-label {
+      position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%) translateY(4px);
+      background: #111; color: #fff; font-size: 10px; font-weight: 600; letter-spacing: .01em;
+      padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+      opacity: 0; pointer-events: none; z-index: 3;
+      transition: opacity .2s, transform .2s;
+    }
+    .ab-chalk-pin:hover .ab-chalk-pin-label { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .ab-chalk-pin:hover .ab-chalk-pin-pulse { animation-duration: .8s; }
+    .ab-chalk-map-hint { font-size: 11px; color: var(--gray-text); text-align: center; transition: color .3s; }
+    .ab-chalk-map-wrap:hover ~ .ab-chalk-map-hint { color: var(--black); }
 
-    /* Interests */
-    .ab-interests { grid-column: auto; grid-row: auto; --rot: 1.5deg; }
-    .ab-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-    .ab-tags span { font-size: 14px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--black); white-space: nowrap; }
+    /* Experience card — styled like an employee ID badge on a lanyard */
+    .ab-exp-role {
+      border-radius: 16px;
+      grid-column: 2; grid-row: 1; --rot: -1.5deg;
+      position: relative;
+      width: 240px;
+      justify-self: center;
+      background: transparent;
+      border: none;
+      padding: 0;
+      overflow: visible;
+      transform-origin: top center;
+      perspective: 1200px;
+      cursor: pointer;
+      touch-action: pan-y;
+    }
+    .ab-exp-role:has(:focus-visible) { outline: 3px solid #16a34a; outline-offset: 6px; }
+    .ab-badge-caption {
+      display: block;
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--gray-text);
+      text-align: center;
+    }
+    .ab-badge-toggle {
+      position: absolute;
+      top: 22px;
+      right: 16px;
+      z-index: 2;
+      width: 28px;
+      height: 28px;
+      border: 1px solid #666;
+      border-radius: 50%;
+      background: #111;
+      color: #fff;
+      cursor: pointer;
+    }
+    .ab-badge-inner {
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform .65s cubic-bezier(.22,1,.36,1);
+    }
+    .ab-exp-role.is-flipped .ab-badge-inner { transform: rotateY(180deg); }
+    .ab-badge-face {
+      padding: 22px 16px 14px;
+      border-radius: 16px;
+      background: var(--black);
+      color: var(--white);
+      box-shadow: 0 2px 3px rgba(0,0,0,.2), 0 16px 32px rgba(0,0,0,.28);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .ab-badge-back {
+      position: absolute;
+      inset: 0;
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .ab-badge-skills-heading { padding-right: 36px; margin-bottom: 16px; }
+    .ab-badge-skills-heading h3 { font-size: 18px; font-weight: 600; }
+    .ab-badge-skills-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      scrollbar-width: thin;
+      scrollbar-color: #666 #111;
+      padding-right: 8px;
+      cursor: auto;
+    }
+    .ab-badge-skills-list:focus-visible { outline: 1px solid #b8b8b8; outline-offset: 2px; }
+    .ab-badge-skill-group + .ab-badge-skill-group { margin-top: 14px; padding-top: 12px; border-top: 1px solid #333; }
+    .ab-badge-skill-group h4 { font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+    .ab-badge-skill-group p { font-size: 12px; line-height: 1.65; color: #b8b8b8; overflow-wrap: anywhere; }
+    @media (prefers-reduced-motion: reduce) {
+      .ab-badge-inner { transition: none; }
+      .ab-exp-role:hover { animation: none !important; }
+    }
+    @keyframes ab-badge-hang-swing {
+      0%   { transform: translateY(-3px) rotate(0deg); }
+      14%  { transform: translateY(-3px) rotate(2.2deg); }
+      30%  { transform: translateY(-3px) rotate(-1.5deg); }
+      46%  { transform: translateY(-3px) rotate(0.9deg); }
+      62%  { transform: translateY(-3px) rotate(-0.5deg); }
+      78%  { transform: translateY(-3px) rotate(0.25deg); }
+      100% { transform: translateY(-3px) rotate(0deg); }
+    }
+    .ab-exp-role:hover {
+      animation: ab-badge-hang-swing 1.6s cubic-bezier(.33, 0, .2, 1);
+    }
+    .ab-badge-hardware { position: absolute; top: -20px; left: 50%; height: 132px; width: auto; transform: translate(-50%, -50%); z-index: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,.3)) drop-shadow(0 8px 12px rgba(0,0,0,.35)); }
+    /* Same shape as the floating avatar, which lands here at the end of its flight */
+    .ab-badge-photo { position: relative; aspect-ratio: 1 / 1.255; }
+    .ab-badge-photo-frame { display: block; height: 100%; }
+    .ab-badge-photo-img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 28px; }
+    .ab-badge-photo-accent { flex: 1; background: linear-gradient(160deg, #e2571f, #c1440e); }
+    .ab-badge-id { margin-top: 10px; display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 5px; }
+    .ab-badge-name { font-size: 14px; font-weight: 800; color: var(--white); letter-spacing: -0.01em; white-space: nowrap; }
+    .ab-badge-title { font-size: 10px; color: rgba(255,255,255,.55); white-space: nowrap; }
+
+    /* Interests — styled like a little spring notebook */
+    .ab-interests {
+      grid-column: 1; grid-row: 2; --rot: 1.5deg;
+      position: relative;
+      justify-self: start;
+
+
+      border-radius: 16px;
+      overflow: visible;
+
+    }
+    .ab-notebook-body { position: relative; }
+
+    /* Shared book shape — the cover and the badge page use the exact same shape */
+    .ab-notebook-face {
+      position: relative;
+      height: 210px;
+      padding: 16px 36px 16px 36px;
+      border-radius: 4px;
+      box-shadow: 0 14px 28px rgba(0,0,0,.28), 0 3px 8px rgba(0,0,0,.16);
+      overflow: hidden;
+    }
+    .ab-notebook-face[hidden] { display: none !important; }
+    .ab-notebook-face.ab-folder-front {
+      /* override the resume-folder rules that assume absolute positioning */
+      position: relative;
+      inset: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      z-index: auto;
+      cursor: pointer;
+      width: 168px;
+    }
+    .ab-notebook-cover-title {
+      font-size: 15px;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--white);
+      text-align: center;
+      letter-spacing: -0.01em;
+    }
+    .ab-notebook-pages {
+      background: var(--white) !important;
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
+      box-shadow: 0 10px 24px rgba(0,0,0,.10) !important;
+      width: 336px !important;
+      z-index: 6;
+      cursor: default;
+    }
+    .ab-notebook-pages-heading {
+      width: 100%;
+      font-size: 12px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--gray-text);
+      text-align: center;
+      margin-bottom: 2px;
+    }
+    .ab-notebook-pages { padding-left: 22px !important; padding-right: 22px !important; }
+    .ab-notebook-pages .ab-tags {
+      display: flex;
+      gap: 0 26px;
+      width: 100%;
+      height: 150px;
+      overflow: hidden;
+    }
+    .ab-notebook-pages .ab-tags-col {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 2px 4px;
+    }
+    .ab-notebook-pages .ab-tags-col:last-child { padding-left: 15px; }
+    .ab-notebook-pages .ab-tags span {
+      display: inline-flex;
+      width: auto;
+      max-width: 100%;
+      box-sizing: border-box;
+      margin: 0;
+      font-size: 10px;
+      padding: 4px 7px;
+      gap: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: none;
+    }
+    .ab-notebook-pages .ab-tags span:hover { box-shadow: none; }
+    .ab-notebook-pages .ab-tags-col span:first-child { --rot: 0deg; transform: none; }
+    .ab-notebook-pages .ab-tags span svg { width: 11px; height: 11px; flex-shrink: 0; }
+    .ab-notebook-pages .ab-notebook-spring {
+      left: 50%; transform: translateX(-50%);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cdefs%3E%3ClinearGradient id='g2' x1='0' y1='0' x2='0.7' y2='1'%3E%3Cstop offset='0' stop-color='%23f4f4f4'/%3E%3Cstop offset='0.32' stop-color='%23fdfdfd'/%3E%3Cstop offset='0.5' stop-color='%23a8a8a8'/%3E%3Cstop offset='0.75' stop-color='%23555'/%3E%3Cstop offset='1' stop-color='%23222'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M3,19 A17,16.5 0 0 1 37,19' fill='none' stroke='url(%23g2)' stroke-width='6.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+
+    /* Metallic spring — same element, present on both faces */
+    .ab-notebook-spring {
+      position: absolute;
+      left: -11px; top: 10px; bottom: 10px;
+      width: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0.7' y2='1'%3E%3Cstop offset='0' stop-color='%23f4f4f4'/%3E%3Cstop offset='0.32' stop-color='%23fdfdfd'/%3E%3Cstop offset='0.5' stop-color='%23a8a8a8'/%3E%3Cstop offset='0.75' stop-color='%23555'/%3E%3Cstop offset='1' stop-color='%23222'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cellipse cx='20' cy='19' rx='17' ry='16.5' fill='none' stroke='url(%23g)' stroke-width='6.5'/%3E%3C/svg%3E");
+      background-repeat: repeat-y;
+      background-size: 20px 19px;
+      background-position: left center;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,.35));
+      z-index: 2;
+    }
+    .ab-notebook-cover-hint {
+      font-size: 11px;
+      color: rgba(255,255,255,.5);
+      text-align: center;
+      letter-spacing: .01em;
+    }
+    .ab-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+    .ab-tags span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1.5px solid var(--black);
+      background: var(--white);
+      color: var(--black);
+      white-space: nowrap;
+      box-shadow: 0 6px 14px rgba(0,0,0,.08);
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      transition: transform 0.2s cubic-bezier(.22,1,.36,1), box-shadow 0.2s;
+    }
+    .ab-tags span svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .ab-tags span:nth-child(odd)  { --rot: -3deg; transform: rotate(var(--rot)); }
+    .ab-tags span:nth-child(even) { --rot: 3deg; transform: rotate(var(--rot)); }
+    .ab-tags span:hover {
+      transform: rotate(0deg) translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0,0,0,.12);
+      z-index: 10;
+      position: relative;
+    }
+    .ab-tags span.dragging {
+      cursor: grabbing;
+      z-index: 20;
+      position: relative;
+      transition: none;
+      box-shadow: 0 20px 40px rgba(0,0,0,.16);
+    }
 
     /* Interior design mood card */
-    .ab-interior { grid-column: auto; grid-row: auto; --rot: -1deg; padding: 0; overflow: hidden; }
-    .ab-interior-img { width: 100%; height: 160px; object-fit: cover; display: block; }
-    .ab-interior-body { padding: 16px 20px 18px; }
-    .ab-interior-title { font-size: 15px; font-weight: 600; display: block; margin-bottom: 4px; }
-    .ab-interior-desc { font-size: 14px; color: var(--gray-text); line-height: 1.5; }
-    /* Interior card label — at top of card (padding:0), no negative margin needed */
-    .ab-interior > .ab-label {
-      margin: 0;
-      border-radius: 15px 15px 0 0;
+
+    /* Resume envelope toy — black string-tie mailer that opens on click, then reveals the resume in a lightbox */
+    .ab-folder-wrap {
+      grid-column: 2; grid-row: 2; display: flex; flex-direction: column; align-items: center;
+      cursor: grab; touch-action: none; user-select: none;
+      transition: transform 0.3s cubic-bezier(.22,1,.36,1);
     }
+    .ab-folder-wrap.dragging {
+      cursor: grabbing; z-index: 20; position: relative; transition: none;
+    }
+    .ab-folder-toy {
+      --rot: 2deg;
+      position: relative;
+      width: 182px; height: 224px;
+      background: none; border: none; padding: 0; margin-top: 10px;
+      cursor: pointer; perspective: 400px;
+      transform: rotate(var(--rot));
+      transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+    }
+    .ab-folder-toy:hover { transform: rotate(0deg) translateY(-3px); }
+    .ab-folder-toy:focus-visible { outline: 2px solid var(--black); outline-offset: 4px; }
+
+    /* Envelope body — mostly black, die-cut corners for a hand-placed feel */
+    .ab-folder-front {
+      position: absolute; inset: 0;
+      background: linear-gradient(165deg, #1c1c1c 0%, #0a0a0a 55%, #000 100%);
+      border-radius: 4px 4px 4px 4px;
+      box-shadow: 0 14px 28px rgba(0,0,0,.28), 0 3px 8px rgba(0,0,0,.16);
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    /* Flap — a lighter black triangle folded down from the top edge */
+    .ab-folder-flap {
+      position: absolute; top: 0; left: 0; right: 0; height: 86px;
+      background: linear-gradient(165deg, #2c2c2c, #161616);
+      clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+      transform-origin: top center;
+      transition: transform 0.4s cubic-bezier(.22,1,.36,1), opacity 0.35s ease;
+      z-index: 3;
+    }
+    .ab-folder-flap::after {
+      /* crease line where the flap meets the body */
+      content: ''; position: absolute; left: 8%; right: 8%; bottom: 14px; height: 1px;
+      background: rgba(255,255,255,.08);
+    }
+
+    /* String-tie closure: two buttons wound with a white thread */
+    .ab-folder-string { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 64px; height: 82px; z-index: 4; overflow: visible; }
+    .ab-folder-thread { fill: none; stroke: #f2f2f2; stroke-width: 1.6; stroke-linecap: round; opacity: .92; }
+    .ab-folder-button { fill: #f2f2f2; stroke: #000; stroke-width: 1.4; }
+    .ab-folder-button-hole { fill: #1a1a1a; }
+
+    .ab-folder-caption { position: absolute; top: 108px; left: 16px; right: 16px; font-size: 9.5px; font-weight: 600; letter-spacing: .05em; color: rgba(255,255,255,.55); z-index: 3; }
+
+    .ab-folder-title {
+      position: absolute; left: 16px; right: 16px; bottom: 16px;
+      font-size: 21px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.05;
+      color: #fff; z-index: 3;
+    }
+    .ab-folder-title span { display: block; font-size: 12px; font-weight: 600; letter-spacing: .02em; margin-bottom: 2px; color: rgba(255,255,255,.7); }
+
+    .ab-folder-arrows { position: absolute; right: 14px; bottom: 16px; display: flex; gap: 3px; z-index: 3; }
+    .ab-folder-arrows svg { width: 15px; height: 15px; color: #fff; }
+
+    /* Paper that slides up from inside the envelope when opened */
+    .ab-folder-paper {
+      position: absolute; left: 14px; right: 14px; top: 16px; bottom: 12px;
+      background: linear-gradient(175deg, #ffffff, #f6f6f6);
+      border: 1.8px solid var(--black); border-radius: 3px 10px 3px 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.15);
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+      padding: 16px 18px;
+      transform: translateY(10px) scale(.95); opacity: 0;
+      transition: transform 0.4s cubic-bezier(.22,1,.36,1), opacity 0.3s ease;
+      z-index: 1;
+    }
+    .ab-folder-paper-label { font-size: 13px; font-weight: 700; letter-spacing: .03em; color: var(--black); margin-bottom: 2px; }
+    .ab-folder-paper-line { display: block; height: 3px; border-radius: 2px; background: rgba(0,0,0,.14); width: 100%; }
+    .ab-folder-paper-line.short { width: 62%; }
+
+    .ab-folder-toy.open .ab-folder-flap {
+      transform: rotateX(-135deg) translateY(2px);
+      opacity: 0;
+    }
+    .ab-folder-toy.open .ab-folder-string { opacity: 0; transition: opacity 0.2s ease; }
+    .ab-folder-toy.open .ab-folder-paper {
+      transform: translateY(-14px) scale(1);
+      opacity: 1;
+    }
+
+    .ab-folder-hint { display: block; margin-top: 10px; font-size: 12px; color: var(--gray-text); text-align: center; }
+
+    /* Resume lightbox */
+    .resume-lightbox { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; }
+    .resume-lightbox[hidden] { display: none; }
+    .resume-lightbox-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.72); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+    .resume-lightbox-panel {
+      position: relative; z-index: 1;
+      width: min(1100px, 96vw); height: 96vh;
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.4);
+      display: flex; flex-direction: column; overflow: hidden;
+      animation: resume-pop 0.25s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes resume-pop { from { opacity: 0; transform: scale(.94) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .resume-lightbox-frame { flex: 1; width: 100%; border: none; }
+    .resume-lightbox-close {
+      position: absolute; top: 12px; right: 12px; z-index: 2;
+      width: 34px; height: 34px; border-radius: 50%; border: none;
+      background: var(--black); color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s ease;
+    }
+    .resume-lightbox-close:hover { transform: scale(1.08); }
+    .resume-lightbox-download {
+      display: block; text-align: center; padding: 10px;
+      font-size: 13px; font-weight: 600; color: var(--black);
+      text-decoration: none; border-top: 1px solid var(--border); background: #fafafa;
+    }
+    .resume-lightbox-download:hover { background: #f0f0f0; }
+
+    /* Turntable + memory game — stacked together in the same grid cell (row 1, col 3) */
+    .ab-turntable-stack {
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* Music player: turntable */
+    .ab-turntable {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .ab-tt-plate {
+      position: relative;
+      width: 220px; height: 180px; flex-shrink: 0;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #fcfcfc, #e9e9e9);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06), 0 8px 18px rgba(0,0,0,.08);
+    }
+    .ab-tt-record {
+      position: absolute; top: 50%; left: 50%;
+      width: 152px; height: 152px;
+      transform: translate(-50%, -50%) rotate(0deg);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 38% 32%, rgba(255,255,255,.18), transparent 42%),
+        repeating-radial-gradient(circle at center, #2b0d0d 0px, #2b0d0d 2px, #150505 3px, #150505 4px);
+      box-shadow: 0 6px 16px rgba(0,0,0,.35), inset 0 0 0 1px rgba(0,0,0,.4);
+      animation: tt-spin 2.8s linear infinite;
+      animation-play-state: paused;
+    }
+    .ab-tt-record.spinning { animation-play-state: running; }
+    @keyframes tt-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+    .ab-tt-label {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #f4efe6;
+      box-shadow: 0 0 0 1px rgba(0,0,0,.15), inset 0 0 6px rgba(0,0,0,.1);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; gap: 1px; padding: 4px;
+    }
+    .ab-tt-title { font-size: 8px; font-weight: 700; letter-spacing: .02em; color: #2b0d0d; line-height: 1.15; }
+    .ab-tt-artist { font-size: 6.5px; color: #7a5b52; line-height: 1.1; }
+
+    .ab-tt-pivot {
+      position: absolute; top: 14px; right: 14px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #e2e2e2; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15), 0 2px 4px rgba(0,0,0,.15);
+      z-index: 5;
+    }
+    .ab-tt-arm {
+      /* Hit area is much taller than the visible bar (see .ab-tt-arm-bar) so the
+         thin rotated line is easy to grab. top is offset to keep the box's
+         vertical center — and therefore the rotation pivot math — unchanged. */
+      position: absolute; top: 4px; right: 14px;
+      width: 112px; height: 28px;
+      transform-origin: 100% 50%;
+      transform: rotate(10deg);
+      transition: transform 0.25s cubic-bezier(.22,1,.36,1);
+      cursor: grab;
+      touch-action: none;
+      z-index: 6;
+    }
+    .ab-tt-arm.dragging { transition: none; cursor: grabbing; }
+    .ab-tt-arm-bar {
+      position: absolute; inset: 0; margin: auto 0;
+      width: 100%; height: 5px; border-radius: 4px;
+      background: linear-gradient(90deg, #d8d8d8, #fdfdfd);
+      box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    }
+    .ab-tt-arm-head {
+      position: absolute; left: -7px; top: 50%; transform: translateY(-50%);
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #4a4a4a;
+      box-shadow: 0 2px 4px rgba(0,0,0,.35);
+    }
+    .ab-tt-arm-head::after {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #c0392b; transform: translate(-50%, -50%);
+    }
+
+    /* Volume control lives inside the plate, bottom-left corner */
+    .ab-tt-volume {
+      position: absolute; left: 10px; bottom: 10px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      z-index: 6;
+    }
+    .ab-tt-volume i { font-size: 10px; color: var(--gray-text); }
+    .ab-tt-volume-slider {
+      -webkit-appearance: slider-vertical;
+      appearance: slider-vertical;
+      writing-mode: vertical-lr;
+      direction: rtl;
+      width: 4px; height: 56px;
+      background: transparent;
+      cursor: pointer;
+    }
+    .ab-tt-volume-slider::-webkit-slider-runnable-track { width: 4px; background: var(--border); border-radius: 999px; }
+    .ab-tt-volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--black); cursor: pointer; margin-left: -4px;
+    }
+    .ab-tt-volume-slider::-moz-range-track { width: 4px; background: var(--border); border-radius: 999px; }
+    .ab-tt-volume-slider::-moz-range-thumb {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--black); border: none; cursor: pointer;
+    }
+    .ab-tt-hint { display: block; font-size: 11px; color: var(--gray-text); text-align: center; }
+
+
+    /* Memory game */
+    .ab-game { --rot: -1.5deg; width: 240px; }
+    .ab-game-body { padding: 10px; background: var(--white); border-radius: 12px; box-shadow: 0 8px 18px rgba(0,0,0,.08); }
+    .ab-game-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; margin-bottom: 10px; }
+    .ab-game-moves { font-size: 12px; color: var(--gray-text); font-weight: 500; }
+    .ab-game-restart {
+      width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--white); color: var(--black); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 11px;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .ab-game-restart:hover { background: var(--off-white); transform: rotate(45deg); }
+    .ab-game-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .ab-game-tile {
+      aspect-ratio: 1; border-radius: 8px; border: none; cursor: pointer;
+      background: var(--black); position: relative; perspective: 400px;
+      padding: 0; display: block;
+    }
+    .ab-game-tile:focus-visible { outline: 2px solid var(--black); outline-offset: 2px; }
+    .ab-game-tile-inner {
+      width: 100%; height: 100%; position: relative; display: block;
+      transition: transform 0.35s cubic-bezier(.22,1,.36,1);
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+    .ab-game-tile.flipped .ab-game-tile-inner,
+    .ab-game-tile.matched .ab-game-tile-inner { transform: rotateY(180deg); }
+    .ab-game-face {
+      position: absolute; inset: 0; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .ab-game-face-back { background: var(--black); }
+    .ab-game-face-back::after { content: '?'; color: rgba(255,255,255,.4); font-size: 15px; font-weight: 700; }
+    .ab-game-face-front { background: #fff; border: 1px solid var(--border); transform: rotateY(180deg); }
+    .ab-game-face-front img { width: 60%; height: 60%; object-fit: contain; }
+    .ab-game-tile.matched .ab-game-face-front { background: #eafdf0; border-color: #22c55e; }
+    .ab-game-win { display: block; margin-top: 10px; font-size: 13px; font-weight: 600; color: #16a34a; text-align: center; }
 
     /* ── Footer ── */
     footer { background: var(--black); }
@@ -406,7 +1313,7 @@
       min-width: 200px;
       align-items: flex-end;
     }
-    .footer-nav { display: flex; flex-direction: 
+    .footer-nav { display: flex; flex-direction:
     column; gap: 12px; align-items: flex-end;background:transparent }
     .footer-nav a {
       font-size: 14px; color: var(--white);
@@ -460,6 +1367,8 @@
 
     /* ── Marquee ticker ── */
     .marquee-wrap {
+      position: relative;
+      z-index: 1;
       overflow: hidden;
       border-top: 1px solid #222;
       border-bottom: 1px solid #222;
@@ -616,6 +1525,7 @@
       align-items: center;
       justify-content: center;
       animation: float-gentle 5s ease-in-out infinite;
+      perspective: 500px;
     }
     .hero-visual img {
       width: 100%;
@@ -629,7 +1539,22 @@
     .hero-img-wrap {
       position: relative;
       display: inline-block;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
+    /* Flipped face fades in when the cursor is to the avatar's left */
+    .hero-img-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      background: url("assets/home/Goni_Designer_flip.png") center top / 100% auto no-repeat;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.55s cubic-bezier(.16,1,.3,1);
+    }
+    .hero-img-wrap.looking-left::after { opacity: 1; }
+    .hero-img-wrap .hi-badge { transform: translateZ(1px); }
     .hero-img-wrap img {
       display: block;
       width: 100%;
@@ -641,10 +1566,11 @@
     .hi-badge {
       position: absolute;
       bottom: -12px;
-      left: -12px;
+      right: -12px;
       width: 72px;
       height: 72px;
       background: #111;
+      border: 1px solid #fff;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -700,196 +1626,19 @@
       95%, 100%{ opacity: 0;  transform: scale(0.6) rotate(0deg); }
     }
 
-    /* ── Skills section ── */
-    .skills-section {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
-    .skills-layout {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 88px;
-      align-items: center;
-      width: 100%;
-    }
-    .skills-sticky {
-      position: sticky;
-      top: 108px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: float-gentle 5s ease-in-out infinite;
-      animation-delay: 0.6s;
-    }
-
-    /* ── Flip card ── */
-    .flip-card {
-      width: 100%;
-      max-width: 280px;
-      perspective: 1200px;
-      opacity: 0;
-      transform: rotate(-8deg);
-      transition: opacity 0.25s ease;
-    }
-    .flip-card.arriving { opacity: 1; }
-    .skills-sticky:hover .flip-card.arriving {
-      transform: rotate(-4deg) scale(1.03);
-      transition: transform 0.5s ease, opacity 0.25s ease;
-    }
-    .flip-card-inner {
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 1.1s cubic-bezier(.645,.045,.355,1);
-    }
-    .flip-card.flipped .flip-card-inner {
-      transform: rotateY(180deg);
-    }
-    .flip-card-front,
-    .flip-card-back {
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-    }
-    .flip-card-front {
-      position: relative;
-    }
-    .flip-card-front img {
-      display: block;
-      width: 100%;
-      filter: drop-shadow(0 20px 56px rgba(0,0,0,.13));
-    }
-    .flip-card-back {
-      position: absolute;
-      inset: 0;
-      transform: rotateY(180deg);
-    }
-    .flip-card-back img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 20px 56px rgba(0,0,0,.13));
-    }
-    /* Hi badge inside the landed flip card */
-    .flip-card-front .hi-badge {
-      position: absolute;
-      bottom: -12px;
-      left: -12px;
-    }
-
-    .skills-header {
-      margin-bottom: 48px;
-    }
-    .skills-header h2 {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gray-text);
-      margin-bottom: 20px;
-    }
-    .skills-header p {
-      font-size: 28px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      color: var(--black);
-      max-width: 400px;
-    }
-
-    .skill-item {
-      border-top: 1px solid var(--border);
-      padding: 0;
-    }
-    .skill-item:last-child { border-bottom: 1px solid var(--border); }
-    .skill-trigger {
-      width: 100%;
-      background: none;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 22px 0;
-      font-family: 'Inter', sans-serif;
-      text-align: left;
-    }
-    .skill-num {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      color: var(--gray-text);
-      margin-right: 16px;
-      flex-shrink: 0;
-    }
-    .skill-name {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      color: var(--black);
-      flex: 1;
-    }
-    .skill-arrow {
-      font-size: 16px;
-      color: var(--gray-text);
-      transition: transform 0.3s ease;
-      flex-shrink: 0;
-    }
-    .skill-item.open .skill-arrow { transform: rotate(45deg); }
-    .skill-body {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s cubic-bezier(.25,.46,.45,.94);
-    }
-    .skill-body-inner {
-      padding: 0 0 24px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .skill-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 14px;
-      color: #ffffff;
-      background: var(--black);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px;
-      padding: 5px 12px 5px 10px;
-    }
-    .skill-tag svg {
-      width: 12px;
-      height: 12px;
-      flex-shrink: 0;
-      stroke: rgba(255,255,255,0.65);
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    .skill-tag img {
-      width: 12px;
-      height: 12px;
-      flex-shrink: 0;
-      filter: brightness(0) invert(1);
-      opacity: 0.65;
-    }
-
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .nav-inner { padding: 20px 28px; }
       .container { padding: 0 28px; }
-      .hero-outer { height: auto; min-height: 100vh; background: none; }
-      .hero { grid-template-columns: 1fr; min-height: calc(100vh - 48px); }
-      .skills-section { height: auto; min-height: unset; display: block; padding: 60px 0; }
-      .hero-panel-left { padding: 60px 28px; background: var(--white); }
-      .hero-panel-right { padding: 60px 28px; background: var(--black); }
-      .hero-title { font-size: 38px; }
+      .hero-outer { height: auto; min-height: calc(100vh - var(--nav-h, 64px)); }
+      .hero { grid-template-columns: 1fr; min-height: auto; padding: 56px 28px; gap: 34px; align-items: start; }
+      .hero-panel-left { padding: 0; order: 2; align-items: center; }
+      .hero-panel-right { padding: 0; order: 1; }
+      /* Drawing is disabled on mobile/tablet, so hide the "drag to draw" badge */
+      .badge-wrap { display: none; }
+      .hero-title { font-size: clamp(54px, 16vw, 76px); }
+      .hero-support-copy { font-size: 18px; line-height: 1.4; }
       .hero-img-wrap img { max-width: 220px; }
-      .skills-layout { grid-template-columns: 1fr; gap: 40px; }
-      .skills-sticky { order: -1; position: relative; top: auto; animation: none; }
       /* Flip cards (BDLNow, Gateway): stack vertically, text first, thumbnail below */
       .project-card.flip {
         grid-template-columns: 1fr;
@@ -903,13 +1652,19 @@
         grid-template-columns: 1fr;
         gap: 28px;
       }
-      .about-pg { grid-template-columns: 1fr 1fr; min-height: unset; gap: 12px; }
-      .ab-headline { grid-column: 1 / -1; grid-row: auto; font-size: 28px; }
-      .ab-time, .ab-status, .ab-role, .ab-interests, .ab-stats, .ab-building, .ab-exp, .ab-ottawa { grid-column: span 1; grid-row: auto; }
-      .ab-interior { display: grid; grid-template-columns: 110px 1fr; grid-template-rows: auto 1fr; grid-column: 1 / -1; }
-      .ab-interior > .ab-label { grid-column: 1 / -1; }
-      .ab-interior-img { grid-column: 1; height: 100%; min-height: 110px; }
-      .ab-interior-body { grid-column: 2; align-self: center; }
+      .about-pg { grid-template-columns: 1fr 1fr; min-height: unset; row-gap: 32px; column-gap: 12px; }
+      .ab-headline { font-size: 28px; margin-bottom: 8px; }
+      .ab-cell-status-map, .ab-interests, .ab-folder-wrap, .ab-turntable-stack { grid-column: span 1; grid-row: auto; }
+      .ab-cell-status-map, .ab-turntable-stack { grid-column: 1 / -1; width: auto; }
+      .ab-exp-role { grid-column: 1 / -1; grid-row: auto; width: 100%; max-width: 260px; margin: 0 auto; }
+      .ab-turntable-stack { justify-self: center; margin: 0 auto 8px; }
+      .ab-cell-status-map { order: 2; }
+      .ab-exp-role { order: 1; }
+      .ab-turntable-stack { order: 3; }
+      .ab-interests { order: 4; }
+      .ab-folder-wrap { order: 5; }
+      .ab-notebook-pages { width: 100% !important; max-width: 336px; }
+      .ab-tt-plate { width: 100%; max-width: 200px; height: auto; aspect-ratio: 1; margin: 0 auto; }
       footer { background: var(--black); }
       .footer-inner {
         padding: 56px 28px 40px;
@@ -952,6 +1707,7 @@
 
   <!-- Hero -->
   <div class="hero-outer">
+  <canvas class="hero-draw-canvas" id="heroDrawCanvas" aria-hidden="true"></canvas>
   <section class="hero">
     <div class="hero-panel-left reveal">
       <div class="hero-visual">
@@ -968,19 +1724,24 @@
       <div class="badge-wrap reveal">
         <svg class="badge-ring" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path id="badge-path" d="M 44,44 m -34,0 a 34,34 0 1,1 68,0 a 34,34 0 1,1 -68,0" fill="none"/>
-          <text font-size="8.5" font-weight="600" letter-spacing="2.2" fill="white" font-family="Inter,sans-serif" text-anchor="middle">
-            <textPath href="#badge-path" startOffset="50%">UI/UX DESIGNER ✦ LET'S MAKE SOMETHING USEFUL ✦</textPath>
+          <text font-size="8" font-weight="600" letter-spacing="0.9" fill="white" font-family="Inter,sans-serif" text-anchor="middle">
+            <textPath href="#badge-path" startOffset="50%">DRAG TO DRAW ✦ THE CANVAS IS YOURS ✦</textPath>
           </text>
         </svg>
-        <span class="badge-center">→</span>
+        <span class="badge-center"><i class="fa-solid fa-paintbrush" aria-hidden="true"></i></span>
       </div>
-      <p class="hero-tag reveal reveal-delay-1">Designer</p>
-      <h1 class="hero-title reveal reveal-delay-1">I turn complicated ideas into clear, usable experiences.</h1>
+      <p class="hero-tag reveal reveal-delay-1">Product &amp; UI/UX Designer</p>
+      <h1 class="hero-title reveal reveal-delay-1" aria-label="Goeun Choi">
+        <span class="hero-title-outline" aria-hidden="true">Goeun Choi</span>
+        <span class="hero-title-fill" aria-hidden="true">Goeun Choi</span>
+      </h1>
+      <p class="hero-support-copy reveal reveal-delay-2">I design digital products that make complex information easier to understand and act on.</p>
       <div class="hero-status reveal reveal-delay-3">
         <span class="status-dot"></span>
         <span>Open to new design opportunities</span>
       </div>
     </div>
+    <p class="hero-draw-hint" id="heroDrawHint"><span class="hint-icon">✎</span> Drag to draw</p>
   </section>
 
   <!-- Marquee ticker -->
@@ -1018,189 +1779,44 @@
   </div>
   </div>
 
-  <div class="container">
-
-    <!-- Skills -->
-    <section class="skills-section">
-      <div class="skills-layout">
-        <div class="skills-content">
-          <div class="skills-header">
-            <h2>Skills</h2>
-            <p>I work across product, web, visual, and motion design. These are the tools I use most.</p>
-          </div>
-
-          <div class="skill-item open">
-            <button class="skill-trigger" aria-expanded="true">
-              <span class="skill-num">01</span>
-              <span class="skill-name">UI/UX Design</span>
-              <span class="skill-arrow">+</span>
-            </button>
-            <div class="skill-body">
-              <div class="skill-body-inner">
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>User Research</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>Wireframing</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>Prototyping</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Usability Testing</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Information Architecture</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>Figma</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Design Systems</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="skill-item">
-            <button class="skill-trigger" aria-expanded="false">
-              <span class="skill-num">02</span>
-              <span class="skill-name">Graphic Design</span>
-              <span class="skill-arrow">+</span>
-            </button>
-            <div class="skill-body">
-              <div class="skill-body-inner">
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Brand Identity</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>Typography</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print Design</span>
-             
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Adobe Illustrator</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>InDesign</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photoshop</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 0 1 8 0"/><line x1="12" y1="8" x2="12" y2="12"/></svg>Lightroom</span>
-                <span class="skill-tag"><img src="assets/home/canva-svgrepo-com.svg" alt="">Canva</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="skill-item">
-            <button class="skill-trigger" aria-expanded="false">
-              <span class="skill-num">03</span>
-              <span class="skill-name">Web Design</span>
-              <span class="skill-arrow">+</span>
-            </button>
-            <div class="skill-body">
-              <div class="skill-body-inner">
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Responsive Design</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML / CSS</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Framer</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>WordPress</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>Webflow</span>
-                <span class="skill-tag"><img src="assets/home/icons8-shopify-24.png" class="m-icon" alt="">Shopify</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="skill-item">
-            <button class="skill-trigger" aria-expanded="false">
-              <span class="skill-num">04</span>
-              <span class="skill-name">Multimedia Design</span>
-              <span class="skill-arrow">+</span>
-            </button>
-            <div class="skill-body">
-              <div class="skill-body-inner">
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Motion Graphics</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>Video Editing</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>After Effects</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>Premiere Pro</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Data Visualization</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="skill-item">
-            <button class="skill-trigger" aria-expanded="false">
-              <span class="skill-num">05</span>
-              <span class="skill-name">Vibe Coding</span>
-              <span class="skill-arrow">+</span>
-            </button>
-            <div class="skill-body">
-              <div class="skill-body-inner">
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75L19 15z"/></svg>AI Assisted Prototyping</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/></svg>AI Assisted Frontend Dev</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)" fill-rule="evenodd"><path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z"/></svg>Claude Code</span>
-                <span class="skill-tag"><svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)" fill-rule="evenodd"><path clip-rule="evenodd" d="M8.086.457a6.105 6.105 0 013.046-.415c1.333.153 2.521.72 3.564 1.7a.117.117 0 00.107.029c1.408-.346 2.762-.224 4.061.366l.063.03.154.076c1.357.703 2.33 1.77 2.918 3.198.278.679.418 1.388.421 2.126a5.655 5.655 0 01-.18 1.631.167.167 0 00.04.155 5.982 5.982 0 011.578 2.891c.385 1.901-.01 3.615-1.183 5.14l-.182.22a6.063 6.063 0 01-2.934 1.851.162.162 0 00-.108.102c-.255.736-.511 1.364-.987 1.992-1.199 1.582-2.962 2.462-4.948 2.451-1.583-.008-2.986-.587-4.21-1.736a.145.145 0 00-.14-.032c-.518.167-1.04.191-1.604.185a5.924 5.924 0 01-2.595-.622 6.058 6.058 0 01-2.146-1.781c-.203-.269-.404-.522-.551-.821a7.74 7.74 0 01-.495-1.283 6.11 6.11 0 01-.017-3.064.166.166 0 00.008-.074.115.115 0 00-.037-.064 5.958 5.958 0 01-1.38-2.202 5.196 5.196 0 01-.333-1.589 6.915 6.915 0 01.188-2.132c.45-1.484 1.309-2.648 2.577-3.493.282-.188.55-.334.802-.438.286-.12.573-.22.861-.304a.129.129 0 00.087-.087A6.016 6.016 0 015.635 2.31C6.315 1.464 7.132.846 8.086.457zm-.804 7.85a.848.848 0 00-1.473.842l1.694 2.965-1.688 2.848a.849.849 0 001.46.864l1.94-3.272a.849.849 0 00.007-.854l-1.94-3.393zm5.446 6.24a.849.849 0 000 1.695h4.848a.849.849 0 000-1.696h-4.848z"/></svg>Codex</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="skills-sticky">
-          <div class="flip-card" id="skillsFlipCard">
-            <div class="flip-card-inner">
-              <div class="flip-card-front">
-                <img src="assets/home/Goni_Designer.png" alt="Designer illustration" />
-                <div class="hi-badge">
-                  <span class="hi-text">Hi</span>
-                  <span class="hi-emoji"><svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg"><path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 304C288 312.8 280.8 320 272 320C263.2 320 256 312.8 256 304L256 128C256 110.3 241.7 96 224 96C206.3 96 192 110.3 192 128L192 400C192 401.5 192 403.1 192.1 404.6L131.6 347C115.6 331.8 90.3 332.4 75 348.4C59.7 364.4 60.4 389.7 76.4 405L188.8 512C231.9 553.1 289.2 576 348.8 576L368 576C465.2 576 544 497.2 544 400L544 192C544 174.3 529.7 160 512 160C494.3 160 480 174.3 480 192L480 304C480 312.8 472.8 320 464 320C455.2 320 448 312.8 448 304L448 128C448 110.3 433.7 96 416 96C398.3 96 384 110.3 384 128L384 304C384 312.8 376.8 320 368 320C359.2 320 352 312.8 352 304L352 96z"/></svg></span>
-                </div>
-              </div>
-              <div class="flip-card-back">
-                <img src="assets/home/Goni_Designer_flip.png" alt="Designer illustration" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </div><!-- /container -->
-
   <!-- Works — full-width black section -->
   <section class="works" id="works">
     <div class="container">
       <div class="section-header">
         <h2>Featured Work</h2>
-      
+
       </div>
 
-      <!-- 01: Gateway -->
-      <div class="project-card flip reveal">
-        <div class="project-info">
-          <p class="project-number">01 · Brand Identity Design</p>
-          <div class="project-tags">
-            <span class="project-tag">Brand Designer</span>
-            <span class="project-tag">Figma · Illustrator · InDesign · After Effects</span>
-          </div>
-          <h3 class="project-title">Gateway</h3>
-          <p class="project-hook">I collaborated on the launch rollout for a new Richcraft Homes community built for first-time buyers.</p>
-          <a href="gateway-case-study.html" class="project-cta">Read case study <span class="cta-arrow">→</span></a>
-        </div>
-        <a href="gateway-case-study.html" class="project-visual-link">
-          <div class="project-visual" style="padding:0;overflow:hidden;background:#ffffff;">
-            <video src="assets/gateway/gateway-intro.mp4" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:contain;display:block;"></video>
-            <div class="view-overlay">View project <span class="overlay-arrow">→</span></div>
-          </div>
-        </a>
-      </div>
-
-      <!-- 02: BriefBuy -->
+      <!-- 01: BriefBuy -->
       <div class="project-card reveal">
         <div class="project-info">
-          <p class="project-number">02 · AI Product Design</p>
+          <p class="project-number">01 · AI Product Design</p>
           <div class="project-tags">
             <span class="project-tag">AI Product Design</span>
             <span class="project-tag">Figma · Next.js · Claude API</span>
           </div>
           <h3 class="project-title">BriefBuy</h3>
-          <p class="project-hook">I designed an AI shopping companion that helps runners explain what they need, compare options, and feel less overwhelmed.</p>
+          <p class="project-hook">I designed an AI shopping companion that helps runners compare shoes and find options that fit their needs.</p>
           <a href="briefbuy-case-study.html" class="project-cta">Read case study <span class="cta-arrow">→</span></a>
         </div>
         <a href="briefbuy-case-study.html" class="project-visual-link">
           <div class="project-visual dark" style="padding:0;overflow:hidden;">
-            <video src="assets/briefbuy/AI Product Comparison landing screen.mp4" autoplay muted loop playsinline preload="metadata" poster="assets/home/briefbuy-tumbnail.png" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <video src="assets/briefbuy/Briefbuy-promo.mp4" autoplay muted loop playsinline preload="metadata" poster="assets/home/briefbuy-tumbnail.png" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
             <div class="view-overlay">View project <span class="overlay-arrow">→</span></div>
           </div>
         </a>
       </div>
 
-      <!-- 03: BDLNow -->
+      <!-- 02: BDLNow -->
       <div class="project-card flip reveal">
         <div class="project-info">
-          <p class="project-number">03 · Data Visualization</p>
+          <p class="project-number">02 · Data Visualization</p>
           <div class="project-tags">
             <span class="project-tag">UI/UX · Web Design</span>
             <span class="project-tag">Figma · WordPress</span>
           </div>
           <h3 class="project-title">BDLNow</h3>
-          <p class="project-hook">I helped shape a data platform that makes Canadian economic research easier to read without losing the important details.</p>
+          <p class="project-hook">I designed the interface for a weekly GDP nowcast, making complex economic data easier to explore and understand.</p>
           <a href="bdlnow-case-study.html" class="project-cta">Read case study <span class="cta-arrow">→</span></a>
         </div>
         <a href="bdlnow-case-study.html" class="project-visual-link">
@@ -1211,10 +1827,10 @@
         </a>
       </div>
 
-      <!-- 04: Canada and U.S. -->
+      <!-- 03: Canada and U.S. -->
       <div class="project-card reveal">
         <div class="project-info">
-          <p class="project-number">04 · Policy Data Visualization</p>
+          <p class="project-number">03 · Policy Data Visualization</p>
           <div class="project-tags">
             <span class="project-tag">Product Designer</span>
             <span class="project-tag">Figma · Shiny/R · After Effects</span>
@@ -1237,67 +1853,247 @@
   <div class="container">
     <!-- About -->
     <section class="about reveal" id="about">
+      <canvas class="about-draw-canvas" id="aboutDrawCanvas" aria-hidden="true"></canvas>
       <div class="about-pg">
 
-        <h2 class="ab-headline">UI/UX and multimedia.<br><em>Based in Canada,</em><br>always curious.</h2>
 
-        <!-- Status -->
-        <div class="ab-card ab-status">
-          <span class="ab-dot"></span>
-          <span class="ab-status-text">Open to design opportunities</span>
-        </div>
 
-        <!-- Availability -->
-        <div class="ab-card ab-avail">
-          <span class="ab-label">Where I can work</span>
-          <div class="ab-avail-list">
-            <span>Vancouver · Hybrid</span>
-            <span>Toronto · Hybrid</span>
-            <span>Canada · Remote</span>
-            <span>US · Remote</span>
+
+        <!-- Row 1, col 1: headline copy + status + chalkboard map, stacked together -->
+        <div class="ab-cell ab-cell-status-map">
+          <h2 class="ab-headline">I care about how things look.<br><em>I care more about</em><br>how they work for people.</h2>
+
+
+
+          <!-- Chalkboard map — showing where I work -->
+          <div class="ab-chalk-map">
+            <div class="ab-chalk-map-wrap">
+              <img class="ab-chalk-map-img" src="assets/home/World Maps.svg" alt="Chalkboard world map with pins on Vancouver, Toronto, Canada, and the US" />
+              <span class="ab-chalk-pin ab-chalk-pin--hybrid" style="left:18.5%; top:34.5%;">
+                <span class="ab-chalk-pin-label">Vancouver &middot; Hybrid</span>
+                <span class="ab-chalk-pin-pulse"></span><span class="ab-chalk-pin-dot"></span>
+              </span>
+              <span class="ab-chalk-pin ab-chalk-pin--hybrid" style="left:29.1%; top:42%;">
+                <span class="ab-chalk-pin-label">Toronto &middot; Hybrid</span>
+                <span class="ab-chalk-pin-pulse"></span><span class="ab-chalk-pin-dot"></span>
+              </span>
+
+
+            </div>
+             <div class="ab-card ab-status">
+            <span class="ab-dot"></span>
+            <span class="ab-status-text">Open to new design opportunities</span>
+          </div>
+            <span class="ab-chalk-map-hint">Vancouver &amp; Toronto hybrid &middot; Canada &amp; US remote</span>
           </div>
         </div>
 
-        <!-- Experience -->
-        <div class="ab-card ab-exp-role">
-          <span class="ab-label">Experience</span>
-          <span class="ab-role-co">Canadian Chamber of Commerce</span>
-          <span class="ab-role-title">Web &amp; Graphic Designer · 2024 to Present</span>
-          <span class="ab-role-co">Richcraft Homes</span>
-          <span class="ab-role-title">Web & Graphic Designer · 2021 to 2024</span>
-          <span class="ab-role-co">Freelance</span>
-          <span class="ab-role-title">UI/UX Designer · 2020 to 2024</span>
+        <!-- Row 1, col 2: Experience — styled like an employee ID badge -->
+        <div class="ab-card ab-exp-role" id="employeeBadge" title="Show skills">
+          <button class="ab-badge-toggle" type="button" aria-pressed="false" aria-label="Show Goeun Choi's skills" aria-controls="employeeSkills" title="Show skills"><i class="fa-solid fa-rotate" aria-hidden="true"></i></button>
+          <svg class="ab-badge-hardware" viewBox="0 0 40 110" width="44" height="121" aria-hidden="true">
+            <defs>
+              <linearGradient id="hwMetal" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#8a8a8a"/>
+                <stop offset="45%" stop-color="#eeeeee"/>
+                <stop offset="55%" stop-color="#eeeeee"/>
+                <stop offset="100%" stop-color="#8a8a8a"/>
+              </linearGradient>
+            </defs>
+            <rect x="15" y="0" width="10" height="40" rx="2" fill="#1a1a1a"/>
+            <rect x="5" y="38" width="30" height="10" rx="5" fill="url(#hwMetal)" stroke="#7a7a7a" stroke-width="0.6"/>
+            <rect x="17" y="47" width="6" height="9" fill="url(#hwMetal)"/>
+            <path d="M20 56 v9 a8.5 8.5 0 1 0 8.5 8.5" fill="none" stroke="url(#hwMetal)" stroke-width="4.5" stroke-linecap="round"/>
+            <line x1="20.5" y1="65.5" x2="26" y2="71" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="20.5" cy="65.5" r="1.7" fill="#6f6f6f"/>
+          </svg>
+          <div class="ab-badge-inner">
+            <div class="ab-badge-face ab-badge-front">
+          <div class="ab-badge-photo">
+            <span class="ab-badge-photo-frame">
+              <img class="ab-badge-photo-img" src="assets/home/Goni_Designer.svg" alt="Goeun Choi" />
+            </span>
+
+          </div>
+          <div class="ab-badge-id">
+            <span class="ab-badge-name">Goeun Choi</span>
+            <span class="ab-badge-title">Product &amp; UI/UX Designer</span>
+          </div>
+            </div>
+            <div class="ab-badge-face ab-badge-back" aria-hidden="true" inert>
+              <div class="ab-badge-skills-heading"><h3>Skill Set</h3></div>
+              <div class="ab-badge-skills-list" id="employeeSkills" tabindex="0" role="region" aria-label="Design skills" data-lenis-prevent>
+              <div class="ab-badge-skill-group">
+                <h4>Product &amp; UI/UX Design</h4>
+                <p>User Research &middot; Prototyping &middot; Usability Testing &middot; Information Architecture &middot; Wireframing &middot; Design Systems &middot; Figma</p>
+              </div>
+              <div class="ab-badge-skill-group">
+                <h4>Web Design</h4>
+                <p>Responsive Design &middot; HTML / CSS &middot; Framer &middot; WordPress &middot; Webflow &middot; Shopify</p>
+              </div>
+              <div class="ab-badge-skill-group">
+                <h4>Vibe Coding</h4>
+                <p>AI Assisted Prototyping &middot; AI Assisted Frontend Dev &middot; Claude Code &middot; Codex &middot; GitHub</p>
+              </div>
+              <div class="ab-badge-skill-group">
+                <h4>Graphic Design</h4>
+                <p>Brand Identity &middot; Typography &middot; Print Design &middot; Adobe Illustrator &middot; InDesign &middot; Photoshop &middot; Lightroom &middot; Canva</p>
+              </div>
+              <div class="ab-badge-skill-group">
+                <h4>Multimedia Design</h4>
+                <p>Motion Graphics &middot; Video Editing &middot; After Effects &middot; Premiere Pro &middot; Data Visualization</p>
+              </div>
+              </div>
+            </div>
+          </div>
+          <span class="ab-badge-caption">Click to view skills</span>
         </div>
 
-        <!-- Interests -->
-        <div class="ab-card ab-interests">
-          <span class="ab-label">Into</span>
-          <div class="ab-tags">
-            <span>Coffee</span>
-            <span>Mocha latte</span>
-            <span>Cocktail</span>
-            <span>Travel</span>
-            <span>Interior design</span>
-            <span>Horror / Thriller</span>
-            <span>K-drama</span>
-            <span>Korean food</span>
-            <span>Pistachio dessert</span>
+        <!-- Row 1, col 3: Turntable + memory game, stacked in the same cell -->
+        <div class="ab-turntable-stack">
+          <div class="ab-turntable" id="musicCard">
+            <div class="ab-tt-plate" id="ttPlate">
+              <div class="ab-tt-record" id="ttRecord">
+                <div class="ab-tt-label">
+                  <span class="ab-tt-title">Top Flow</span>
+                  <span class="ab-tt-artist">Jazz &middot; lo-fi</span>
+                </div>
+              </div>
+              <div class="ab-tt-pivot"></div>
+              <div class="ab-tt-arm" id="ttArm">
+                <span class="ab-tt-arm-bar"></span>
+                <span class="ab-tt-arm-head"></span>
+              </div>
+              <div class="ab-tt-volume">
+                <i class="fa-solid fa-volume-high"></i>
+                <input class="ab-tt-volume-slider" id="ttVolume" type="range" min="0" max="100" value="70" aria-label="Volume">
+              </div>
+            </div>
+            <span class="ab-tt-hint" id="ttHint">Click or drag the needle to play</span>
+            <audio id="musicAudio" src="assets/home/top-flow_jazz_main_full.mp3" preload="none" loop></audio>
+          </div>
+
+          <!-- Memory game -->
+          <div class="ab-card ab-game" id="memoryGameCard">
+            <span class="ab-label">Memory game</span>
+            <div class="ab-game-body">
+              <div class="ab-game-meta">
+                <span class="ab-game-moves" id="gameMoves">Moves: 0</span>
+                <button class="ab-game-restart" id="gameRestart" type="button" aria-label="Restart game"><i class="fa-solid fa-rotate-right"></i></button>
+              </div>
+              <div class="ab-game-grid" id="gameGrid"></div>
+            </div>
+            <span class="ab-game-win" id="gameWin" hidden></span>
           </div>
         </div>
 
-        <!-- Interior design mood card -->
-        <div class="ab-card ab-interior">
-          <span class="ab-label">Also making</span>
-          <img class="ab-interior-img" src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80" alt="Interior design inspiration" />
-          <div class="ab-interior-body">
-            <span class="ab-interior-title">Rooms, paintings, and small details</span>
-            <span class="ab-interior-desc">I love interior design. I make my own paintings to hang on the wall, then play with small decorations until a room feels personal and lived in.</span>
+        <!-- Row 2, col 1: Interests — a little spring notebook, click "Into" to swap the cover for the badges -->
+        <div class="ab-card ab-interests" id="interestsNotebook">
+          <button class="ab-label" id="intoToggle" type="button" aria-expanded="false" aria-controls="intoBody">Into</button>
+          <div class="ab-notebook-body" id="intoBody">
+
+            <!-- Closed face: book cover, shown by default -->
+            <span class="ab-notebook-face ab-folder-front" id="intoCover" role="button" tabindex="0" aria-expanded="false">
+              <span class="ab-notebook-spring" aria-hidden="true"></span>
+              <span class="ab-notebook-cover-title">What I'm Into</span>
+
+            </span>
+
+            <!-- Open face: same cover shape, holds the badges, hidden until toggled -->
+            <span class="ab-notebook-face ab-folder-front ab-notebook-pages" id="intoPages" hidden>
+              <span class="ab-notebook-spring" aria-hidden="true"></span>
+
+              <div class="ab-tags">
+                <div class="ab-tags-col">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>Coffee</span>
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7l1-4z"/><path d="M7 6h10l-1 14a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2L7 6z"/><line x1="12" y1="6" x2="12" y2="2"/></svg>Mocha latte</span>
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18l-9 10z"/><line x1="12" y1="13" x2="12" y2="21"/><line x1="8" y1="21" x2="16" y2="21"/></svg>Cocktail</span>
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>Travel</span>
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7"/><path d="M9 22V12h6v10"/></svg>Interior design</span>
+                </div>
+                <div class="ab-tags-col">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 3 1.5 5 3 6.5V19a1 1 0 0 0 1 1h1v2h2v-2h2v2h2v-2h1a1 1 0 0 0 1-1v-3.5c1.5-1.5 3-3.5 3-6.5a7 7 0 0 0-7-7z"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/></svg>Horror / Thriller</span>
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><polygon points="10 8.5 15 11 10 13.5" fill="currentColor"/></svg>K-drama</span>
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M12 11V3"/><line x1="17" y1="3" x2="15" y2="9"/></svg>Cooking</span>
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a4 4 0 0 1 4 4c0 1-.5 2-1 2.5H9c-.5-.5-1-1.5-1-2.5a4 4 0 0 1 4-4z"/><path d="M9 9.5l3 11 3-11"/></svg>Pistachio dessert</span>
+                </div>
+              </div>
+            </span>
+
           </div>
+        </div>
+
+        <!-- Row 2, col 2: Resume folder toy — click opens the folder, then shows the resume in a lightbox -->
+        <div class="ab-folder-wrap">
+          <button class="ab-folder-toy" id="resumeFolder" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="resumeLightbox">
+            <span class="ab-folder-paper" aria-hidden="true">
+              <span class="ab-folder-paper-label">Resume</span>
+              <span class="ab-folder-paper-line"></span>
+              <span class="ab-folder-paper-line short"></span>
+              <span class="ab-folder-paper-line"></span>
+            </span>
+            <span class="ab-folder-front">
+              <span class="ab-folder-flap" id="envFlap"></span>
+              <svg class="ab-folder-string" viewBox="0 0 64 82" aria-hidden="true">
+                <path class="ab-folder-thread" d="M32,14 C52,22 12,30 32,38 C52,46 12,54 32,62"/>
+                <circle class="ab-folder-button" cx="32" cy="14" r="8"/>
+                <circle class="ab-folder-button-hole" cx="32" cy="14" r="2.6"/>
+                <circle class="ab-folder-button" cx="32" cy="62" r="8"/>
+                <circle class="ab-folder-button-hole" cx="32" cy="62" r="2.6"/>
+              </svg>
+              <span class="ab-folder-caption">Resume &middot; PDF &middot; 1 page</span>
+              <span class="ab-folder-title"><span>Goeun's</span>Resume</span>
+              <span class="ab-folder-arrows" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+              </span>
+            </span>
+          </button>
+
         </div>
 
       </div>
     </section>
 
+    <p class="hero-draw-hint" id="resumeHoverHint"><span class="hint-icon">🖱</span> Click to open</p>
+    <p class="hero-draw-hint" id="intoHoverHint"><span class="hint-icon">🖱</span> Click to peek inside</p>
+
+  </div>
+
+  <!-- Floating drawing toolbar — shows while the About board is in view -->
+  <div class="about-tool-dock" id="aboutToolDock">
+    <button class="about-tool-btn" data-tool="pencil" title="Pencil"><i class="fa-solid fa-pencil"></i></button>
+    <button class="about-tool-btn active" data-tool="brush" title="Brush"><i class="fa-solid fa-paintbrush"></i></button>
+    <button class="about-tool-btn" data-tool="marker" title="Marker"><i class="fa-solid fa-marker"></i></button>
+    <span class="about-tool-divider"></span>
+    <button class="about-tool-btn" data-tool="text" title="Add text"><span class="about-tool-text-icon">T</span></button>
+    <span class="about-tool-divider"></span>
+    <button class="about-tool-btn" data-action="clear" title="Clear drawing"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+    <span class="about-tool-divider"></span>
+    <button class="about-tool-btn about-sticker-toggle" data-action="stickers" title="Stickers"><i class="fa-solid fa-stamp" style="color: rgb(0, 0, 0);"></i></button>
+  </div>
+
+  <!-- Sticker picker panel — opens above the dock -->
+  <div class="sticker-panel" id="stickerPanel">
+    <div class="sticker-panel-grid">
+      <button class="sticker-panel-item" data-sticker-src="assets/home/stickers/Fire.svg" title="Fire sticker"><img src="assets/home/stickers/Fire.svg" alt="Fire sticker" draggable="false"></button>
+      <button class="sticker-panel-item" data-sticker-src="assets/home/stickers/Heart.svg" title="Heart sticker"><img src="assets/home/stickers/Heart.svg" alt="Heart sticker" draggable="false"></button>
+      <button class="sticker-panel-item" data-sticker-src="assets/home/stickers/Hi.svg" title="Hi sticker"><img src="assets/home/stickers/Hi.svg" alt="Hi sticker" draggable="false"></button>
+      <button class="sticker-panel-item" data-sticker-src="assets/home/stickers/bumb.svg" title="Thumbs up sticker"><img src="assets/home/stickers/bumb.svg" alt="Thumbs up sticker" draggable="false"></button>
+      <button class="sticker-panel-item" data-sticker-src="assets/home/stickers/heart_eyes.svg" title="Heart eyes sticker"><img src="assets/home/stickers/heart_eyes.svg" alt="Heart eyes sticker" draggable="false"></button>
+      <button class="sticker-panel-item" data-sticker-src="assets/home/stickers/lightening.svg" title="Lightning sticker"><img src="assets/home/stickers/lightening.svg" alt="Lightning sticker" draggable="false"></button>
+      <button class="sticker-panel-item" data-sticker-src="assets/home/stickers/niceday.svg" title="Nice day sticker"><img src="assets/home/stickers/niceday.svg" alt="Nice day sticker" draggable="false"></button>
+      <button class="sticker-panel-item" data-sticker-src="assets/home/stickers/sun.svg" title="Sun sticker"><img src="assets/home/stickers/sun.svg" alt="Sun sticker" draggable="false"></button>
+    </div>
+  </div>
+
+  <!-- Resume lightbox — opened from the folder toy on the About board -->
+  <div class="resume-lightbox" id="resumeLightbox" role="dialog" aria-modal="true" aria-label="Resume viewer" hidden>
+    <div class="resume-lightbox-backdrop" id="resumeLightboxBackdrop"></div>
+    <div class="resume-lightbox-panel">
+      <button class="resume-lightbox-close" id="resumeLightboxClose" type="button" aria-label="Close resume viewer"><i class="fa-solid fa-xmark"></i></button>
+      <iframe class="resume-lightbox-frame" id="resumeLightboxFrame" title="Goeun Choi's resume"></iframe>
+      <a class="resume-lightbox-download" href="assets/home/document/Goeun Choi- Graphic Designer Resume.pdf" target="_blank" rel="noopener">Open in new tab ↗</a>
+    </div>
   </div>
 
   <!-- Footer / Contact -->
@@ -1328,6 +2124,8 @@
 
   <!-- Lenis smooth scroll -->
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 
   <script>
     // ── Custom pointer: pen icon follows the mouse ──────────────────────────
@@ -1424,16 +2222,412 @@
       if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
     })();
 
+    // ── Hero: drag the mouse anywhere on the black background to draw ──────
+    (function () {
+      const heroOuter = document.querySelector('.hero-outer');
+      const canvas = document.getElementById('heroDrawCanvas');
+      if (!heroOuter || !canvas) return;
+      // Disabled on mobile/tablet: the touchmove listener below blocks the
+      // page from scrolling, since drawing and scrolling both use one-finger drag.
+      if (window.matchMedia('(max-width: 900px)').matches) return;
+
+      const ctx = canvas.getContext('2d');
+      const hint = document.getElementById('heroDrawHint');
+      const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+      let drawing = false;
+      let lastX = 0, lastY = 0;
+      let midX = 0, midY = 0;
+      let lastTime = 0;
+      let width = 8;
+
+      function resizeCanvas() {
+        const rect = heroOuter.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.shadowColor = 'rgba(255,255,255,0.5)';
+        ctx.shadowBlur = 6;
+        ctx.globalCompositeOperation = 'lighter';
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      function pointFromEvent(e) {
+        const rect = heroOuter.getBoundingClientRect();
+        const src = e.touches ? e.touches[0] : e;
+        return { x: src.clientX - rect.left, y: src.clientY - rect.top };
+      }
+
+      function moveHint(e) {
+        if (!hint || hint.classList.contains('hidden')) return;
+        const src = e.touches ? e.touches[0] : e;
+        hint.style.left = src.clientX + 'px';
+        hint.style.top = src.clientY + 'px';
+        hint.classList.add('following');
+      }
+
+      function start(e) {
+        drawing = true;
+        const p = pointFromEvent(e);
+        lastX = midX = p.x;
+        lastY = midY = p.y;
+        lastTime = performance.now();
+        width = 10;
+        if (hint) hint.classList.add('hidden');
+        if (!e.touches) e.preventDefault(); // avoid text-selection while dragging to draw
+      }
+      function move(e) {
+        moveHint(e);
+        if (!drawing) return;
+        const p = pointFromEvent(e);
+        const now = performance.now();
+        const dt = Math.max(now - lastTime, 1);
+        const dist = Math.hypot(p.x - lastX, p.y - lastY);
+        const speed = dist / dt; // px per ms — faster drag = thinner brush, like real ink
+        const targetWidth = clamp(16 - speed * 22, 2, 16);
+        width += (targetWidth - width) * 0.35; // smooth width changes instead of jittering
+
+        const nextMidX = (lastX + p.x) / 2;
+        const nextMidY = (lastY + p.y) / 2;
+
+        // quadratic curve through the midpoints keeps the stroke a smooth
+        // brush line instead of a jagged sequence of straight segments
+        ctx.beginPath();
+        ctx.moveTo(midX, midY);
+        ctx.quadraticCurveTo(lastX, lastY, nextMidX, nextMidY);
+        ctx.lineWidth = width;
+        ctx.stroke();
+
+        midX = nextMidX; midY = nextMidY;
+        lastX = p.x; lastY = p.y;
+        lastTime = now;
+        if (e.touches) e.preventDefault();
+      }
+      function end() { drawing = false; }
+
+      heroOuter.addEventListener('mousedown', start);
+      heroOuter.addEventListener('mousemove', move);
+      heroOuter.addEventListener('mouseenter', moveHint);
+      window.addEventListener('mouseup', end);
+      heroOuter.addEventListener('mouseleave', () => {
+        end();
+        if (hint) hint.classList.remove('following');
+      });
+
+      heroOuter.addEventListener('touchstart', start, { passive: true });
+      heroOuter.addEventListener('touchmove', move, { passive: false });
+      window.addEventListener('touchend', end);
+    })();
+
+    // ── About board: drag anywhere to draw, with a pencil/brush/marker toolbar ──
+    (function () {
+      const aboutEl = document.getElementById('about');
+      const canvas  = document.getElementById('aboutDrawCanvas');
+      const dock    = document.getElementById('aboutToolDock');
+      if (!aboutEl || !canvas || !dock) return;
+      // Disabled on mobile/tablet: the touchmove listener below blocks the
+      // page from scrolling, since drawing and scrolling both use one-finger drag.
+      if (window.matchMedia('(max-width: 900px)').matches) return;
+
+      const ctx = canvas.getContext('2d');
+      const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+      const TOOLS = {
+        pencil: { baseWidth: 2.5, speedVaries: false, opacity: 0.85, blur: 0, composite: 'source-over' },
+        brush:  { baseWidth: 10,  speedVaries: true,  opacity: 0.85, blur: 5, composite: 'lighter' },
+        marker: { baseWidth: 16,  speedVaries: false, opacity: 0.32, blur: 0, composite: 'source-over' },
+      };
+      let currentTool = 'brush';
+      let currentSticker = null;
+
+      let drawing = false;
+      let lastX = 0, lastY = 0;
+      let midX = 0, midY = 0;
+      let lastTime = 0;
+      let width = TOOLS[currentTool].baseWidth;
+
+      function resizeCanvas() {
+        const rect = aboutEl.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      function pointFromEvent(e) {
+        const rect = aboutEl.getBoundingClientRect();
+        const src = e.touches ? e.touches[0] : e;
+        return { x: src.clientX - rect.left, y: src.clientY - rect.top };
+      }
+
+      function makeCanvasStickerDraggable(el) {
+        let startX = 0, startY = 0, baseLeft = 0, baseTop = 0;
+
+        el.addEventListener('pointerdown', (e) => {
+          if (e.button !== 0) return;
+          e.stopPropagation();
+          el.setPointerCapture(e.pointerId);
+          el.classList.add('dragging');
+          startX = e.clientX;
+          startY = e.clientY;
+          baseLeft = parseFloat(el.style.left) || 0;
+          baseTop = parseFloat(el.style.top) || 0;
+        });
+
+        el.addEventListener('pointermove', (e) => {
+          if (!el.classList.contains('dragging')) return;
+          el.style.left = (baseLeft + e.clientX - startX) + 'px';
+          el.style.top = (baseTop + e.clientY - startY) + 'px';
+        });
+
+        function endStickerDrag(e) {
+          if (!el.classList.contains('dragging')) return;
+          el.classList.remove('dragging');
+          try { el.releasePointerCapture(e.pointerId); } catch (_) {}
+        }
+        el.addEventListener('pointerup', endStickerDrag);
+        el.addEventListener('pointercancel', endStickerDrag);
+      }
+
+      function addCanvasSticker(p) {
+        if (!currentSticker) return;
+        const sticker = document.createElement('span');
+        sticker.className = 'ab-canvas-sticker';
+        const img = document.createElement('img');
+        img.src = currentSticker;
+        img.draggable = false;
+        sticker.appendChild(img);
+        sticker.style.left = p.x + 'px';
+        sticker.style.top = p.y + 'px';
+        sticker.style.setProperty('--rot', (Math.random() * 18 - 9).toFixed(1) + 'deg');
+        aboutEl.appendChild(sticker);
+        makeCanvasStickerDraggable(sticker);
+      }
+
+      // Text notes behave like a sticker once typed (draggable, via the same
+      // pointer-capture pattern), but while actively being typed into they must
+      // stay hands-off so native click-to-place-caret / drag-to-select keeps
+      // working — so dragging only engages after the note is locked (blurred).
+      function makeCanvasTextDraggable(el) {
+        let startX = 0, startY = 0, baseLeft = 0, baseTop = 0, activePointerId = null;
+
+        el.addEventListener('pointerdown', (e) => {
+          if (e.button !== 0) return;
+          if (!el.classList.contains('locked')) return;
+          e.stopPropagation();
+          activePointerId = e.pointerId;
+          startX = e.clientX;
+          startY = e.clientY;
+          baseLeft = parseFloat(el.style.left) || 0;
+          baseTop = parseFloat(el.style.top) || 0;
+        });
+
+        el.addEventListener('pointermove', (e) => {
+          if (activePointerId === null || e.pointerId !== activePointerId) return;
+          if (!el.classList.contains('dragging')) {
+            el.setPointerCapture(e.pointerId);
+            el.classList.add('dragging');
+          }
+          el.style.left = (baseLeft + e.clientX - startX) + 'px';
+          el.style.top = (baseTop + e.clientY - startY) + 'px';
+        });
+
+        function endTextDrag(e) {
+          if (activePointerId === null || e.pointerId !== activePointerId) return;
+          activePointerId = null;
+          if (el.classList.contains('dragging')) {
+            el.classList.remove('dragging');
+            try { el.releasePointerCapture(e.pointerId); } catch (_) {}
+          }
+        }
+        el.addEventListener('pointerup', endTextDrag);
+        el.addEventListener('pointercancel', endTextDrag);
+      }
+
+      function placeCaretAtEnd(el) {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+
+      function addCanvasText(p) {
+        const box = document.createElement('div');
+        box.className = 'ab-canvas-text';
+        box.contentEditable = 'true';
+        box.spellcheck = false;
+        box.style.left = p.x + 'px';
+        box.style.top = p.y + 'px';
+        box.style.setProperty('--rot', (Math.random() * 6 - 3).toFixed(1) + 'deg');
+        aboutEl.appendChild(box);
+        makeCanvasTextDraggable(box);
+        requestAnimationFrame(() => box.focus());
+
+        function lock() {
+          if (!box.textContent.trim()) { box.remove(); return; }
+          box.contentEditable = 'false';
+          box.classList.add('locked');
+        }
+        box.addEventListener('blur', lock);
+        box.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); box.blur(); }
+          if (e.key === 'Escape') { e.preventDefault(); box.textContent = ''; box.blur(); }
+        });
+        box.addEventListener('dblclick', (e) => {
+          if (!box.classList.contains('locked')) return;
+          e.stopPropagation();
+          box.classList.remove('locked');
+          box.contentEditable = 'true';
+          box.focus();
+          placeCaretAtEnd(box);
+        });
+      }
+
+      function start(e) {
+        // Let card/sticker/text drags win — only start drawing on empty board space.
+        if (e.target.closest('.ab-card, .ab-sticker, .ab-canvas-sticker, .ab-canvas-text, .ab-tags span, .ab-folder-wrap, .ab-chalk-map, .ab-turntable')) return;
+        const p = pointFromEvent(e);
+        if (currentTool === 'text') {
+          addCanvasText(p);
+          if (!e.touches) e.preventDefault();
+          return;
+        }
+        if (currentSticker) {
+          addCanvasSticker(p);
+          if (!e.touches) e.preventDefault();
+          return;
+        }
+        drawing = true;
+        lastX = midX = p.x;
+        lastY = midY = p.y;
+        lastTime = performance.now();
+        width = TOOLS[currentTool].baseWidth;
+        if (!e.touches) e.preventDefault();
+      }
+      function move(e) {
+        if (!drawing) return;
+        const tool = TOOLS[currentTool];
+        const p = pointFromEvent(e);
+        const now = performance.now();
+        const dt = Math.max(now - lastTime, 1);
+
+        if (tool.speedVaries) {
+          const dist = Math.hypot(p.x - lastX, p.y - lastY);
+          const speed = dist / dt;
+          const targetWidth = clamp(tool.baseWidth * 1.6 - speed * 22, 2, tool.baseWidth * 1.6);
+          width += (targetWidth - width) * 0.35;
+        } else {
+          width = tool.baseWidth;
+        }
+
+        const nextMidX = (lastX + p.x) / 2;
+        const nextMidY = (lastY + p.y) / 2;
+
+        ctx.strokeStyle = `rgba(0,0,0,${tool.opacity})`;
+        ctx.shadowColor = tool.blur ? `rgba(0,0,0,${tool.opacity})` : 'transparent';
+        ctx.shadowBlur = tool.blur;
+        ctx.globalCompositeOperation = tool.composite;
+        ctx.lineWidth = width;
+
+        ctx.beginPath();
+        ctx.moveTo(midX, midY);
+        ctx.quadraticCurveTo(lastX, lastY, nextMidX, nextMidY);
+        ctx.stroke();
+
+        midX = nextMidX; midY = nextMidY;
+        lastX = p.x; lastY = p.y;
+        lastTime = now;
+        if (e.touches) e.preventDefault();
+      }
+      function end() { drawing = false; }
+
+      aboutEl.addEventListener('mousedown', start);
+      aboutEl.addEventListener('mousemove', move);
+      window.addEventListener('mouseup', end);
+      aboutEl.addEventListener('mouseleave', end);
+
+      aboutEl.addEventListener('touchstart', start, { passive: true });
+      aboutEl.addEventListener('touchmove', move, { passive: false });
+      window.addEventListener('touchend', end);
+
+      // Toolbar: pick a tool, or clear the board
+      const stickerToggle = dock.querySelector('.about-sticker-toggle');
+      const stickerPanel = document.getElementById('stickerPanel');
+
+      function closeStickerPanel() {
+        stickerPanel.classList.remove('visible');
+      }
+
+      dock.querySelectorAll('.about-tool-btn[data-tool]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentTool = btn.dataset.tool;
+          currentSticker = null;
+          dock.querySelectorAll('.about-tool-btn[data-tool]').forEach(b => b.classList.toggle('active', b === btn));
+          stickerPanel.querySelectorAll('.sticker-panel-item').forEach(b => b.classList.remove('active'));
+          stickerToggle.classList.remove('active');
+          closeStickerPanel();
+        });
+      });
+
+      stickerToggle.addEventListener('click', () => {
+        const opening = !stickerPanel.classList.contains('visible');
+        stickerPanel.classList.toggle('visible', opening);
+        stickerToggle.classList.toggle('active', opening || !!currentSticker);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!stickerPanel.classList.contains('visible')) return;
+        if (e.target.closest('.sticker-panel') || e.target.closest('.about-sticker-toggle')) return;
+        closeStickerPanel();
+      });
+
+      stickerPanel.querySelectorAll('.sticker-panel-item[data-sticker-src]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentSticker = btn.dataset.stickerSrc;
+          if (currentTool === 'text') currentTool = 'brush'; // leave text-placement mode
+          dock.querySelectorAll('.about-tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
+          stickerPanel.querySelectorAll('.sticker-panel-item').forEach(b => b.classList.toggle('active', b === btn));
+          stickerToggle.classList.add('active');
+          closeStickerPanel();
+        });
+      });
+
+      const clearBtn = dock.querySelector('[data-action="clear"]');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          aboutEl.querySelectorAll('.ab-canvas-sticker').forEach(sticker => sticker.remove());
+          aboutEl.querySelectorAll('.ab-canvas-text').forEach(text => text.remove());
+        });
+      }
+
+      // Only show the floating dock while the About board is actually in view
+      const dockObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => dock.classList.toggle('visible', entry.isIntersecting));
+      }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+      dockObserver.observe(aboutEl);
+    })();
+
     // ── Lenis smooth scroll ──────────────────────────────────────
     const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
     function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
     requestAnimationFrame(raf);
 
-    // ── Snap scroll: hero ↔ skills each = 100vh ──────────────────
+    // Snap between the hero and the start of Featured Work.
     (function () {
       const heroOuter  = document.querySelector('.hero-outer');
-      const skillsSec  = document.querySelector('.skills-section');
-      if (!heroOuter || !skillsSec) return;
+      const worksSec   = document.querySelector('.works');
+      if (!heroOuter || !worksSec) return;
 
       let snapping = false;
 
@@ -1452,16 +2646,15 @@
         const scrollY   = window.scrollY;
         const heroTop   = heroOuter.offsetTop;
         const heroBot   = heroTop + heroOuter.offsetHeight;   // = 100vh
-        const skillsTop = skillsSec.offsetTop;
-        const skillsBot = skillsTop + skillsSec.offsetHeight; // = 100vh
+        const worksTop  = worksSec.offsetTop;
 
         const inHero   = scrollY < heroBot   - 10;
-        const inSkills = scrollY >= skillsTop - 10 && scrollY < skillsBot - 10;
+        const atWorksStart = Math.abs(scrollY - worksTop) <= 10;
 
         if (inHero && e.deltaY > 0) {
           e.preventDefault();
-          snapTo(skillsTop);
-        } else if (inSkills && e.deltaY < 0) {
+          snapTo(worksTop);
+        } else if (atWorksStart && e.deltaY < 0) {
           e.preventDefault();
           snapTo(heroTop);
         }
@@ -1490,177 +2683,401 @@
     }, { threshold: 0 });
     if (hero) heroObserver.observe(hero);
 
-    // ── Avatar card: scroll-driven travel + flip ───────────────────
+    // ── About board: drag the cards and stickers around like a corkboard ──
     (function () {
-      const heroWrap     = document.querySelector('.hero-img-wrap');
-      const skillsSticky = document.querySelector('.skills-sticky');
-      const flipCard     = document.getElementById('skillsFlipCard');
-      const heroOuter    = document.querySelector('.hero-outer');
-      const skillsSec    = document.querySelector('.skills-section');
-      if (!heroWrap || !skillsSticky || !flipCard || !heroOuter || !skillsSec) return;
+      document.querySelectorAll('.ab-card, .ab-sticker, .ab-tags span, .ab-folder-wrap').forEach(el => {
+        let startX = 0, startY = 0, baseX = 0, baseY = 0, rotDeg = '0deg', moved = false, activePointerId = null;
 
-      const lerp   = (a, b, t) => a + (b - a) * t;
-      const clamp  = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-      const ease   = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+        // The "Into" notebook and resume folder need to stay click/tap-able (to open
+        // and close) while also being draggable, so their interactive faces/buttons
+        // aren't blanket-excluded like other cards' controls are — instead we defer
+        // setPointerCapture until the pointer actually moves. Capturing immediately
+        // on pointerdown makes the browser redirect the resulting click's target to
+        // this element, which silently breaks the cover/button's own click handler
+        // even when the user only tapped, never dragged.
+        const isNotebook = el.classList.contains('ab-interests');
+        const isFolderWrap = el.classList.contains('ab-folder-wrap');
+        const blockSelector = isNotebook
+          ? 'input, textarea, .ab-tt-arm, #intoToggle'
+          : isFolderWrap
+            ? 'input, textarea, .ab-tt-arm'
+            : 'button, input, textarea, .ab-tt-arm, .ab-notebook-face, .ab-badge-skills-list';
 
-      let ghost  = null;
-      let src    = null;
-      let landed = false;
-
-      function getDest() {
-        const r = skillsSticky.getBoundingClientRect();
-        const w = Math.min(280, r.width);
-        return { top: r.top + r.height * 0.05, left: r.left + (r.width - w) / 2, width: w };
-      }
-
-      function spawnGhost() {
-        if (ghost) return;
-        src = heroWrap.getBoundingClientRect();
-
-        // Outer wrapper: handles position + tilt + 3D flip
-        ghost = document.createElement('div');
-        Object.assign(ghost.style, {
-          position: 'fixed', margin: '0',
-          top: src.top + 'px', left: src.left + 'px', width: src.width + 'px',
-          zIndex: '999', pointerEvents: 'none',
-          transformOrigin: 'center center',
-          transformStyle: 'preserve-3d',
-          willChange: 'top, left, width, transform',
+        el.addEventListener('pointerdown', (e) => {
+          if (e.button !== 0) return;
+          if (e.target.closest(blockSelector)) return; // let interactive controls work without starting a drag
+          e.stopPropagation(); // don't also drag an ancestor card when dragging a nested sticker/tag
+          activePointerId = e.pointerId;
+          moved = false;
+          rotDeg = getComputedStyle(el).getPropertyValue('--rot').trim() || '0deg';
+          startX = e.clientX;
+          startY = e.clientY;
+          const match = /translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(el.style.transform || '');
+          baseX = match ? parseFloat(match[1]) : 0;
+          baseY = match ? parseFloat(match[2]) : 0;
         });
 
-        // Front face — original image + Hi badge
-        const front = document.createElement('div');
-        front.style.cssText = 'backface-visibility:hidden;-webkit-backface-visibility:hidden;position:relative;';
-        const frontImg = heroWrap.querySelector('img').cloneNode(true);
-        frontImg.style.cssText = 'width:100%;display:block;border-radius:28px;filter:drop-shadow(0 20px 56px rgba(0,0,0,.15));';
-        front.appendChild(frontImg);
-        const badge = heroWrap.querySelector('.hi-badge');
-        if (badge) front.appendChild(badge.cloneNode(true));
-
-        // Back face — flip image
-        const back = document.createElement('div');
-        back.style.cssText = 'backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;transform:rotateY(180deg);';
-        const backImg = document.createElement('img');
-        backImg.src = 'assets/home/Goni_Designer_flip.png';
-        backImg.style.cssText = 'width:100%;display:block;border-radius:28px;filter:drop-shadow(0 20px 56px rgba(0,0,0,.15));';
-        back.appendChild(backImg);
-
-        ghost.appendChild(front);
-        ghost.appendChild(back);
-        document.body.appendChild(ghost);
-        heroWrap.style.opacity = '0';
-      }
-
-      function killGhost(showHero) {
-        if (!ghost) return;
-        ghost.remove(); ghost = null;
-        if (showHero) heroWrap.style.opacity = '1';
-      }
-
-      function removeFlipCard() {
-        const inner = flipCard.querySelector('.flip-card-inner');
-        inner.style.transition = 'none';
-        flipCard.classList.remove('arriving', 'flipped');
-        requestAnimationFrame(() => { inner.style.transition = ''; });
-      }
-
-      function triggerPaintSplash(cx, cy) {
-        paintSplash(cx, cy, 1000, 9, 12, 22, 15);
-      }
-
-      function onScroll() {
-        const heroRect    = heroOuter.getBoundingClientRect();
-        const travelStart = heroRect.height * 0.25;
-
-        // ① Hero mostly visible — clean up everything
-        if (heroRect.top > -travelStart) {
-          landed = false;
-          killGhost(true);
-          removeFlipCard();
-          return;
-        }
-
-        const scrolled = (-heroRect.top) - travelStart;
-        const raw      = clamp(scrolled / (heroRect.height - travelStart), 0, 1);
-
-        // ② At or past destination — show real flip card, no CSS transition
-        if (raw >= 1) {
-          if (!landed) {
-            landed = true;
-            killGhost(false);
-            const inner = flipCard.querySelector('.flip-card-inner');
-            inner.style.transition = 'none';
-            flipCard.classList.add('arriving', 'flipped');
-            requestAnimationFrame(() => { inner.style.transition = ''; });
-            // Paint splash on landing
-            const sr = skillsSticky.getBoundingClientRect();
-            triggerPaintSplash(sr.left + sr.width / 2, sr.top + sr.height * 0.45);
+        el.addEventListener('pointermove', (e) => {
+          if (activePointerId === null || e.pointerId !== activePointerId) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          if (!moved) {
+            if (Math.hypot(dx, dy) <= 4) return; // still within click tolerance — don't start dragging yet
+            moved = true;
+            el.setPointerCapture(e.pointerId);
+            el.classList.add('dragging');
           }
-          return;
+          el.style.transform = `translate(${baseX + dx}px, ${baseY + dy}px) rotate(${rotDeg})`;
+        });
+
+        function endDrag(e) {
+          if (activePointerId === null || e.pointerId !== activePointerId) return;
+          activePointerId = null;
+          if (moved) {
+            el.classList.remove('dragging');
+            try { el.releasePointerCapture(e.pointerId); } catch (_) {}
+            // a real drag happened — swallow the click that follows so it doesn't
+            // also toggle the notebook/folder open or closed
+            const suppressClick = (ce) => { ce.stopPropagation(); ce.preventDefault(); };
+            el.addEventListener('click', suppressClick, { capture: true, once: true });
+            setTimeout(() => el.removeEventListener('click', suppressClick, true), 0);
+          }
         }
-
-        // ③ In flight (0 ≤ raw < 1) — handles both scroll-down and scroll-back-up
-        if (landed) {
-          // Came back from landed: remove real card, re-spawn ghost from current position
-          landed = false;
-          removeFlipCard();
-          killGhost(false);   // clears any stale ghost; hero opacity stays hidden
-        }
-        if (!ghost) spawnGhost();
-
-        const p   = ease(raw);
-        const dst = getDest();
-
-        ghost.style.top   = lerp(src.top,   dst.top,   p) + 'px';
-        ghost.style.left  = lerp(src.left,  dst.left,  p) + 'px';
-        ghost.style.width = lerp(src.width, dst.width, p) + 'px';
-
-        // Flip: starts at 40% travel, completes at 80%
-        const flipRaw = clamp((raw - 0.4) / 0.4, 0, 1);
-        const tilt    = lerp(0, -8, p);
-        const rotY    = flipRaw * 180;
-        ghost.style.transform = `perspective(900px) rotate(${tilt}deg) rotateY(${rotY}deg)`;
-      }
-
-      window.addEventListener('scroll', onScroll, { passive: true });
+        el.addEventListener('pointerup', endDrag);
+        el.addEventListener('pointercancel', endDrag);
+      });
     })();
 
-    // ── Skills accordion ─────────────────────────────────────────
-    document.querySelectorAll('.skill-trigger').forEach(btn => {
-      const item = btn.closest('.skill-item');
-      const body = item.querySelector('.skill-body');
+    // ── About board: interests notebook — click "Into" to swap the cover for the badges ──
+    (function () {
+      const toggle = document.getElementById('intoToggle');
+      const body = document.getElementById('intoBody');
+      const cover = document.getElementById('intoCover');
+      const pages = document.getElementById('intoPages');
+      if (!toggle || !body || !cover || !pages) return;
 
-      // Set initial height for already-open items
-      if (item.classList.contains('open')) {
-        body.style.maxHeight = body.scrollHeight + 'px';
+      function openNotebook() {
+        if (!pages.hidden) return;
+        cover.hidden = true;
+        pages.hidden = false;
+        toggle.setAttribute('aria-expanded', 'true');
+        cover.setAttribute('aria-expanded', 'true');
       }
 
-      btn.addEventListener('click', () => {
-        const isOpen = item.classList.contains('open');
-        // Close all
-        document.querySelectorAll('.skill-item').forEach(i => {
-          i.classList.remove('open');
-          i.querySelector('.skill-body').style.maxHeight = '0';
-          i.querySelector('.skill-trigger').setAttribute('aria-expanded', 'false');
-        });
-        // Open clicked if it was closed
-        if (!isOpen) {
-          item.classList.add('open');
-          body.style.maxHeight = body.scrollHeight + 'px';
-          btn.setAttribute('aria-expanded', 'true');
+      function closeNotebook() {
+        if (pages.hidden) return;
+        cover.hidden = false;
+        pages.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+        cover.setAttribute('aria-expanded', 'false');
+      }
+
+      toggle.addEventListener('click', () => {
+        if (pages.hidden) openNotebook();
+        else closeNotebook();
+      });
+
+      cover.addEventListener('click', openNotebook);
+      cover.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openNotebook();
         }
       });
-    });
 
-  // ── Organic paint blob cursor (hero split only) ──────────────────────────
+      body.addEventListener('click', (e) => {
+        if (e.target.closest('#intoToggle, #intoCover, .ab-tags span')) return;
+        closeNotebook();
+      });
+
+      // Cursor-following "Click to peek inside" hint, styled like the resume's "Click to open" hint
+      const hoverHint = document.getElementById('intoHoverHint');
+      if (hoverHint) {
+        function moveHoverHint(e) {
+          hoverHint.style.left = e.clientX + 'px';
+          hoverHint.style.top = e.clientY + 'px';
+          hoverHint.classList.add('following');
+        }
+        cover.addEventListener('mouseenter', moveHoverHint);
+        cover.addEventListener('mousemove', moveHoverHint);
+        cover.addEventListener('mouseleave', () => hoverHint.classList.remove('following'));
+        cover.addEventListener('mousedown', () => hoverHint.classList.remove('following'));
+      }
+    })();
+
+    // ── About board: resume folder toy — click opens the folder, then the resume lightbox ──
+    (function () {
+      const folder = document.getElementById('resumeFolder');
+      const lightbox = document.getElementById('resumeLightbox');
+      const backdrop = document.getElementById('resumeLightboxBackdrop');
+      const closeBtn = document.getElementById('resumeLightboxClose');
+      const frame = document.getElementById('resumeLightboxFrame');
+      if (!folder || !lightbox || !backdrop || !closeBtn || !frame) return;
+
+      const RESUME_SRC = 'assets/home/document/Goeun Choi- Graphic Designer Resume.pdf';
+
+      function openLightbox() {
+        if (!frame.src) frame.src = RESUME_SRC;
+        lightbox.hidden = false;
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLightbox() {
+        lightbox.hidden = true;
+        document.body.style.overflow = '';
+        folder.classList.remove('open');
+        folder.setAttribute('aria-expanded', 'false');
+      }
+
+      folder.addEventListener('click', () => {
+        const isOpen = folder.classList.toggle('open');
+        folder.setAttribute('aria-expanded', String(isOpen));
+        if (isOpen) setTimeout(openLightbox, 260);
+      });
+
+      backdrop.addEventListener('click', closeLightbox);
+      closeBtn.addEventListener('click', closeLightbox);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !lightbox.hidden) closeLightbox();
+      });
+
+      // Cursor-following "Click to open" hint, styled like the hero's "Drag to draw" hint
+      const hoverHint = document.getElementById('resumeHoverHint');
+      const folderWrap = folder.closest('.ab-folder-wrap');
+      if (hoverHint && folderWrap) {
+        function moveHoverHint(e) {
+          hoverHint.style.left = e.clientX + 'px';
+          hoverHint.style.top = e.clientY + 'px';
+          hoverHint.classList.add('following');
+        }
+        folderWrap.addEventListener('mouseenter', moveHoverHint);
+        folderWrap.addEventListener('mousemove', moveHoverHint);
+        folderWrap.addEventListener('mouseleave', () => hoverHint.classList.remove('following'));
+        folderWrap.addEventListener('mousedown', () => hoverHint.classList.remove('following'));
+      }
+    })();
+
+    // ── About board: turntable music player — drag the needle onto the record to play, off to stop ──
+    (function () {
+      const audio = document.getElementById('musicAudio');
+      const arm = document.getElementById('ttArm');
+      const pivotEl = document.querySelector('#ttPlate .ab-tt-pivot');
+      const record = document.getElementById('ttRecord');
+      const volume = document.getElementById('ttVolume');
+      const hint = document.getElementById('ttHint');
+      if (!audio || !arm || !pivotEl) return;
+
+      // Geometry note: the arm pivots at the top-right corner, so a NEGATIVE
+      // angle swings the needle tip down onto the disc, and a POSITIVE angle
+      // lifts it up and off. REST > PLAY numerically — don't swap without
+      // re-checking which side of the record each angle actually lands on.
+      const REST_ANGLE = 10;
+      const PLAY_ANGLE = -15;
+      const SNAP_THRESHOLD = (REST_ANGLE + PLAY_ANGLE) / 2;
+
+      let currentAngle = REST_ANGLE;
+      let dragging = false;
+      let moved = false;
+      let startX = 0, startY = 0;
+
+      function setAngle(deg) {
+        currentAngle = deg;
+        arm.style.transform = `rotate(${deg}deg)`;
+      }
+
+      function playTrack() {
+        audio.play().catch(() => {});
+        record.classList.add('spinning');
+        if (hint) hint.textContent = 'Click or drag the needle off to stop';
+      }
+      function stopTrack() {
+        audio.pause();
+        record.classList.remove('spinning');
+        if (hint) hint.textContent = 'Click or drag the needle to play';
+      }
+
+      setAngle(REST_ANGLE);
+
+      arm.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return;
+        e.stopPropagation();
+        dragging = true;
+        moved = false;
+        startX = e.clientX; startY = e.clientY;
+        arm.classList.add('dragging');
+        arm.setPointerCapture(e.pointerId);
+      });
+
+      arm.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        if (!moved && Math.hypot(e.clientX - startX, e.clientY - startY) < 4) return;
+        moved = true;
+        const rect = pivotEl.getBoundingClientRect();
+        const pivotX = rect.left + rect.width / 2;
+        const pivotY = rect.top + rect.height / 2;
+        let angle = Math.atan2(e.clientY - pivotY, e.clientX - pivotX) * 180 / Math.PI;
+        angle = Math.max(PLAY_ANGLE, Math.min(REST_ANGLE, angle));
+        setAngle(angle);
+      });
+
+      function endDrag(e) {
+        if (!dragging) return;
+        dragging = false;
+        arm.classList.remove('dragging');
+        try { arm.releasePointerCapture(e.pointerId); } catch (_) {}
+        // A click without dragging toggles the needle on or off the record
+        const playing = moved ? currentAngle < SNAP_THRESHOLD : audio.paused;
+        if (playing) {
+          setAngle(PLAY_ANGLE);
+          playTrack();
+        } else {
+          setAngle(REST_ANGLE);
+          stopTrack();
+        }
+      }
+      arm.addEventListener('pointerup', endDrag);
+      arm.addEventListener('pointercancel', endDrag);
+
+      audio.addEventListener('ended', () => {
+        setAngle(REST_ANGLE);
+        stopTrack();
+      });
+
+      if (volume) {
+        audio.volume = volume.value / 100;
+        volume.addEventListener('input', () => {
+          audio.volume = volume.value / 100;
+        });
+      }
+    })();
+
+
+    // ── About board: memory matching mini-game ──
+    (function () {
+      const grid = document.getElementById('gameGrid');
+      const movesEl = document.getElementById('gameMoves');
+      const restartBtn = document.getElementById('gameRestart');
+      const winEl = document.getElementById('gameWin');
+      if (!grid) return;
+
+      const ICONS = [
+        'assets/home/stickers/Fire.svg',
+        'assets/home/stickers/Heart.svg',
+        'assets/home/stickers/sun.svg',
+        'assets/home/stickers/lightening.svg',
+      ];
+
+      let moves = 0;
+      let flipped = [];
+      let matchedCount = 0;
+      let locked = false;
+
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function buildGame() {
+        moves = 0;
+        flipped = [];
+        matchedCount = 0;
+        locked = false;
+        movesEl.textContent = 'Moves: 0';
+        winEl.hidden = true;
+        winEl.textContent = '';
+
+        const deck = shuffle(ICONS.concat(ICONS));
+        grid.innerHTML = '';
+        deck.forEach((src) => {
+          const tile = document.createElement('button');
+          tile.type = 'button';
+          tile.className = 'ab-game-tile';
+          tile.dataset.icon = src;
+          tile.setAttribute('aria-label', 'Memory card');
+          tile.innerHTML = `
+            <div class="ab-game-tile-inner">
+              <div class="ab-game-face ab-game-face-back"></div>
+              <div class="ab-game-face ab-game-face-front"><img src="${src}" alt=""></div>
+            </div>`;
+          tile.addEventListener('click', () => onTileClick(tile));
+          grid.appendChild(tile);
+        });
+      }
+
+      function onTileClick(tile) {
+        if (locked) return;
+        if (tile.classList.contains('flipped') || tile.classList.contains('matched')) return;
+        tile.classList.add('flipped');
+        flipped.push(tile);
+
+        if (flipped.length === 2) {
+          moves++;
+          movesEl.textContent = 'Moves: ' + moves;
+          const [a, b] = flipped;
+          if (a.dataset.icon === b.dataset.icon) {
+            a.classList.add('matched');
+            b.classList.add('matched');
+            flipped = [];
+            matchedCount += 2;
+            if (matchedCount === ICONS.length * 2) {
+              winEl.hidden = false;
+              winEl.textContent = 'Solved in ' + moves + ' moves!';
+            }
+          } else {
+            locked = true;
+            setTimeout(() => {
+              a.classList.remove('flipped');
+              b.classList.remove('flipped');
+              flipped = [];
+              locked = false;
+            }, 700);
+          }
+        }
+      }
+
+      if (restartBtn) restartBtn.addEventListener('click', buildGame);
+      buildGame();
+    })();
+
+    // Flip the employee badge without treating a drag as a click.
+    (function () {
+      const badge = document.getElementById('employeeBadge');
+      const toggle = badge.querySelector('.ab-badge-toggle');
+      const caption = badge.querySelector('.ab-badge-caption');
+      const front = badge.querySelector('.ab-badge-front');
+      const back = badge.querySelector('.ab-badge-back');
+
+      function flipBadge(event) {
+        const flipped = badge.classList.toggle('is-flipped');
+        toggle.setAttribute('aria-pressed', String(flipped));
+        toggle.setAttribute('aria-label', flipped ? "Show Goeun Choi's employee card" : "Show Goeun Choi's skills");
+        badge.title = flipped ? 'Show employee card' : 'Show skills';
+        toggle.title = badge.title;
+        caption.textContent = flipped ? 'Click to view profile' : 'Click to view skills';
+        front.setAttribute('aria-hidden', String(flipped));
+        back.setAttribute('aria-hidden', String(!flipped));
+        front.inert = flipped;
+        back.inert = !flipped;
+        (event.target.closest('button') || toggle).focus({ preventScroll: true });
+      }
+
+      badge.addEventListener('click', flipBadge);
+    })();
+
+  // Mouse-following ink in the hero, About board, and footer.
   (function () {
-    if (window.matchMedia('(max-width:900px)').matches) return;
+    if (window.matchMedia('(max-width:900px), (pointer:coarse), (prefers-reduced-motion:reduce)').matches) return;
     const heroEl   = document.querySelector('.hero-outer');
     const aboutEl  = document.querySelector('.about');
     const footerEl = document.querySelector('footer');
     if (!heroEl) return;
 
     const canvas = document.createElement('canvas');
+    canvas.setAttribute('aria-hidden', 'true');
+    canvas.id = 'inkCursorCanvas';
     canvas.style.cssText = 'position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:difference;';
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -1674,6 +3091,7 @@
 
     const N = 12;
     const R = 54;
+    const ABOUT_UNDRAWABLE = '.ab-card, .ab-sticker, .ab-canvas-sticker, .ab-canvas-text, .ab-tags span, .ab-folder-wrap, .ab-chalk-map, .ab-turntable';
 
     const pts = [];
     for (let i = 0; i < N; i++) {
@@ -1681,8 +3099,8 @@
         phase:     Math.random() * Math.PI * 2,
         freq:      0.016 + Math.random() * 0.014,
         amp:       6 + Math.random() * 10,
-        pullMult:  0.5 + Math.random() * 1.1,
-        taperMult: 0.55 + Math.random() * 0.8,
+        pullMult:  0.45 + Math.random() * 0.55,
+        taperMult: 0.5 + Math.random() * 0.4,
         phase2:    Math.random() * Math.PI * 2,
         freq2:     0.007 + Math.random() * 0.006,
         amp2:      4 + Math.random() * 6,
@@ -1692,26 +3110,43 @@
     let mx = 0, my = 0;
     let hx = 0, hy = 0;
     let tx = 0, ty = 0;
+    let vhx = 0, vhy = 0;
     let inside = false, opacity = 0, frame = 0;
 
+    function inZone(el) {
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      return mx >= r.left && mx <= r.right && my >= r.top && my <= r.bottom;
+    }
+    function updateInside(target) {
+      const inAbout = inZone(aboutEl) && !(target && target.closest(ABOUT_UNDRAWABLE));
+      inside = inZone(heroEl) || inAbout || inZone(footerEl);
+    }
     document.addEventListener('mousemove', function (e) {
       mx = e.clientX; my = e.clientY;
-      function inZone(el) {
-        if (!el) return false;
-        const r = el.getBoundingClientRect();
-        return mx >= r.left && mx <= r.right && my >= r.top && my <= r.bottom;
-      }
-      inside = inZone(heroEl) || inZone(aboutEl) || inZone(footerEl);
+      updateInside(e.target);
     });
+    window.addEventListener('scroll', function () {
+      updateInside(document.elementFromPoint(mx, my));
+    }, { passive: true });
 
     heroEl.addEventListener('mouseleave',   function () { inside = false; });
     if (aboutEl)  aboutEl.addEventListener('mouseleave',  function () { inside = false; });
     if (footerEl) footerEl.addEventListener('mouseleave', function () { inside = false; });
 
+    function smoothstep(x) {
+      x = Math.max(0, Math.min(1, x));
+      return x * x * (3 - 2 * x);
+    }
+
+    const MAX_LAG = 85;
+
     function drawBlob() {
       const vx = hx - tx, vy = hy - ty;
-      const speed = Math.sqrt(vx * vx + vy * vy);
+      const dist = Math.sqrt(vx * vx + vy * vy);
       const movAngle = Math.atan2(vy, vx);
+      const stretch = Math.min(dist / MAX_LAG, 1);
+      const wobbleScale = 1 - stretch * 0.55;
 
       const blobPts = [];
       for (let i = 0; i < N; i++) {
@@ -1719,13 +3154,13 @@
         const theta = (i / N) * Math.PI * 2;
         const wobble  = R + Math.sin(frame * p.freq + p.phase) * p.amp;
         const wobble2 = Math.sin(frame * p.freq2 + p.phase2) * p.amp2;
-        const totalWobble = wobble + wobble2;
+        const totalWobble = (wobble + wobble2) * wobbleScale;
 
         const dot  = Math.cos(theta - movAngle);
-        const pull = Math.max(-dot, 0);
-        const taper   = 1 - pull * Math.min(p.taperMult * 0.95, 0.97);
+        const pull = smoothstep(Math.max(-dot, 0));
+        const taper   = 1 - pull * Math.min(p.taperMult * 0.95, 0.9);
         const tapered = totalWobble * taper;
-        const pMult   = pull * 1.05 * p.pullMult;
+        const pMult   = pull * p.pullMult;
         const px = hx + Math.cos(theta) * tapered + (tx - hx) * pMult;
         const py = hy + Math.sin(theta) * tapered + (ty - hy) * pMult;
         blobPts.push([px, py]);
@@ -1751,11 +3186,22 @@
 
     (function tick() {
       frame++;
-      hx += (mx - hx) * 0.14;
-      hy += (my - hy) * 0.14;
-      tx += (mx - tx) * 0.022;
-      ty += (my - ty) * 0.022;
-      ty += 1.2; // gravity — paint sags slightly downward
+      const ax = (mx - hx) * 0.05 - vhx * 0.32;
+      const ay = (my - hy) * 0.05 - vhy * 0.32;
+      vhx += ax; vhy += ay;
+      hx += vhx; hy += vhy;
+      tx += (mx - tx) * 0.05;
+      ty += (my - ty) * 0.05;
+      ty += 0.8;
+
+      // Limit the tail so quick movements do not stretch it into a thin spike.
+      const dx = hx - tx, dy = hy - ty;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > MAX_LAG) {
+        const excess = (dist - MAX_LAG) / dist;
+        tx += dx * excess;
+        ty += dy * excess;
+      }
 
       opacity += ((inside ? 1 : 0) - opacity) * 0.1;
 
@@ -1818,6 +3264,46 @@
   })();
 
 
+
+  // ── Hero avatar: cursor-reactive tilt + looks toward the cursor ──────────
+  (function () {
+    const wrap = document.querySelector('.hero-img-wrap');
+    const heroOuter = document.querySelector('.hero-outer');
+    if (!wrap || !heroOuter) return;
+    if (window.matchMedia('(max-width:900px)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const MAX_TILT = 26;   // degrees
+    let targetRX = 0, targetRY = 0, curRX = 0, curRY = 0;
+    let targetScale = 1, curScale = 1;
+
+    document.addEventListener('mousemove', function (e) {
+      const r  = wrap.getBoundingClientRect();
+      const hr = heroOuter.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const deadZone = Math.max(10, r.width * 0.04);
+      if (e.clientX < cx - deadZone) wrap.classList.add('looking-left');
+      if (e.clientX > cx + deadZone) wrap.classList.remove('looking-left');
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      // reach scales with the section itself, so the other half of the hero triggers it too
+      const radius = Math.max(hr.width, hr.height) * 0.95;
+      const falloff = Math.max(0, 1 - dist / radius);
+      targetRY = Math.max(-1, Math.min(1, dx / (r.width / 2))) * MAX_TILT * falloff;
+      targetRX = Math.max(-1, Math.min(1, -dy / (r.height / 2))) * MAX_TILT * falloff;
+      targetScale = 1 + falloff * 0.08;
+    });
+
+    (function tick() {
+      curRX += (targetRX - curRX) * 0.14;
+      curRY += (targetRY - curRY) * 0.14;
+      curScale += (targetScale - curScale) * 0.1;
+      wrap.style.transform = 'scale(' + curScale.toFixed(3) + ') rotateX(' + curRX.toFixed(2) + 'deg) rotateY(' + curRY.toFixed(2) + 'deg)';
+      requestAnimationFrame(tick);
+    })();
+  })();
   </script>
 
 </body>

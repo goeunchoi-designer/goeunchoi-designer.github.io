@@ -15,8 +15,8 @@
       --shadow:    0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
       --highlight: #fef3c7; --note-bg:  #fef9e7;
     }
-    html { overflow-x: hidden; }
-    body { overflow-x: hidden; }
+    html { overflow-x: clip; }
+    body { overflow-x: clip; }
 
     /* Cover placeholder */
     .cover-ph { font-size:14px; color:#ffffff; letter-spacing:.04em; }
@@ -410,26 +410,16 @@
         <p>That one rule drove every decision. The answer is on screen the moment the page loads. The data behind it is one click away.</p>
         <p>It's how the three design angles from the audit became a real interface: <span class="highlight">the estimate labeled on the chart, the Bloomberg range standing in for statistical confidence, and the model's track record visible in one view.</span></p>
       </div>
-      <!-- Feature tabs -->
+      <!-- Platform screens -->
       <div style="margin-top:52px; margin-bottom:20px;">
         <span style="font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gray-text);display:block;margin-bottom:12px;">Inside the platform</span>
         <p style="font-size:22px;font-weight:700;letter-spacing:-.025em;line-height:1.2;color:var(--black);">Three sections. Each answering a different question.</p>
       </div>
-      <div class="feat-tabs" style="margin-top:0;">
-        <div class="feat-tab-bar">
-          <button class="feat-tab-btn active" data-tab="ftab1">
-            <span class="tab-num">01</span>Weekly GDP Nowcast
-          </button>
-          <button class="feat-tab-btn" data-tab="ftab2">
-            <span class="tab-num">02</span>Impact Analysis
-          </button>
-          <button class="feat-tab-btn" data-tab="ftab3">
-            <span class="tab-num">03</span>Quarterly GDP Growth
-          </button>
-        </div>
+      <div class="design-screens">
 
         <!-- Panel 1 -->
-        <div class="feat-tab-panel active" id="ftab1">
+        <div class="design-screen">
+          <h3 class="design-screen-title">01 · Weekly GDP Nowcast</h3>
           <div class="anno-img" style="min-height:320px; margin-bottom:16px;">
             <img src="assets/bdlnow/Weekly GDP Nowcast section.png" alt="Weekly GDP Nowcast" style="width:100%;height:100%;object-fit:contain;display:block;padding:12px;" />
           </div>
@@ -453,7 +443,8 @@
         </div>
 
         <!-- Panel 2 -->
-        <div class="feat-tab-panel" id="ftab2">
+        <div class="design-screen">
+          <h3 class="design-screen-title">02 · Impact Analysis</h3>
           <div class="feat-side-layout">
             <div class="anno-img" style="min-height:360px;">
               <img src="assets/bdlnow/Impact Analysis section.png" alt="Impact Analysis" style="width:100%;height:100%;object-fit:contain;display:block;padding:12px;" />
@@ -474,7 +465,8 @@
         </div>
 
         <!-- Panel 3 -->
-        <div class="feat-tab-panel" id="ftab3">
+        <div class="design-screen">
+          <h3 class="design-screen-title">03 · Quarterly GDP Growth</h3>
           <div class="anno-img" style="min-height:320px; margin-bottom:16px;">
             <img src="assets/bdlnow/Actual and Nowcast Quarterly Canada GDP Growth section.png" alt="Quarterly GDP Growth" style="width:100%;height:100%;object-fit:contain;display:block;padding:12px;" />
           </div>
@@ -550,15 +542,17 @@
           <div class="related-body">
             <span class="related-tag">01 · Policy Data Visualization</span>
             <p class="related-title">CAN–U.S. District Dashboard</p>
+            <p class="related-description">A dashboard that helps policy teams explore Canada and U.S. trade data across all 435 congressional districts.</p>
           </div>
         </a>
         <a href="briefbuy-case-study.html" class="related-card">
           <div class="related-thumb dark">
-            <img src="assets/home/briefbuy-tumbnail.png" alt="BriefBuy" style="width:100%;height:100%;object-fit:cover;display:block;" />
+            <video src="assets/briefbuy/Briefbuy-promo.mp4" poster="assets/home/briefbuy-tumbnail.png" aria-label="BriefBuy product preview" autoplay muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:contain;display:block;"></video>
           </div>
           <div class="related-body">
             <span class="related-tag">03 · Product Design</span>
             <p class="related-title">BriefBuy</p>
+            <p class="related-description">An AI shopping companion that helps runners compare shoes and find options that fit their needs.</p>
           </div>
         </a>
       </div>

@@ -15,8 +15,8 @@
       --shadow:    0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
       --brand:     #3D5A4F; --brand-light: #edf2f0;
     }
-    html { overflow-x: hidden; }
-    body { overflow-x: hidden; }
+    html { overflow-x: clip; }
+    body { overflow-x: clip; }
 
     /* Cover — page-specific: brand background, object-position:top */
     .hero-cover { background:var(--brand); }
@@ -620,16 +620,18 @@
         </div>
         <div class="related-body">
           <span class="related-tag">Product Design · Data Visualization</span>
-          <p class="related-title">BDLNow — Canada's real-time GDP nowcast, made readable</p>
+          <p class="related-title">BDLNow</p>
+          <p class="related-description">A weekly GDP nowcast interface that makes complex Canadian economic data easier to explore and understand.</p>
         </div>
       </a>
       <a class="related-card" href="briefbuy-case-study.html">
         <div class="related-thumb">
-          <img src="assets/home/briefbuy-tumbnail.png" alt="BriefBuy product thumbnail" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <video src="assets/briefbuy/Briefbuy-promo.mp4" poster="assets/home/briefbuy-tumbnail.png" aria-label="BriefBuy product preview" autoplay muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:contain;display:block;"></video>
         </div>
         <div class="related-body">
-          <span class="related-tag">AI Product · Side Project</span>
-          <p class="related-title">BriefBuy — AI running shoe comparison, built in four weeks</p>
+          <span class="related-tag">AI Product Design</span>
+          <p class="related-title">BriefBuy</p>
+          <p class="related-description">An AI shopping companion that helps runners compare shoes and find options that fit their needs.</p>
         </div>
       </a>
     </div>
