@@ -31,6 +31,8 @@
       --radius:     20px;
       --radius-sm:  12px;
       --shadow:     0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+      --page-max-width: 1280px;
+      --page-gutter: 64px;
     }
 
     body {
@@ -104,6 +106,13 @@
       max-width: 1280px;
       margin: 0 auto;
       padding: 0 64px;
+    }
+
+    .nav-inner, .container, .hero, .about-pg, .footer-inner, .footer-bottom {
+      width: 100%;
+      max-width: var(--page-max-width);
+      margin-inline: auto;
+      padding-inline: var(--page-gutter);
     }
 
     /* ── Hero (graphic portfolio hero; content capped at 1280px, black bg + canvas full bleed) ── */
@@ -322,7 +331,7 @@
       width: 100%;
       align-items: center;
       gap: clamp(32px, 5vw, 80px);
-      padding: clamp(56px, 7vw, 100px) 64px;
+      padding: clamp(56px, 7vw, 100px) var(--page-gutter);
     }
     .hero-panel-left {
       background: transparent;
@@ -341,6 +350,7 @@
     }
     .hero-panel-right {
       background: transparent;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -357,7 +367,7 @@
       margin-bottom: 28px;
     }
     .hero-title {
-      font-size: clamp(54px, 7.2vw, 116px);
+      font-size: 116px;
       font-family: 'Geist', system-ui, sans-serif;
       font-weight: 700;
       line-height: 0.94;
@@ -366,7 +376,7 @@
       position: relative;
       display: inline-block;
       margin-bottom: 24px;
-      max-width: 680px;
+      max-width: 100%;
     }
 
     .hero-title-outline {
@@ -598,7 +608,7 @@
       width: 100vw;
       min-height: 100vh;
       margin-left: -50vw;
-      padding: 80px clamp(28px, 5vw, 80px) 100px;
+      padding: 80px 0 100px;
       border-top: 1px solid var(--border);
       background-color: #fff;
       background-image: radial-gradient(#dedede 1.2px, transparent 1.2px);
@@ -762,7 +772,6 @@
       cursor: pointer;
       touch-action: pan-y;
     }
-    .ab-exp-role:has(:focus-visible) { outline: 3px solid #16a34a; outline-offset: 6px; }
     .ab-badge-caption {
       display: block;
       margin-top: 10px;
@@ -782,6 +791,11 @@
       background: #111;
       color: #fff;
       cursor: pointer;
+    }
+    .ab-badge-toggle:focus { outline: none; }
+    .ab-badge-toggle:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
     }
     .ab-badge-inner {
       position: relative;
@@ -1370,10 +1384,10 @@
       position: relative;
       z-index: 1;
       overflow: hidden;
-      border-top: 1px solid #222;
-      border-bottom: 1px solid #222;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
       padding: 14px 0;
-      background: var(--black);
+      background: var(--white);
     }
     .marquee-track {
       display: flex;
@@ -1392,14 +1406,14 @@
       font-weight: 500;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #ffffff;
+      color: var(--black);
       white-space: nowrap;
     }
     .m-icon {
       width: 15px;
       height: 15px;
       flex-shrink: 0;
-      color: #ffffff;
+      color: var(--black);
     }
     @keyframes marquee {
       from { transform: translateX(0); }
@@ -1628,6 +1642,7 @@
 
     /* ── Responsive ── */
     @media (max-width: 900px) {
+      :root { --page-gutter: 28px; }
       .nav-inner { padding: 20px 28px; }
       .container { padding: 0 28px; }
       .hero-outer { height: auto; min-height: calc(100vh - var(--nav-h, 64px)); }
@@ -1636,7 +1651,7 @@
       .hero-panel-right { padding: 0; order: 1; }
       /* Drawing is disabled on mobile/tablet, so hide the "drag to draw" badge */
       .badge-wrap { display: none; }
-      .hero-title { font-size: clamp(54px, 16vw, 76px); }
+      .hero-title { font-size: 76px; }
       .hero-support-copy { font-size: 18px; line-height: 1.4; }
       .hero-img-wrap img { max-width: 220px; }
       /* Flip cards (BDLNow, Gateway): stack vertically, text first, thumbnail below */
@@ -2128,6 +2143,25 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 
   <script>
+    // Fit both title layers to the actual column, including after fonts load.
+    (function () {
+      const title = document.querySelector('.hero-title');
+      const outline = title.querySelector('.hero-title-outline');
+      const panel = title.closest('.hero-panel-right');
+      function fitTitle() {
+        const preferred = window.matchMedia('(max-width:900px)').matches ? 76 : 116;
+        title.style.fontSize = preferred + 'px';
+        const available = panel.clientWidth - 4;
+        const measured = outline.getBoundingClientRect().width;
+        if (measured > available && available > 0) {
+          title.style.fontSize = (preferred * available / measured) + 'px';
+        }
+      }
+      new ResizeObserver(fitTitle).observe(panel);
+      document.fonts.ready.then(fitTitle);
+      fitTitle();
+    })();
+
     // ── Custom pointer: pen icon follows the mouse ──────────────────────────
     (function () {
       const cursor = document.getElementById('customCursor');
@@ -3061,7 +3095,9 @@
         back.setAttribute('aria-hidden', String(!flipped));
         front.inert = flipped;
         back.inert = !flipped;
-        (event.target.closest('button') || toggle).focus({ preventScroll: true });
+        if (event.detail === 0) {
+          (event.target.closest('button') || toggle).focus({ preventScroll: true });
+        }
       }
 
       badge.addEventListener('click', flipBadge);
