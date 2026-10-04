@@ -44,9 +44,11 @@
     }
 
     /* ── Custom pointer: a pen icon replaces the native cursor ── */
-    @media (hover: hover) and (pointer: fine) and (min-width: 769px) {
+    #customCursor { display: none; }
+    @media (hover: hover) and (pointer: fine) and (min-width: 901px) {
       * { cursor: none !important; }
       #customCursor {
+        display: block;
         position: fixed;
         top: 0;
         left: 0;
@@ -487,9 +489,10 @@
       margin-bottom: 0;
     }
     .section-header h2 {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
+      font-size: clamp(32px, 3.8vw, 52px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: 0;
       text-transform: uppercase;
       color: var(--white);
     }
@@ -757,12 +760,20 @@
     .ab-chalk-map-wrap:hover ~ .ab-chalk-map-hint { color: var(--black); }
 
     /* Experience card — styled like an employee ID badge on a lanyard */
-    .ab-exp-role {
-      border-radius: 16px;
-      grid-column: 2; grid-row: 1; --rot: -1.5deg;
-      position: relative;
+    .ab-exp-slot {
+      grid-column: 2;
+      grid-row: 1;
       width: 240px;
       justify-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .ab-exp-role {
+      border-radius: 16px;
+      --rot: -1.5deg;
+      position: relative;
+      width: 100%;
       background: transparent;
       border: none;
       padding: 0;
@@ -1668,13 +1679,14 @@
         gap: 28px;
       }
       .about-pg { grid-template-columns: 1fr 1fr; min-height: unset; row-gap: 32px; column-gap: 12px; }
-      .ab-headline { font-size: 28px; margin-bottom: 8px; }
-      .ab-cell-status-map, .ab-interests, .ab-folder-wrap, .ab-turntable-stack { grid-column: span 1; grid-row: auto; }
+      .ab-headline { width: 100%; font-size: 28px; margin-bottom: 8px; text-align: center; }
+      .ab-cell-status-map, .ab-exp-slot, .ab-interests, .ab-folder-wrap, .ab-turntable-stack { grid-column: span 1; grid-row: auto; }
       .ab-cell-status-map, .ab-turntable-stack { grid-column: 1 / -1; width: auto; }
-      .ab-exp-role { grid-column: 1 / -1; grid-row: auto; width: 100%; max-width: 260px; margin: 0 auto; }
+      .ab-exp-slot { grid-column: 1 / -1; width: 100%; max-width: 260px; margin: 0 auto; }
       .ab-turntable-stack { justify-self: center; margin: 0 auto 8px; }
       .ab-cell-status-map { order: 2; }
-      .ab-exp-role { order: 1; }
+      .ab-chalk-map { margin-inline: auto; }
+      .ab-exp-slot { order: 1; }
       .ab-turntable-stack { order: 3; }
       .ab-interests { order: 4; }
       .ab-folder-wrap { order: 5; }
@@ -1904,60 +1916,62 @@
         </div>
 
         <!-- Row 1, col 2: Experience — styled like an employee ID badge -->
-        <div class="ab-card ab-exp-role" id="employeeBadge" title="Show skills">
-          <button class="ab-badge-toggle" type="button" aria-pressed="false" aria-label="Show Goeun Choi's skills" aria-controls="employeeSkills" title="Show skills"><i class="fa-solid fa-rotate" aria-hidden="true"></i></button>
-          <svg class="ab-badge-hardware" viewBox="0 0 40 110" width="44" height="121" aria-hidden="true">
-            <defs>
-              <linearGradient id="hwMetal" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#8a8a8a"/>
-                <stop offset="45%" stop-color="#eeeeee"/>
-                <stop offset="55%" stop-color="#eeeeee"/>
-                <stop offset="100%" stop-color="#8a8a8a"/>
-              </linearGradient>
-            </defs>
-            <rect x="15" y="0" width="10" height="40" rx="2" fill="#1a1a1a"/>
-            <rect x="5" y="38" width="30" height="10" rx="5" fill="url(#hwMetal)" stroke="#7a7a7a" stroke-width="0.6"/>
-            <rect x="17" y="47" width="6" height="9" fill="url(#hwMetal)"/>
-            <path d="M20 56 v9 a8.5 8.5 0 1 0 8.5 8.5" fill="none" stroke="url(#hwMetal)" stroke-width="4.5" stroke-linecap="round"/>
-            <line x1="20.5" y1="65.5" x2="26" y2="71" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="20.5" cy="65.5" r="1.7" fill="#6f6f6f"/>
-          </svg>
-          <div class="ab-badge-inner">
-            <div class="ab-badge-face ab-badge-front">
-          <div class="ab-badge-photo">
-            <span class="ab-badge-photo-frame">
-              <img class="ab-badge-photo-img" src="assets/home/Goni_Designer.svg" alt="Goeun Choi" />
-            </span>
+        <div class="ab-exp-slot">
+          <div class="ab-card ab-exp-role" id="employeeBadge" title="Show skills">
+            <button class="ab-badge-toggle" type="button" aria-pressed="false" aria-label="Show Goeun Choi's skills" aria-controls="employeeSkills" title="Show skills"><i class="fa-solid fa-rotate" aria-hidden="true"></i></button>
+            <svg class="ab-badge-hardware" viewBox="0 0 40 110" width="44" height="121" aria-hidden="true">
+              <defs>
+                <linearGradient id="hwMetal" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#8a8a8a"/>
+                  <stop offset="45%" stop-color="#eeeeee"/>
+                  <stop offset="55%" stop-color="#eeeeee"/>
+                  <stop offset="100%" stop-color="#8a8a8a"/>
+                </linearGradient>
+              </defs>
+              <rect x="15" y="0" width="10" height="40" rx="2" fill="#1a1a1a"/>
+              <rect x="5" y="38" width="30" height="10" rx="5" fill="url(#hwMetal)" stroke="#7a7a7a" stroke-width="0.6"/>
+              <rect x="17" y="47" width="6" height="9" fill="url(#hwMetal)"/>
+              <path d="M20 56 v9 a8.5 8.5 0 1 0 8.5 8.5" fill="none" stroke="url(#hwMetal)" stroke-width="4.5" stroke-linecap="round"/>
+              <line x1="20.5" y1="65.5" x2="26" y2="71" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="20.5" cy="65.5" r="1.7" fill="#6f6f6f"/>
+            </svg>
+            <div class="ab-badge-inner">
+              <div class="ab-badge-face ab-badge-front">
+            <div class="ab-badge-photo">
+              <span class="ab-badge-photo-frame">
+                <img class="ab-badge-photo-img" src="assets/home/Goni_Designer.svg" alt="Goeun Choi" />
+              </span>
 
-          </div>
-          <div class="ab-badge-id">
-            <span class="ab-badge-name">Goeun Choi</span>
-            <span class="ab-badge-title">Product &amp; UI/UX Designer</span>
-          </div>
             </div>
-            <div class="ab-badge-face ab-badge-back" aria-hidden="true" inert>
-              <div class="ab-badge-skills-heading"><h3>Skill Set</h3></div>
-              <div class="ab-badge-skills-list" id="employeeSkills" tabindex="0" role="region" aria-label="Design skills" data-lenis-prevent>
-              <div class="ab-badge-skill-group">
-                <h4>Product &amp; UI/UX Design</h4>
-                <p>User Research &middot; Prototyping &middot; Usability Testing &middot; Information Architecture &middot; Wireframing &middot; Design Systems &middot; Figma</p>
+            <div class="ab-badge-id">
+              <span class="ab-badge-name">Goeun Choi</span>
+              <span class="ab-badge-title">Product &amp; UI/UX Designer</span>
+            </div>
               </div>
-              <div class="ab-badge-skill-group">
-                <h4>Web Design</h4>
-                <p>Responsive Design &middot; HTML / CSS &middot; Framer &middot; WordPress &middot; Webflow &middot; Shopify</p>
-              </div>
-              <div class="ab-badge-skill-group">
-                <h4>Vibe Coding</h4>
-                <p>AI Assisted Prototyping &middot; AI Assisted Frontend Dev &middot; Claude Code &middot; Codex &middot; GitHub</p>
-              </div>
-              <div class="ab-badge-skill-group">
-                <h4>Graphic Design</h4>
-                <p>Brand Identity &middot; Typography &middot; Print Design &middot; Adobe Illustrator &middot; InDesign &middot; Photoshop &middot; Lightroom &middot; Canva</p>
-              </div>
-              <div class="ab-badge-skill-group">
-                <h4>Multimedia Design</h4>
-                <p>Motion Graphics &middot; Video Editing &middot; After Effects &middot; Premiere Pro &middot; Data Visualization</p>
-              </div>
+              <div class="ab-badge-face ab-badge-back" aria-hidden="true" inert>
+                <div class="ab-badge-skills-heading"><h3>Skill Set</h3></div>
+                <div class="ab-badge-skills-list" id="employeeSkills" tabindex="0" role="region" aria-label="Design skills" data-lenis-prevent>
+                <div class="ab-badge-skill-group">
+                  <h4>Product &amp; UI/UX Design</h4>
+                  <p>User Research &middot; Prototyping &middot; Usability Testing &middot; Information Architecture &middot; Wireframing &middot; Design Systems &middot; Figma</p>
+                </div>
+                <div class="ab-badge-skill-group">
+                  <h4>Web Design</h4>
+                  <p>Responsive Design &middot; HTML / CSS &middot; Framer &middot; WordPress &middot; Webflow &middot; Shopify</p>
+                </div>
+                <div class="ab-badge-skill-group">
+                  <h4>Vibe Coding</h4>
+                  <p>AI Assisted Prototyping &middot; AI Assisted Frontend Dev &middot; Claude Code &middot; Codex &middot; GitHub</p>
+                </div>
+                <div class="ab-badge-skill-group">
+                  <h4>Graphic Design</h4>
+                  <p>Brand Identity &middot; Typography &middot; Print Design &middot; Adobe Illustrator &middot; InDesign &middot; Photoshop &middot; Lightroom &middot; Canva</p>
+                </div>
+                <div class="ab-badge-skill-group">
+                  <h4>Multimedia Design</h4>
+                  <p>Motion Graphics &middot; Video Editing &middot; After Effects &middot; Premiere Pro &middot; Data Visualization</p>
+                </div>
+                </div>
               </div>
             </div>
           </div>
@@ -2165,7 +2179,7 @@
     // ── Custom pointer: pen icon follows the mouse ──────────────────────────
     (function () {
       const cursor = document.getElementById('customCursor');
-      if (!cursor || !window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 769px)').matches) return;
+      if (!cursor || !window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 901px)').matches) return;
       window.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
@@ -2529,7 +2543,7 @@
 
       function start(e) {
         // Let card/sticker/text drags win — only start drawing on empty board space.
-        if (e.target.closest('.ab-card, .ab-sticker, .ab-canvas-sticker, .ab-canvas-text, .ab-tags span, .ab-folder-wrap, .ab-chalk-map, .ab-turntable')) return;
+        if (e.target.closest('.ab-card, .ab-badge-caption, .ab-sticker, .ab-canvas-sticker, .ab-canvas-text, .ab-tags span, .ab-folder-wrap, .ab-chalk-map, .ab-turntable')) return;
         const p = pointFromEvent(e);
         if (currentTool === 'text') {
           addCanvasText(p);
@@ -2645,11 +2659,24 @@
         });
       }
 
-      // Only show the floating dock while the About board is actually in view
-      const dockObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => dock.classList.toggle('visible', entry.isIntersecting));
-      }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
-      dockObserver.observe(aboutEl);
+      // Keep the dock and picker above the canvas boundary as the footer enters.
+      function positionDock() {
+        const rect = aboutEl.getBoundingClientRect();
+        const gap = 28;
+        const dockBottom = Math.min(window.innerHeight - gap, rect.bottom - gap);
+        const dockTop = dockBottom - dock.offsetHeight;
+        const navBottom = document.querySelector('nav').getBoundingClientRect().bottom;
+        const visible = window.innerWidth > 900 && dockTop >= Math.max(rect.top + gap, navBottom + gap);
+        const bottom = window.innerHeight - dockBottom;
+        dock.style.bottom = bottom + 'px';
+        stickerPanel.style.bottom = (bottom + dock.offsetHeight + 12) + 'px';
+        dock.classList.toggle('visible', visible);
+        dock.inert = !visible;
+        if (!visible) closeStickerPanel();
+      }
+
+      gsap.ticker.add(positionDock);
+      positionDock();
     })();
 
     // ── Lenis smooth scroll ──────────────────────────────────────
@@ -3103,11 +3130,10 @@
       badge.addEventListener('click', flipBadge);
     })();
 
-  // Mouse-following ink in the hero, About board, and footer.
+  // Mouse-following ink in the hero and footer.
   (function () {
     if (window.matchMedia('(max-width:900px), (pointer:coarse), (prefers-reduced-motion:reduce)').matches) return;
     const heroEl   = document.querySelector('.hero-outer');
-    const aboutEl  = document.querySelector('.about');
     const footerEl = document.querySelector('footer');
     if (!heroEl) return;
 
@@ -3127,8 +3153,6 @@
 
     const N = 12;
     const R = 54;
-    const ABOUT_UNDRAWABLE = '.ab-card, .ab-sticker, .ab-canvas-sticker, .ab-canvas-text, .ab-tags span, .ab-folder-wrap, .ab-chalk-map, .ab-turntable';
-
     const pts = [];
     for (let i = 0; i < N; i++) {
       pts.push({
@@ -3154,20 +3178,18 @@
       const r = el.getBoundingClientRect();
       return mx >= r.left && mx <= r.right && my >= r.top && my <= r.bottom;
     }
-    function updateInside(target) {
-      const inAbout = inZone(aboutEl) && !(target && target.closest(ABOUT_UNDRAWABLE));
-      inside = inZone(heroEl) || inAbout || inZone(footerEl);
+    function updateInside() {
+      inside = inZone(heroEl) || inZone(footerEl);
     }
     document.addEventListener('mousemove', function (e) {
       mx = e.clientX; my = e.clientY;
-      updateInside(e.target);
+      updateInside();
     });
     window.addEventListener('scroll', function () {
-      updateInside(document.elementFromPoint(mx, my));
+      updateInside();
     }, { passive: true });
 
     heroEl.addEventListener('mouseleave',   function () { inside = false; });
-    if (aboutEl)  aboutEl.addEventListener('mouseleave',  function () { inside = false; });
     if (footerEl) footerEl.addEventListener('mouseleave', function () { inside = false; });
 
     function smoothstep(x) {
@@ -3246,20 +3268,6 @@
 
       requestAnimationFrame(tick);
     })();
-  })();
-
-  // ── About cards: mini paint splash on hover ─────────────────────────────
-  (function () {
-    document.querySelectorAll('.ab-card').forEach(function (card) {
-      var lastSplash = 0;
-      card.addEventListener('mouseenter', function () {
-        var now = Date.now();
-        if (now - lastSplash < 800) return; // debounce
-        lastSplash = now;
-        var r = card.getBoundingClientRect();
-        paintSplash(r.left + r.width / 2, r.top + r.height / 2, 320, 6, 8, 12, 7);
-      });
-    });
   })();
 
   // ── About: live Ottawa clock ─────────────────────────────────────────────
